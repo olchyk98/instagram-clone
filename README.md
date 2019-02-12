@@ -1,2 +1,2 @@
 # instagram-clone
-_Stack:_ React.js, GraphQL
+_Stack:_ React.JS, GraphQL (Node.JS + Express)
