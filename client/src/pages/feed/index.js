@@ -1,7 +1,19 @@
 import React, { Component } from 'react';
 import './main.css';
 
+import Post from '../__forall__/post';
+
 const avatar = "https://instagram.fbtz1-2.fna.fbcdn.net/vp/c9ab85cb6f08ab4f94827ad427030841/5CDDD9F1/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fbtz1-2.fna.fbcdn.net";
+
+class Feed extends Component {
+    render() {
+        return(
+            <section className="rn-feed-block rn-feed-mat">
+                <Post />
+            </section>
+        );
+    }
+}
 
 class More extends Component {
     render() {
@@ -30,9 +42,7 @@ class Hero extends Component {
     render() {
         return(
             <div className="rn rn-feed">
-                <section className="rn-feed-block rn-feed-mat">
-
-                </section>
+                <Feed />
                 <More />
             </div>
         );

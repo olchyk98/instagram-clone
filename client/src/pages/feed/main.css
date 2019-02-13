@@ -14,9 +14,7 @@
 }
 
 .rn-feed-mat {
-    width:600px; /* TODO: This value should be automaticly based on the post element */
-    height:1500px;
-    background:linear-gradient(135deg, black, orange);
+    height:auto;
 }
 
 .rn-feed-more {
@@ -50,6 +48,8 @@
 .rn-feed-more-account-avatar > img {
     height:100%;
     width:100%;
+    object-fit:cover;
+    object-position:center;
 }
 
 .rn-feed-more-account-name {
