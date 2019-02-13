@@ -1,0 +1,161 @@
+.gl-nav {
+    height:var(--navheight);
+    width:100vw;
+    background:white;
+    display:flex;
+    align-items:center;
+    border-bottom:2px solid rgba(0, 0, 0, .075);
+    justify-content:space-around;
+}
+
+.gl-nav-logo {
+    display:flex;
+    align-items:center;
+    position:relative;
+    cursor:pointer;
+    flex-shrink:0;
+}
+
+.gl-nav-logo-image {
+    position:relative;
+}
+
+.gl-nav-logo-image > img {
+    height:100%;
+}
+
+.gl-nav-logo-bwlogo {
+    height:27.5px;
+}
+
+.gl-nav-logo-textlogo {
+    height:35px;
+    /* source image correction */
+    bottom:-2px;
+    /* source image correction */
+}
+
+.gl-nav-logo-split {
+    --margin:10px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+    height:30px;
+    width:1px;
+    background:rgba(0, 0, 0, .95);
+}
+
+.gl-nav-search {
+    --brd:2.5px;
+
+    height:27.5px;
+    width:195px;
+    border-radius:var(--brd);
+    background:white;
+    border:1px solid rgba(0, 0, 0, .15);
+    position:relative;
+}
+
+.gl-nav-search:before {
+    content:'';
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-right:50%;
+    transform:translate(-50%, -50%);
+    height:100%;
+    width:100%;
+    opacity:0;
+    z-index:0;
+    border-radius:var(--brd);
+    border:2px solid rgba(0, 0, 255, .75);
+}
+
+.gl-nav-search:focus:before {
+    animation:gl-nav-search-focus-foutline-am .5s ease-in-out;
+}
+
+.gl-nav-search > * {
+    position:relative;
+    z-index:1;
+}
+
+@keyframes gl-nav-search-focus-foutline-am {
+    0% {
+        opacity:0;
+    }
+    50% {
+        opacity:1;
+    }
+    100% {
+        opacity:0;
+    }
+}
+
+.gl-nav-search,
+.gl-nav-search *:not(input) {
+    outline:0;
+}
+
+.gl-nav-search-placeholder {
+    height:100%;
+    width:100%;
+    background:#FAFAFA;
+    font-weight:200;
+    font-family:"Arial";
+    font-size:.875rem;
+    color:rgba(0, 0, 0, .45);
+    cursor:text;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.gl-nav-search-placeholder > * {
+    --margin:5px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+}
+
+.gl-nav-search-mat {
+    height:100%;
+    width:100%;
+    display:flex;
+    align-items:center;
+}
+
+.gl-nav-search-mat-icon {
+    width:22.5px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:.75rem;
+    color:rgba(0, 0, 0, .25);
+    flex-shrink:0;
+}
+
+.gl-nav-search-mat-input {
+    --paddingr:5px;
+
+    width:calc(100% - var(--paddingr));
+    padding-right:var(--paddingr);
+    height:calc(100% - 2.5px);
+    flex-shrink:1;
+    font-size:.85rem;
+}
+
+.gl-nav-routes {
+    display:flex;
+    align-items:center;
+}
+
+.gl-nav-routes-btn {
+    --margin:12.5px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+    font-size:1.55em;
+    color:rgba(0, 0, 0, .65);
+    cursor:pointer;
+}
