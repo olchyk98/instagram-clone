@@ -1,0 +1,89 @@
+.rn-feed {
+    --padding:55px;
+
+    padding-top:var(--padding);
+    display:flex;
+    justify-content:center;
+}
+
+.rn-feed > * {
+    --margin:10px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+}
+
+.rn-feed-mat {
+    width:600px; /* TODO: This value should be automaticly based on the post element */
+    height:1500px;
+    background:linear-gradient(135deg, black, orange);
+}
+
+.rn-feed-more {
+    width:295px;
+    height:400px;
+    display:flex;
+    flex-direction:column;
+}
+
+.rn-feed-more-account {
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    width:100%;
+    position:relative;
+}
+
+.rn-feed-more-account-avatar {
+    --size:50px;
+
+    height:var(--size);
+    width:var(--size);
+    border-radius:50%;
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--defaultborder);
+    margin-right:10px;
+}
+
+.rn-feed-more-account-avatar > img {
+    height:100%;
+    width:100%;
+}
+
+.rn-feed-more-account-name {
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.rn-feed-more-account-name > * {
+    --margin:1.5px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+}
+
+.rn-feed-more-account-name-url {
+    font-family:"Arial";
+    font-weight:500;
+    font-size:.95rem;
+}
+
+.rn-feed-more-account-name-mat {
+    font-family:"Quicksand";
+    font-weight:500;
+    font-size:.75rem;
+    color:rgba(0, 0, 0, .5);
+}
+
+.rn-feed-more-copyright {
+    color:rgba(0, 0, 0, .35);
+    text-align:left;
+    line-height:15px;
+    font-size:.7rem;
+    font-family:"Arial";
+    font-weight:400;
+}
