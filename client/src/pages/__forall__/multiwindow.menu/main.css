@@ -1,0 +1,72 @@
+:root {
+    --aminit:.2s;
+}
+
+.gle-multiwin_menubg {
+    height:100vh;
+    width:100vw;
+    position:fixed;
+    top:0;
+    left:0;
+    background:rgba(0, 0, 0, .5);
+    z-index:600;
+    opacity:0;
+    visibility:hidden;
+    transition:all var(--aminit), visibility var(--aminit);
+}
+
+.gle-multiwin_menubg.active {
+    transition:all var(--aminit), visibility 0s;
+    opacity:1;
+    visibility:visible;
+}
+
+.gle-multiwin_menu {
+    width:400px;
+    max-width:calc(100vw - 35px);
+    border-radius:15px;
+    background:white;
+    display:flex;
+    flex-direction:column;
+    position:fixed;
+    top:50%;
+    left:50%;
+    margin-right:50%;
+    transform:translate(-50%, -50%) scale(1.05);
+    z-index:601;
+    opacity:0;
+    visibility:hidden;
+    transition:all var(--aminit), visibility var(--aminit);
+}
+
+.gle-multiwin_menubg.active ~ .gle-multiwin_menu {
+    transition:all var(--aminit), visibility 0s;
+    opacity:1;
+    visibility:visible;
+    transform:translate(-50%, -50%) scale(1);
+}
+
+.gle-multiwin_menu-btn {
+    --height:50px;
+
+    height:var(--height);
+    font-family:"Roboto";
+    font-weight:300;
+    font-size:.95rem;
+    line-height:calc(var(--height) + 2px);
+    cursor:pointer;
+    border-bottom:1px solid rgba(0, 0, 0, .05);
+}
+
+.gle-multiwin_menu-btn:active {
+    background:rgba(0, 0, 0, .1);
+}
+
+.gle-multiwin_menu-btn:last-child {
+    border-bottom:0;
+}
+
+.gle-multiwin_menu-btn.red {
+    color:red;
+    font-weight:500;
+}

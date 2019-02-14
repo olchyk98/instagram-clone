@@ -7,6 +7,7 @@ import Account from './pages/account';
 // Stuff
 import links from './links';
 import Navigation from './pages/__forall__/navigation';
+import MultiwindowMenu from './pages/__forall__/multiwindow.menu';
 
 // Router
 import { BrowserRouter } from 'react-router-dom';
@@ -38,6 +39,7 @@ class App extends Component {
             <Provider store={ reduxStore }>
                 <BrowserRouter>
                     <>
+                        <MultiwindowMenu />
                         <Navigation />
                         <Switch>
                             <NeedleRoute

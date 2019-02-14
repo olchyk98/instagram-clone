@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
+import { connect } from 'react-redux';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faComment, faBookmark } from '@fortawesome/free-regular-svg-icons';
@@ -143,7 +145,7 @@ class CommentInput extends Component {
                     placeholder="Add a comment"
                 />
                 <div className="gle-post-commentinput-options">
-                    <button className="definp gle-post-commentinput-options-btn">
+                    <button className="definp gle-post-commentinput-options-btn" onClick={ this.props.callMenu }>
                         <FontAwesomeIcon icon={ faEllipsisH } />
                     </button>
                 </div>
@@ -166,10 +168,44 @@ class Post extends Component {
                 <span className="gle-post-stricts">3 893 likes</span>
                 <PostCommentItem />
                 <PostComments />
-                <CommentInput />
+                <CommentInput
+                    callMenu={() => this.props.callGlobalMenu({
+                        buttons: [
+                            {
+                                isRed: true,
+                                action: () => null,
+                                text: "Unfollow author"
+                            },
+                            {
+                                isRed: false,
+                                action: () => null,
+                                text: "Go to post"
+                            },
+                            {
+                                isRed: false,
+                                action: () => null,
+                                text: "Copy link"
+                            },
+                            {
+                                isRed: false,
+                                action: () => this.props.callGlobalMenu(null),
+                                text: "Cancel"
+                            }
+                        ]
+                    })}
+                />
             </article>
         );
     }
 }
 
-export default Post;
+const mapStateToProps = () => ({});
+
+const mapActionsToProps = {
+    callGlobalMenu: payload => ({ type: 'SET_GLOBAL_MENU', payload })
+}
+
+export default connect(
+    mapStateToProps,
+    mapActionsToProps
+)(Post);
