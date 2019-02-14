@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 // Pages
 import Feed from './pages/feed';
+import Account from './pages/account';
 
 // Stuff
 import links from './links';
@@ -44,6 +45,13 @@ class App extends Component {
                                 condition={ true }
                                 component={ Feed }
                                 redirect={ Feed }
+                                exact
+                            />
+                            <NeedleRoute
+                                path={ links["ACCOUNT_PAGE"].route }
+                                condition={ true }
+                                component={ Account }
+                                redirect={ Account }
                                 exact
                             />
                         </Switch>

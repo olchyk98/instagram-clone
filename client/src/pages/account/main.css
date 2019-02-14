@@ -1,0 +1,223 @@
+:root {
+    --account_blockw:950px;
+}
+
+.rn-account {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.rn-account > * {
+    flex-shrink:0;
+}
+
+.rn-account-info {
+    position:relative;
+    width:var(--account_blockw);
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+    margin-top:70px;
+}
+
+.rn-account-info > * {
+    --margin:25px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+}
+
+.rn-account-info-avatar {
+    --size:150px;
+
+    height:var(--size);
+    width:var(--size);
+    border-radius:50%;
+    border:1px solid var(--defaulborder);
+    overflow:hidden;
+    position:relative;
+    flex-shrink:0;
+}
+
+.rn-account-info-avatar > img {
+    height:100%;
+    width:100%;
+    object-fit:cover;
+    object-position:center;
+}
+
+.rn-account-info-mat {
+    display:flex;
+    justify-content:center;
+    flex-direction:column;
+}
+
+.rn-account-info-mat > * {
+    --margin:10px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+}
+
+.rn-account-info-mat-name {
+    display:flex;
+    align-items:center;
+}
+
+.rn-account-info-mat-name > * {
+    --margin:7.5px;
+
+    margin-right:var(--margin);
+    margin-left:var(--margin);
+}
+
+.rn-account-info-mat-name > *:first-child {
+    margin-left:0;
+}
+
+.rn-account-info-mat-name > *:last-child {
+    margin-right:0;
+}
+
+.rn-account-info-mat-name-mat {
+    font-size:1.5rem;
+}
+
+.rn-account-info-mat-name-verification {
+    bottom:-2.5px;
+    width:20px;
+    position:relative;
+    margin-right:5px;
+    margin-left:0;
+}
+
+.rn-account-info-mat-name-verification > img {
+    width:100%;
+}
+
+.rn-account-info-mat-name-edit {
+    border:1px solid rgba(0, 0, 0, .2);
+    height:30px;
+    width:95px;
+    border-radius:5px;
+    font-weight:400;
+    font-size:.975rem;
+    cursor:pointer;
+}
+
+.rn-account-info-mat-name-settings {
+    font-size:1.6rem;
+    color:rgba(0, 0, 0, .75);
+    cursor:pointer;
+}
+
+.rn-account-info-mat-stats {
+    display:flex;
+    align-items:center;
+    padding:0;
+}
+
+.rn-account-info-mat-stats-item {
+    font-size:1.05rem;
+    font-family:"Arial";
+    list-style-type:none;
+    margin-right:30px;
+}
+
+.rn-account-info-mat-stats-item-number {
+    font-weight:600;
+    margin-right:5px;
+}
+
+.rn-account-info-mat-stats-item-title {
+    font-weight:300;
+}
+
+.rn-account-info-realname {
+    font-family:"Quicksand";
+    font-weight:600;
+    margin-bottom:3px;
+}
+
+.rn-account-info-description {
+    font-size:1.025rem;
+    font-family:"Arial";
+    margin:0;
+    width:400px;
+    color:rgba(0, 0, 0, .85);
+    line-height:22.5px;
+    letter-spacing:.25px;
+    max-width:100%;
+}
+
+.rn-account-info-description:empty {
+    width:0;
+}
+
+.rn-account-postsmenu {
+    width:var(--account_blockw);
+    border-top:1px solid rgba(0, 0, 0, .075);
+    margin-top:45px;
+    display:flex;
+    justify-content:center;
+}
+
+.rn-account-postsmenu-btn {
+    --margin:25px;
+    
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+    text-transform:uppercase;
+    color:rgba(0, 0, 0, .25);
+    cursor:pointer;
+    height:40px;
+    font-size:.825em;
+    font-family:"Arial";
+    font-weight:600;
+    position:relative; 
+    border-top:var(--brw) solid black;
+}
+
+.rn-account-postsmenu-btn > * {
+    --margin:2.5px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+}
+
+.rn-account-postsmenu-btn:before {
+    --heights:1px;
+
+    content:'';
+    position:absolute;
+    top:calc(var(--heights) * -1);
+    left:0;
+    width:100%;
+    height:var(--heights);
+    background:black;
+    opacity:0;
+}
+
+.rn-account-postsmenu-btn,
+.rn-account-postsmenu-btn:before {
+    transition:.45s;
+}
+
+.rn-account-postsmenu-btn:hover {
+    color:rgba(0, 0, 0, .5);
+}
+
+.rn-account-postsmenu-btn.active {
+    color:rgba(0, 0, 0, .85);
+}
+
+.rn-account-postsmenu-btn.active:before {
+    opacity:1;
+}
+
+.rn-account-posts {
+    width:var(--account_blockw);
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+}

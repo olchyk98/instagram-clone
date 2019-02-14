@@ -10,6 +10,24 @@ class Feed extends Component {
         return(
             <section className="rn-feed-block rn-feed-mat">
                 <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
+                <Post />
             </section>
         );
     }

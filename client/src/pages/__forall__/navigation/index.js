@@ -70,11 +70,11 @@ class RLinks extends Component { // RouteLinks
 class Hero extends Component {
     render() {
         return(
-            <div className="gl-nav">
+            <nav className="gl-nav">
                 <Logo />
                 <Search />
                 <RLinks />
-            </div>
+            </nav>
         );
     }
 }

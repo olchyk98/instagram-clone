@@ -17,6 +17,10 @@
     position:relative;
 }
 
+.gle-post:first-child {
+    margin-top:0;
+}
+
 .gle-post-auth {
     display:flex;
     align-items:center;
@@ -242,6 +246,7 @@
 .gle-post-comments-lmore {
     color:rgba(0, 0, 0, .45);
     font-weight:600;
+    margin-top:-5px;
     font-family:"Arial";
     margin-bottom:5px;
     font-size:.9em;
