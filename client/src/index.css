@@ -29,3 +29,14 @@ body {
     z-index:2;
     overflow:scroll;
 }
+
+/* Queries */
+@media only screen and (max-height:655px) {
+    .gle-imagemodal {
+        justify-content:flex-start!important;
+    }
+
+    .gle-imagemodal-mat {
+        margin-top:25px!important;
+    }
+}

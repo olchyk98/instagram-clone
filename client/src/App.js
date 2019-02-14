@@ -8,6 +8,7 @@ import Account from './pages/account';
 import links from './links';
 import Navigation from './pages/__forall__/navigation';
 import MultiwindowMenu from './pages/__forall__/multiwindow.menu';
+import PhotoModal from './pages/__forall__/image.modal';
 
 // Router
 import { BrowserRouter } from 'react-router-dom';
@@ -39,6 +40,7 @@ class App extends Component {
             <Provider store={ reduxStore }>
                 <BrowserRouter>
                     <>
+                        <PhotoModal />
                         <MultiwindowMenu />
                         <Navigation />
                         <Switch>

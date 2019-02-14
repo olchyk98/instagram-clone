@@ -1,0 +1,34 @@
+:root {
+    --gle_imagemodal_matheight:600px; /* static and responsive by the media query */
+}
+
+.gle-imagemodalbg {
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    width:100vw;
+    background:rgba(0, 0, 0, .45);
+    z-index:400;
+}
+
+.gle-imagemodal {
+    position:fixed;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    overflow:scroll;
+    height:100vh;
+    width:100vw;
+    z-index:401;
+}
+
+.gle-imagemodal-mat {
+    height:var(--gle_imagemodal_matheight);
+    background:linear-gradient(135deg, red, black);
+    width:145px;
+    flex-shrink:0;
+    display:flex;
+    align-items:stretch;
+}
