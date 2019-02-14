@@ -1,15 +1,20 @@
 .gle-post {
     --postpadding:15px;
+    --margin:10px;
     
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
     flex-shrink:0;
     width:615px;
     padding:var(--postpadding);
+    padding-bottom:0;
     display:flex;
     flex-direction:column;
     align-items:stretch;
     background:white;
     border:1px solid var(--defaultborder);
     border-radius:3px;
+    position:relative;
 }
 
 .gle-post-auth {
@@ -125,10 +130,21 @@
 }
 
 .gle-post-carousel-path {
-    display:flex;
-    width:100%;
-    justify-content:center;
+    width:calc(100% - var(--postpadding) * 2);
+    padding-left:var(--postpadding);
     margin-top:12.5px;
+    overflow:visible;
+    position:relative;
+}
+
+.gle-post-carousel-path-mat {
+    position:absolute;
+    top:0;
+    left:50%;
+    margin-right:50%;
+    transform:translateX(-50%);
+    display:flex;
+    justify-content:center;
 }
 
 .gle-post-carousel-path-btn {
@@ -146,4 +162,115 @@
 
 .gle-post-carousel-path-btn.active {
     background:#429DF1;
+}
+
+.gle-port-carousel-feedback {
+    display:flex;
+    align-items:center;
+    width:100%;
+    justify-content:space-between;
+}
+
+.gle-port-carousel-feedback-btn {
+    --margin:7.5px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+    font-size:1.5rem;
+    cursor:pointer;
+    color:rgba(0, 0, 0, .55);
+}
+
+.gle-port-carousel-feedback-btn:first-child {
+    margin-left:0;
+}
+
+.gle-port-carousel-feedback-btn:last-child {
+    margin-right:0;
+}
+
+.gle-post-stricts {
+    font-weight:500;
+    font-family:"Arial";
+    font-size:.95em;
+    margin-top:5px;
+}
+
+.gle-post-commentitem {
+    --margin:5px;
+    
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+    display:flex;
+    width:100%;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.gle-post-commentitem-content {
+    display:flex;
+    align-items:center;
+}
+
+.gle-post-commentitem-content-name {
+    font-weight:500;
+    margin-right:7.5px;
+    font-size:.95rem;
+}
+
+.gle-post-commentitem-content-mat {
+    font-weight:400;
+    font-size:.9rem;
+}
+
+.gle-post-commentitem-like {
+    font-size:.75rem;
+    color:rgba(0, 0, 0, .5);
+    cursor:pointer;
+}
+
+.gle-post-comments {
+    --margin:7.5px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.gle-post-comments-lmore {
+    color:rgba(0, 0, 0, .45);
+    font-weight:600;
+    font-family:"Arial";
+    margin-bottom:5px;
+    font-size:.9em;
+    cursor:pointer;
+}
+
+.gle-post-commentinput {
+    height:47.5px;
+    border-top:1px solid var(--defaultborder);
+    display:flex;
+    align-items:stretch;
+}
+
+.gle-post-commentinput-mat {
+    width:100%;
+    font-family:"Arial";
+    font-weight:400;
+    font-size:.95rem;
+}
+
+.gle-post-commentinput-options {
+    width:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.gle-post-commentinput-options-btn {
+    font-size:1.05rem;
+    color:rgba(0, 0, 0, .65);
+    cursor:pointer;
 }

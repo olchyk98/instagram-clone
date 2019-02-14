@@ -1,7 +1,4 @@
 .rn-feed {
-    --padding:55px;
-
-    padding-top:var(--padding);
     display:flex;
     justify-content:center;
 }
@@ -15,6 +12,10 @@
 
 .rn-feed-mat {
     height:auto;
+}
+
+.rn-feed-block {
+    margin-top:65px;
 }
 
 .rn-feed-more {
