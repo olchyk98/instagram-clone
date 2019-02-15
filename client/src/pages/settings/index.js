@@ -204,12 +204,28 @@ class SettingsPassword extends Component {
     }
 }
 
-class Hero extends Component {
+class Settings extends Component {
     constructor(props) {
         super(props);
 
+        this.startTab = "EDIT_PROFILE";
+
         this.state = {
-            tab: "EDIT_PROFILE"
+            tab: this.startTab
+        }
+    }
+
+    componentDidMount() {
+        { // Hook
+            let a = this.props.match.params.hook;
+            if(a) {
+                this.setState(() => ({
+                    tab: {
+                        'eprofile': "EDIT_PROFILE",
+                        'cpass': "CHANGE_PASSWORD"
+                    }[a] || this.startTab
+                }))
+            }
         }
     }
 
@@ -254,4 +270,4 @@ class Hero extends Component {
     }
 }
 
-export default Hero;
+export default Settings;

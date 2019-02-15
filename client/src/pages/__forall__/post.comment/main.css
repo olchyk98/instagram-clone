@@ -30,4 +30,9 @@
     color:rgba(0, 0, 0, .5);
     cursor:pointer;
     margin-left:20px;
+    transition:.1s;
+}
+
+.gle-post-commentitem-like:active {
+    transform:scale(.9);
 }

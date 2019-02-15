@@ -7,11 +7,13 @@ export default function reducer(state = {}, { type, payload }) {
                 payload shape:
 
                 {
+                    type: string,
                     buttons: null | Array *> [
                         {
                             isRed?: bool,
                             action: func,
-                            text: string
+                            text: string,
+                            close?: boolean
                         }
                     ]
                 }

@@ -8,7 +8,7 @@ const links = {
         absolute: '/'
     },
     "SETTINGS_PAGE": {
-        route: '/a/s',
+        route: '/a/s/:hook?',
         absolute: '/a/s'
     }
 }

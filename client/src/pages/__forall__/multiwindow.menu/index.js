@@ -31,11 +31,14 @@ class Hero extends PureComponent {
                 <div className="gle-multiwin_menu">
                     {
                         (!this.props.menu) ? null : (
-                            this.props.menu.buttons.map(({ isRed, action, text }, index) => (
+                            this.props.menu.buttons.map(({ isRed, action, text, close }, index) => (
                                 <Button
                                     key={ index }
                                     isRed={ isRed }
-                                    action={ action }
+                                    action={() => {
+                                        action();
+                                        if(close) this.props.destroySelf();
+                                    }}
                                     text={ text }
                                 />
                             ))

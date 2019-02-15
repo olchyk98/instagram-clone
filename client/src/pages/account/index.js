@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import './main.css';
 
+import { connect } from 'react-redux';
+
+import links from '../../links';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faTh, faUserTag, faPlay, faLayerGroup, faComment, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faBookmark } from '@fortawesome/free-regular-svg-icons';
@@ -61,7 +65,42 @@ class Account extends Component {
                             <button className="definp rn-account-info-mat-name-edit">
                                 Edit profile
                             </button>
-                            <button className="definp rn-account-info-mat-name-settings">
+                            <button
+                                className="definp rn-account-info-mat-name-settings"
+                                onClick={() => {
+                                    this.props.callGlobalMenu({
+                                        type: "OPTIONS",
+                                        buttons: [
+                                            {
+                                                isRed: false,
+                                                action: () => {
+                                                    this.props.history.push(links["SETTINGS_PAGE"].absolute)
+                                                },
+                                                text: "Settings",
+                                                close: true
+                                            },
+                                            {
+                                                isRed: false,
+                                                action: () => {
+                                                    this.props.history.push(`${ links["SETTINGS_PAGE"].absolute }/cpass`);
+                                                },
+                                                text: "Change Password",
+                                                close: true
+                                            },
+                                            {
+                                                isRed: true,
+                                                action: () => null,
+                                                text: "Log out",
+                                                close: true
+                                            },
+                                            {
+                                                isRed: false,
+                                                action: () => this.props.callGlobalMenu(null),
+                                                text: "Cancel"
+                                            }
+                                        ]
+                                    })
+                                }}>
                                 <FontAwesomeIcon icon={ faCog } />
                             </button>
                         </div>
@@ -128,4 +167,13 @@ class Account extends Component {
     }
 }
 
-export default Account;
+const mapStateToProps = () => ({});
+
+const mapActionsToProps = {
+    callGlobalMenu: payload => ({ type: 'SET_GLOBAL_MENU', payload })
+}
+
+export default connect(
+    mapStateToProps,
+    mapActionsToProps
+)(Account);

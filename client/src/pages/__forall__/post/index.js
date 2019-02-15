@@ -139,17 +139,20 @@ class Post extends PureComponent {
                             {
                                 isRed: true,
                                 action: () => null,
-                                text: "Unfollow author"
+                                text: "Unfollow author",
+                                close: true
                             },
                             {
                                 isRed: false,
                                 action: () => null,
-                                text: "Go to post"
+                                text: "Go to post",
+                                close: true
                             },
                             {
                                 isRed: false,
                                 action: () => null,
-                                text: "Copy link"
+                                text: "Copy link",
+                                close: true
                             },
                             {
                                 isRed: false,
