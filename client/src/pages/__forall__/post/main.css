@@ -200,39 +200,6 @@
     margin-top:5px;
 }
 
-.gle-post-commentitem {
-    --margin:5px;
-    
-    margin-top:var(--margin);
-    margin-bottom:var(--margin);
-    display:flex;
-    width:100%;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.gle-post-commentitem-content {
-    display:flex;
-    align-items:center;
-}
-
-.gle-post-commentitem-content-name {
-    font-weight:500;
-    margin-right:7.5px;
-    font-size:.95rem;
-}
-
-.gle-post-commentitem-content-mat {
-    font-weight:400;
-    font-size:.9rem;
-}
-
-.gle-post-commentitem-like {
-    font-size:.75rem;
-    color:rgba(0, 0, 0, .5);
-    cursor:pointer;
-}
-
 .gle-post-comments {
     --margin:7.5px;
 
@@ -253,29 +220,6 @@
     cursor:pointer;
 }
 
-.gle-post-commentinput {
-    height:47.5px;
-    border-top:1px solid var(--defaultborder);
-    display:flex;
-    align-items:stretch;
-}
-
-.gle-post-commentinput-mat {
-    width:100%;
-    font-family:"Arial";
-    font-weight:400;
-    font-size:.95rem;
-}
-
-.gle-post-commentinput-options {
-    width:20px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.gle-post-commentinput-options-btn {
-    font-size:1.05rem;
-    color:rgba(0, 0, 0, .65);
-    cursor:pointer;
+.gle-post-comments-lmore:active {
+    color:rgba(0, 0, 0, .35);
 }

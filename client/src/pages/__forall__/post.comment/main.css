@@ -1,0 +1,33 @@
+.gle-post-commentitem {
+    --margin:5px;
+    
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+    display:flex;
+    width:100%;
+    align-items:center;
+    justify-content:space-between;
+}
+
+/* .gle-post-commentitem-content {
+    display:flex;
+    align-items:center;
+} */
+
+.gle-post-commentitem-content-name {
+    font-weight:500;
+    margin-right:5px;
+    font-size:.95rem;
+}
+
+.gle-post-commentitem-content-mat {
+    font-weight:400;
+    font-size:.9rem;
+}
+
+.gle-post-commentitem-like {
+    font-size:.75rem;
+    color:rgba(0, 0, 0, .5);
+    cursor:pointer;
+    margin-left:20px;
+}

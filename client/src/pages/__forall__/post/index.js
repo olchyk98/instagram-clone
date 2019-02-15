@@ -4,8 +4,11 @@ import './main.css';
 
 import { connect } from 'react-redux';
 
+import PostCommentItem from '../post.comment';
+import CommentInput from '../post.commentinput';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { faHeart, faComment, faBookmark } from '@fortawesome/free-regular-svg-icons';
 
 const avatar = "https://instagram.fbtz1-2.fna.fbcdn.net/vp/c9ab85cb6f08ab4f94827ad427030841/5CDDD9F1/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fbtz1-2.fna.fbcdn.net";
@@ -94,26 +97,6 @@ class PostCarousel extends Component {
     }
 }
 
-class PostCommentItem extends Component {
-    render() {
-        return(
-            <article className="gle-post-commentitem">
-                <div className="gle-post-commentitem-content">
-                    <span className="gle-post-commentitem-content-name">
-                        oles.odynets
-                    </span>
-                    <span className="gle-post-commentitem-content-mat">
-                        Berlin Station” (Epix / Netflix)
-                    </span>
-                </div>
-                <button className="gle-post-commentitem-like definp">
-                    <FontAwesomeIcon icon={ faHeart } />
-                </button>
-            </article>
-        );
-    }
-}
-
 class PostComments extends Component {
     render() {
         return(
@@ -135,25 +118,6 @@ class PostComments extends Component {
     }
 }
 
-class CommentInput extends Component {
-    render() {
-        return(
-            <section className="gle-post-commentinput">
-                <input
-                    className="gle-post-commentinput-mat definp"
-                    type="text"
-                    placeholder="Add a comment"
-                />
-                <div className="gle-post-commentinput-options">
-                    <button className="definp gle-post-commentinput-options-btn" onClick={ this.props.callMenu }>
-                        <FontAwesomeIcon icon={ faEllipsisH } />
-                    </button>
-                </div>
-            </section>
-        );
-    }
-}
-
 class Post extends Component {
     render() {
         return(
@@ -170,6 +134,7 @@ class Post extends Component {
                 <PostComments />
                 <CommentInput
                     callMenu={() => this.props.callGlobalMenu({
+                        type: "OPTIONS",
                         buttons: [
                             {
                                 isRed: true,

@@ -1,0 +1,26 @@
+.gle-post-commentinput {
+    height:47.5px;
+    border-top:1px solid var(--defaultborder);
+    display:flex;
+    align-items:stretch;
+}
+
+.gle-post-commentinput-mat {
+    width:100%;
+    font-family:"Arial";
+    font-weight:400;
+    font-size:.95rem;
+}
+
+.gle-post-commentinput-options {
+    width:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.gle-post-commentinput-options-btn {
+    font-size:1.05rem;
+    color:rgba(0, 0, 0, .65);
+    cursor:pointer;
+}

@@ -56,7 +56,7 @@ class Account extends Component {
                         <div className="rn-account-info-mat-name">
                             <span className="rn-account-info-mat-name-mat">oles.odynets</span>
                             <div className="rn-account-info-mat-name-verification">
-                                <img alt="This user was verificated by finstagram administration" src={ verification_image } />
+                                <img alt="This user was verified by finstagram administration" src={ verification_image } />
                             </div>
                             <button className="definp rn-account-info-mat-name-edit">
                                 Edit profile
