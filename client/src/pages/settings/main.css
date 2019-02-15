@@ -1,0 +1,222 @@
+:root {
+    --settings_input-height:30px;
+}
+
+.rn-settings {
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+}
+
+.rn-settings-window {
+    width:935px;
+    height:auto;
+    margin-top:70px;
+    display:flex;
+    flex-shrink:0;
+    align-items:stretch;
+    background:white;
+    box-shadow:0px 0px 12.5px -5px rgba(0, 0, 0, .25);
+    position:relative;
+    border:1px solid var(--defaultborder);
+}
+
+.rn-settings-window-nav {
+    flex-shrink:0;
+    width:240px;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    border-right:1px solid var(--defaultborder);
+}
+
+.rn-settings-window-nav-btn {
+    --height:50px;
+
+    width:100%;
+    height:var(--height);
+    line-height:calc(var(--height) + 2.5px);
+    padding-left:30px;
+    text-align:left;
+    font-family:"Arial";
+    font-size:1.05rem;
+    font-weight:400;
+    cursor:pointer;
+    border-left:2px solid transparent;
+    color:rgba(0, 0, 0, .85);
+    transition:.1s;
+}
+
+.rn-settings-window-nav-btn:hover {
+    color:#262626;
+    border-color:#dbdbdb;
+    background:#fafafa;
+}
+
+.rn-settings-window-nav-btn:active {
+    color:rgba(0, 0, 0, .6);
+}
+
+.rn-settings-window-nav-btn.active {
+    font-weight:600;
+    border-color:black;
+    color:rgba(0, 0, 0, .775);
+}
+
+.rn-settings-window-options {
+    --padding:30px;
+
+    padding-top:var(--padding);
+    padding-bottom:var(--padding);
+}
+
+.rn-settings-window-options-itemrails {
+    --margin:8.75px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+    width:100%;
+    display:flex;
+    align-items:stretch;
+}
+
+.rn-settings-window-options-itemrails:last-child {
+    margin-bottom:0;
+}
+
+.rn-settings-window-options-stitle {
+    --padding:32px; /* Instagram original :: 15.2.2019 */
+
+    padding-left:var(--padding);
+    padding-right:var(--padding);
+    width:195px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    flex-shrink:0;
+}
+
+.rn-settings-window-options-stitle-mat {
+    font-weight:600;
+    font-family:"Arial";
+    color:rgba(0, 0, 0, .8);
+    text-transform:capitalize;
+}
+
+.rn-settings-window-options-sbody {
+    width:100%;
+    display:flex;
+    align-items:center;
+}
+
+.rn-settings-window-options-sbody-input {
+    --padding:10px;
+
+    padding-left:var(--padding);
+    width:calc(355px - var(--padding) * 2);
+    max-width:calc(100% - 15px);
+    padding-right:var(--padding);
+    height:var(--settings_input-height);
+    border-radius:2.5px;
+    border:1px solid rgba(0, 0, 0, .05);
+    transition:border-color .15s;
+}
+
+.rn-settings-window-options-sbody-select {
+    --padding:7.5px;
+
+    height:var(--settings_input-height);
+    border:1px solid rgba(0, 0, 0, .1); /* .05 o doesnt work */
+    color:rgba(0, 0, 0, .5);
+    font-size:.975rem;
+    font-weight:500;
+    font-family:"Lato";
+}
+
+.rn-settings-window-options-sbody-input.textarea {
+    --padding:7.5px;
+    
+    padding-top:var(--padding);
+    padding-bottom:var(--padding);
+    color:rgba(0, 0, 0, .85);
+    font-size:.975rem;
+    resize:vertical;
+    min-height:45px;
+}
+
+.rn-settings-window-options-sbody-input:focus {
+    border-color:blue;
+}
+
+.rn-settings-window-options-account {
+    margin-bottom:15px;
+}
+
+.rn-settings-window-options-account-name {
+    align-items:flex-start;
+    flex-direction:column;
+}
+
+.rn-settings-window-options-account-name > * {
+    --margin:2px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+}
+
+.rn-settings-window-options-account-name-changel {
+    color:#0997da;
+    font-weight:600;
+    font-family:"Arial";
+    font-size:.925rem;
+    cursor:pointer;
+}
+
+.rn-settings-window-options-account-name-changel:active {
+    color:rebeccapurple;
+}
+
+.rn-settings-window-options-account-name-mat {
+    font-size:1.25rem;
+}
+
+.rn-settings-window-options-account-avatar {
+    --size:40px;
+    
+    height:var(--size);
+    width:var(--size);
+    border-radius:50%;
+    border:1px solid var(--defaultborder);
+    overflow:hidden;
+    position:relative;
+}
+
+.rn-settings-window-options-account-avatar > img {
+    height:100%;
+    width:100%;
+    object-fit:cover;
+    object-position:center;
+}
+
+.rn-settings-window-options-itemrails-submit {
+    height:30px;
+    width:70px;
+    border-radius:5px;
+    background:#3897f0;
+    border:1px solid #3897f0;
+    font-size:.95rem;
+    color:rgba(255, 255, 255, .95);
+    font-family:"Lato";
+    font-weight:500;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:45px;
+    cursor:pointer;
+    transition:.15s ease-in-out;
+}
+
+.rn-settings-window-options-itemrails-submit:hover {
+    background:#69aae7;
+    border-color:transparent;
+}

@@ -14,6 +14,11 @@ body {
     background:#FAFAFA;
 }
 
+menu {
+    margin:0;
+    padding:0;
+}
+
 .definp {
     border:none;
     background:transparent;

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // Pages
 import Feed from './pages/feed';
 import Account from './pages/account';
+import Settings from './pages/settings';
 
 // Stuff
 import links from './links';
@@ -56,6 +57,13 @@ class App extends Component {
                                 condition={ true }
                                 component={ Account }
                                 redirect={ Account }
+                                exact
+                            />
+                            <NeedleRoute
+                                path={ links["SETTINGS_PAGE"].route }
+                                condition={ true }
+                                component={ Settings }
+                                redirect={ Settings }
                                 exact
                             />
                         </Switch>

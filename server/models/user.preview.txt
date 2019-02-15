@@ -1,0 +1,8 @@
+User Model:
+ - login
+ - name
+ - bio
+ - email
+ - gender
+ - password
+ - avatar
