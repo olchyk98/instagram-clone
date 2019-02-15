@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
@@ -13,7 +13,7 @@ import { faHeart, faComment, faBookmark } from '@fortawesome/free-regular-svg-ic
 
 const avatar = "https://instagram.fbtz1-2.fna.fbcdn.net/vp/c9ab85cb6f08ab4f94827ad427030841/5CDDD9F1/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fbtz1-2.fna.fbcdn.net";
 
-class PostCarousel extends Component {
+class PostCarousel extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -97,7 +97,7 @@ class PostCarousel extends Component {
     }
 }
 
-class PostComments extends Component {
+class PostComments extends PureComponent {
     render() {
         return(
             <div className="gle-post-comments">
@@ -118,7 +118,7 @@ class PostComments extends Component {
     }
 }
 
-class Post extends Component {
+class Post extends PureComponent {
     render() {
         return(
             <article className="gle-post">

@@ -1,10 +1,8 @@
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
 import { connect } from 'react-redux';
-
-// TODO: PureComponents
 
 class Button extends PureComponent {
     render() {
@@ -22,7 +20,7 @@ Button.propTypes = {
     text: PropTypes.string.isRequired
 }
 
-class Hero extends Component {
+class Hero extends PureComponent {
     render() {
         return(
             <>

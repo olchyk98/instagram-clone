@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
@@ -80,6 +80,25 @@ Select.propTypes = {
     _onChange: PropTypes.func.isRequired
 }
 
+class SubmitBtn extends PureComponent {
+    render() {
+        // rotating ios spin |> fetch ac
+        return(
+            <button
+                className="rn-settings-window-options-itemrails-submit definp"
+                onClick={ this.props._onClick }>
+                { this.props.text }
+            </button>
+        )
+    }
+}
+
+SubmitBtn.propTypes = {
+    text: PropTypes.string.isRequired,
+    _onClick: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool.isRequired
+}
+
 class SettingsProfile extends Component {
     render() {
         return(
@@ -136,28 +155,98 @@ class SettingsProfile extends Component {
                         }
                     ]}
                 />
-                {/* rotating ios spin |> fetch ac */}
-                <button className="rn-settings-window-options-itemrails-submit definp">Submit</button>
+                <SubmitBtn
+                    text="Submit"
+                    isLoading={ false }
+                    _onClick={ () => null }
+                />
+            </>
+        );
+    }
+}
+
+class SettingsPassword extends Component {
+    render() {
+        return(
+            <>
+                <div className="rn-settings-window-options-itemrails rn-settings-window-options-account">
+                    <div className="rn-settings-window-options-stitle">
+                        <div className="rn-settings-window-options-account-avatar">
+                            <img src={ avatar } alt="profile" />
+                        </div>
+                    </div>
+                    <div className="rn-settings-window-options-sbody rn-settings-window-options-account-name">
+                        <span className="rn-settings-window-options-account-name-mat big">oles.odynets</span>
+                    </div>
+                </div>
+                <Input
+                    text="Old password"
+                    _type="password"
+                    _onChange={ value => null }
+                />
+                <Input
+                    text="New password"
+                    _type="password"
+                    _onChange={ value => null }
+                />
+                <Input
+                    text="Confirm New Password"
+                    _type="password"
+                    _onChange={ value => null }
+                />
+                <SubmitBtn
+                    text="Change Password"
+                    isLoading={ false }
+                    _onClick={ () => null }
+                />
             </>
         );
     }
 }
 
 class Hero extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            tab: "EDIT_PROFILE"
+        }
+    }
+
+    setTab = tab => this.setState({ tab });
+
     render() {
         return(
             <div className="rn rn-settings">
                 <div className="rn-settings-window">
                     <menu className="rn-settings-window-nav">
-                        <button className="rn-settings-window-nav-btn active definp">
-                            Edit Profile
-                        </button>
-                        <button className="rn-settings-window-nav-btn definp">
-                            Change password
-                        </button>
+                        {
+                            [
+                                {
+                                    tabName: "EDIT_PROFILE",
+                                    text: "Edit Profile"
+                                },
+                                {
+                                    tabName: "CHANGE_PASSWORD",
+                                    text: "Change password"
+                                }
+                            ].map(({ text, tabName }, index) => (
+                                <button
+                                    key={ index }
+                                    className={ `rn-settings-window-nav-btn definp${ (this.state.tab !== tabName) ? "" : " active" }` }
+                                    onClick={ () => this.setTab(tabName) }>
+                                    { text }
+                                </button>       
+                            ))
+                        }
                     </menu>
                     <section className="rn-settings-window-options">
-                        <SettingsProfile />
+                        {
+                            {
+                                "EDIT_PROFILE": <SettingsProfile />,
+                                "CHANGE_PASSWORD": <SettingsPassword />
+                            }[this.state.tab]
+                        }
                     </section>
                 </div>
             </div>
