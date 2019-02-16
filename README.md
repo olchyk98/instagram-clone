@@ -4,7 +4,19 @@ _Stack:_ React.JS (Typescript, Redux), GraphQL (Node.JS + Express)
 Status: in process.
 
 Tasks / Features:
-- [ ] Template
+- [ ] Templates
+  - [x] Feed
+  - [x] Post
+  - [x] Account
+  - [x] Search modal
+  - [x] Settings
+  - [x] Photo window
+  - [x] Notifications window
+  - [ ] New post window
+  - [ ] Direct Messenger
+  - [ ] Search page
+  - [ ] Explore
+  - [ ] Post
 - [ ] Add post
 - [ ] Like post
 - [ ] Posts library system
@@ -16,3 +28,4 @@ Tasks / Features:
 - [ ] Create the explore page that is sorts popular images by alt description and a topic marker
 - [ ] Notifications
 - [ ] Direct Chat
+- [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
