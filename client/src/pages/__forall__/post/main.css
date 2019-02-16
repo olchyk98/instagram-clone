@@ -1,7 +1,7 @@
 .gle-post {
     --postpadding:15px;
     --margin:10px;
-    
+
     margin-top:var(--margin);
     margin-bottom:var(--margin);
     flex-shrink:0;
@@ -34,7 +34,7 @@
     height:var(--size);
     width:var(--size);
     position:relative;
-    margin-right:10px;    
+    margin-right:10px;
 }
 
 .gle-post-auth-avatar > img {
@@ -81,7 +81,7 @@
     align-items:center;
     opacity:0;
     justify-content:space-between;
-    transition:.15s;
+    transition:.15s ease-in-out;
 }
 
 .gle-post-carousel:hover .gle-post-carousel-controls {
@@ -113,7 +113,7 @@
     width:100%;
     object-fit:cover;
     object-position:center;
-    transition:.15s ease-in-out;
+    transition:.25s ease-in-out;
 }
 
 .gle-post-carousel-image,

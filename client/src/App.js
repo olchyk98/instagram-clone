@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import Feed from './pages/feed';
 import Account from './pages/account';
 import Settings from './pages/settings';
+import Explore from './pages/explore';
 
 // Stuff
 import links from './links';
@@ -66,6 +67,13 @@ class App extends Component {
                                 condition={ true }
                                 component={ Settings }
                                 redirect={ Settings }
+                                exact
+                            />
+                            <NeedleRoute
+                                path={ links["EXPLORE_PAGE"].route }
+                                condition={ true }
+                                component={ Explore }
+                                redirect={ Explore }
                                 exact
                             />
                         </Switch>

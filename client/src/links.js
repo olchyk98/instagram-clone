@@ -4,12 +4,16 @@ const links = {
         absolute: '/'
     },
     "ACCOUNT_PAGE": {
-        route: '/:id',
-        absolute: '/'
+        route: '/u/:id',
+        absolute: '/u'
     },
     "SETTINGS_PAGE": {
-        route: '/a/s/:hook?',
-        absolute: '/a/s'
+        route: '/s/:hook?',
+        absolute: '/s'
+    },
+    "EXPLORE_PAGE": {
+        route: '/e',
+        absolute: '/e'
     }
 }
 

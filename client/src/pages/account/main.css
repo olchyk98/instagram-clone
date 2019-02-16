@@ -168,7 +168,7 @@
 
 .rn-account-postsmenu-btn {
     --margin:25px;
-    
+
     margin-left:var(--margin);
     margin-right:var(--margin);
     text-transform:uppercase;
@@ -178,7 +178,7 @@
     font-size:.825em;
     font-family:"Arial";
     font-weight:600;
-    position:relative; 
+    position:relative;
     border-top:var(--brw) solid black;
 }
 
@@ -226,107 +226,4 @@
     grid-gap:var(--gap);
     grid-template-columns:repeat(3, 1fr);
     padding-bottom:var(--gap);
-}
-
-.rn-account-posts-item {
-    position:relative;
-    width:auto;
-    position:relative;
-    /* box-shadow:0px 0px 7.5px -2.5px rgba(0, 0, 0, .5); */
-    border-radius:2.5px;
-    overflow:hidden;
-    cursor:pointer;
-}
-
-.rn-account-posts-item,
-.rn-account-posts-item * {
-    user-select:none;
-}
-
-.rn-account-posts-item:before {
-    /*
-        https://stackoverflow.com/questions/6148012/setting-element-width-based-on-height-via-css
-        Used this method before but with no idea how it works.
-        Thanks @Henry Mazza.
-    */
-    content:'';
-    display:block;
-    padding-bottom:100%;
-}
-
-.rn-account-posts-item > img {
-    height:100%;
-    object-fit:cover;
-    object-position:center;
-    width:100%;
-    position:absolute;
-    top:0;
-    z-index:2;
-    left:0;
-}
-
-.rn-account-posts-item-marks {
-    --gapdist:7.5px;
-
-    z-index:3;
-    position:absolute;
-    top:var(--gapdist);
-    right:var(--gapdist);
-    display:flex;
-    align-items:center;
-}
-
-.rn-account-posts-item-marks-item {
-    --margin:5px;
-
-    margin-left:var(--margin);
-    color:rgba(255, 255, 255, .85);
-    font-size:.95em;
-    margin-right:var(--margin);
-    filter:drop-shadow(0px 0px 2.5px rgba(0, 0, 0, .25));
-}
-
-.rn-account-posts-item-marks-item > *:first-child {
-    margin-left:0;
-}
-
-.rn-account-posts-item-marks-item > *:last-child {
-    margin-right:0;
-}
-
-.rn-account-posts-item-hover {
-    position:absolute;
-    top:0;
-    left:0;
-    z-index:4;
-    height:100%;
-    width:100%;
-    background:rgba(0, 0, 0, .3);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    visibility:hidden;
-}
-
-.rn-account-posts-item:hover .rn-account-posts-item-hover {
-    visibility:visible;
-}
-
-.rn-account-posts-item-hover-stats {
-    --margin:12.5px;
-
-    margin-left:var(--margin);
-    margin-right:var(--margin);
-    display:flex;
-    align-items:center;
-    font-size:1.075rem;
-    color:white;
-    font-weight:500;
-}
-
-.rn-account-posts-item-hover-stats > * {
-    --margin:5px;
-
-    margin-left:var(--margin);
-    margin-right:var(--margin);
 }
