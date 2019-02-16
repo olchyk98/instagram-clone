@@ -13,6 +13,6 @@ Tasks / Features:
 - [ ] Subscribe to user
 - [ ] Account settings
 - [ ] Make a machine learning classifier for photo alt description
-- [ ] Explore page that is based on photos desc
+- [ ] Create the explore page that is sorts popular images by alt description and a topic marker
 - [ ] Notifications
 - [ ] Direct Chat
