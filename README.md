@@ -15,6 +15,7 @@ Tasks / Features:
   - [x] New post window
   - [ ] Direct Messenger
   - [ ] Explore (search for small devices)
+  - [ ] Authentication
 - [ ] Add post
 - [ ] Like post
 - [ ] Posts library system
