@@ -17,7 +17,7 @@ Tasks / Features:
   - [x] Notifications window
   - [x] New post window
   - [ ] Direct Messenger
-  - [ ] Explore (search for small devices)
+  - [x] Explore (search for small devices)
   - [ ] Authentication
   - [ ] 404 Page
 - [ ] Authentication (pw, session, socket db)
