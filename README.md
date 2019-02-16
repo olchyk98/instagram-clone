@@ -16,6 +16,7 @@ Tasks / Features:
   - [ ] Direct Messenger
   - [ ] Explore (search for small devices)
   - [ ] Authentication
+- [ ] Authentication (pw, session, socket db)
 - [ ] Add post
 - [ ] Like post
 - [ ] Posts library system
