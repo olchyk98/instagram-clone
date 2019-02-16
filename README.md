@@ -15,3 +15,4 @@ Tasks / Features:
 - [ ] Make a machine learning classifier for photo alt description
 - [ ] Explore page that is based on photos desc
 - [ ] Notifications
+- [ ] Direct Chat
