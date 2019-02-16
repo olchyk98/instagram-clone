@@ -14,8 +14,7 @@ Tasks / Features:
   - [x] Notifications window
   - [x] New post window
   - [ ] Direct Messenger
-  - [ ] Search page
-  - [ ] Explore
+  - [ ] Explore (search for small devices)
 - [ ] Add post
 - [ ] Like post
 - [ ] Posts library system
