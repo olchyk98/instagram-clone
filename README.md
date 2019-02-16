@@ -26,4 +26,5 @@ Tasks / Features:
 - [ ] Create the explore page that is sorts popular images by alt description and a topic marker
 - [ ] Notifications
 - [ ] Direct Chat
+- [ ] Advanced website routing
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
