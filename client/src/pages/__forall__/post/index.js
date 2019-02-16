@@ -127,6 +127,8 @@ class Post extends PureComponent {
                         <img src={ avatar } alt="post author" />
                     </div>
                     <span className="gle-post-auth-name">oles.odynets</span>
+                    {/* with: @..., @.... in ... */}
+                    {/* if creatorID === clientID > "Your image was classified as ... You can correct it to help users with problems to understand the image" */}
                 </section>
                 <PostCarousel />
                 <span className="gle-post-stricts">3 893 likes</span>

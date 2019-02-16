@@ -1,0 +1,6 @@
+    - User
+    - Photo
+    - Tag (name)
+    - Comment
+    - Conversation
+    - Message

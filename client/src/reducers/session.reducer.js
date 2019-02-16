@@ -24,7 +24,9 @@ export default function reducer(state = {}, { type, payload }) {
 
             a.multiwinMenu = payload;
         break;
-
+        case 'CREATE_NEW_POST':
+            a.newPostWin = payload;
+        break;
         default:break;
     }
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './main.css';
 
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import links from '../../../links';
 
@@ -13,8 +14,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCompass as faCompassRegular,
     faHeart as faHeartRegular,
-    faUser as faUserRegular
+    faUser as faUserRegular,
+    faPaperPlane as faPaperPlaneRegular
 } from '@fortawesome/free-regular-svg-icons';
+
+import {
+    faPlus as faPlusSolid
+} from '@fortawesome/free-solid-svg-icons';
 
 import instagram_black_white_logo from './images/logobw.png';
 import instagram_text_logo from './images/logotext.png';
@@ -37,7 +43,7 @@ class Logo extends PureComponent {
     }
 }
 
-class RLinksButtonWinItem extends Component {
+class RLinksButtonWinItem extends PureComponent {
     render() {
         return(
             <article className="gl-nav-routes-btn-window-list-item">
@@ -81,7 +87,7 @@ class RLinksButton extends Component {
     render() {
         if(!this.props.onPage) {
             return(
-                <button className="gl-nav-routes-btn definp" title={ this.props._title }>
+                <button className="gl-nav-routes-btn definp" title={ this.props._title } onClick={ this.props._onClick }>
                     <FontAwesomeIcon icon={ this.props.icon } />
                 </button>
             );
@@ -126,13 +132,23 @@ RLinksButton.propTypes = {
     _title: PropTypes.string.isRequired,
     icon: PropTypes.object.isRequired,
     onPage: PropTypes.bool,
-    windowType: PropTypes.string
+    windowType: PropTypes.string,
+    _onClick: PropTypes.func
 }
 
 class RLinks extends PureComponent { // RouteLinks
     render() {
         return(
             <section className="gl-nav-routes">
+                <RLinksButton
+                    _title="Add new post"
+                    icon={ faPlusSolid }
+                    _onClick={ this.props.createPost }
+                />
+                <RLinksButton
+                    _title="Direct Messenger"
+                    icon={ faPaperPlaneRegular }
+                />
                 <RLinksButton
                     _title="Explore"
                     icon={ faCompassRegular }
@@ -158,10 +174,21 @@ class Hero extends Component {
             <nav className="gl-nav">
                 <Logo />
                 <Search />
-                <RLinks />
+                <RLinks
+                    createPost={ this.props.createPost }
+                />
             </nav>
         );
     }
 }
 
-export default Hero;
+const mapStateToProps = () => ({});
+
+const mapActionsToProps = {
+    createPost: () => ({ type: "CREATE_NEW_POST", payload: true })
+}
+
+export default connect(
+    mapStateToProps,
+    mapActionsToProps
+)(Hero);

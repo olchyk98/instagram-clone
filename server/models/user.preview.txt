@@ -5,6 +5,7 @@ User Model:
  - email
  - gender
  - password
+ - saved images | library
  - avatar
  - avatar description
  - subscribers // NOT subscribedTO // ->> subscribers count
