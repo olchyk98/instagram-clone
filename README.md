@@ -27,4 +27,5 @@ Tasks / Features:
 - [ ] Notifications
 - [ ] Direct Chat
 - [ ] Advanced website routing
+- [ ] Dark Mode
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
