@@ -6,7 +6,7 @@ Status: in process.
 Tasks / Features:
 - [ ] Templates
   - [ ] Navigation
-    - [ ] Standard
+    - [x] Standard
     - [ ] Beauty
   - [x] Feed
   - [x] Post
