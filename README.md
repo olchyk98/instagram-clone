@@ -5,6 +5,9 @@ Status: in process.
 
 Tasks / Features:
 - [ ] Templates
+  - [ ] Navigation
+    - [x] Standard
+    - [ ] Beauty
   - [x] Feed
   - [x] Post
   - [x] Account
@@ -14,9 +17,10 @@ Tasks / Features:
   - [x] Notifications window
   - [x] New post window
   - [ ] Direct Messenger
-  - [ ] Search page
-  - [ ] Explore
-  - [ ] Post
+  - [ ] Explore (search for small devices)
+  - [ ] Authentication
+  - [ ] 404 Page
+- [ ] Authentication (pw, session, socket db)
 - [ ] Add post
 - [ ] Like post
 - [ ] Posts library system
@@ -28,4 +32,6 @@ Tasks / Features:
 - [ ] Create the explore page that is sorts popular images by alt description and a topic marker
 - [ ] Notifications
 - [ ] Direct Chat
+- [ ] Advanced website routing
+- [ ] Dark Mode
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
