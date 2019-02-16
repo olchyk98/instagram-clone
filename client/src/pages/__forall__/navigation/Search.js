@@ -1,4 +1,5 @@
 import React, { Component, PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch as faSearchSolid } from '@fortawesome/free-solid-svg-icons';
@@ -28,7 +29,7 @@ class SearchResultItem extends PureComponent {
 class SearchResults extends PureComponent {
     render() {
         return(
-            <div className="gl-nav-search-results">
+            <div className={ `gl-nav-search-results${ (!this.props.active) ? "" : " active" }` }>
                 <div className="gl-nav-search-results-list">
                     <SearchResultItem />
                     <SearchResultItem />
@@ -44,6 +45,10 @@ class SearchResults extends PureComponent {
             </div>
         );
     }
+}
+
+SearchResults.propTypes = {
+    active: PropTypes.bool.isRequired
 }
 
 class Search extends Component {
@@ -84,7 +89,9 @@ class Search extends Component {
                         </div>
                     )
                 }
-                <SearchResults />
+                <SearchResults
+                    active={ !!(this.state.query && this.state.inFocus) }
+                />
             </section>
         );
     }
