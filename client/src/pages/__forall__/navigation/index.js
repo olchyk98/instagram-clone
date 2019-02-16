@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
+import { Link } from 'react-router-dom';
+
+import links from '../../../links';
+
 import Search from './Search';
 
 // WARNING: FontAwesome icon :: object
@@ -18,7 +22,7 @@ import instagram_text_logo from './images/logotext.png';
 class Logo extends Component {
     render() {
         return(
-            <section className="gl-nav-logo">
+            <Link to={ links["FEED_PAGE"].absolute } className="gl-nav-logo">
                 <div className="gl-nav-logo-image gl-nav-logo-bwlogo">
                     <img src={ instagram_black_white_logo } alt="logo" />
                 </div>
@@ -26,7 +30,7 @@ class Logo extends Component {
                 <div className="gl-nav-logo-image gl-nav-logo-textlogo">
                     <img src={ instagram_text_logo } alt="logo text" />
                 </div>
-            </section>
+            </Link>
         );
     }
 }

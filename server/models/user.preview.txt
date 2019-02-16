@@ -6,3 +6,6 @@ User Model:
  - gender
  - password
  - avatar
+ - avatar description
+ - subscribers // NOT subscribedTO // ->> subscribers count
+
