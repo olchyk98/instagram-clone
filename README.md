@@ -16,7 +16,6 @@ Tasks / Features:
   - [ ] Direct Messenger
   - [ ] Search page
   - [ ] Explore
-  - [ ] Post
 - [ ] Add post
 - [ ] Like post
 - [ ] Posts library system
