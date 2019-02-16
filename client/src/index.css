@@ -1,6 +1,7 @@
 :root {
     --navheight:75px;
     --defaultborder:rgba(0, 0, 0, .15);
+    --glbgcol:#FAFAFA;
 }
 
 html, body {
@@ -11,7 +12,7 @@ html, body {
 }
 
 body {
-    background:#FAFAFA;
+    background:var(--glbgcol);
 }
 
 menu {
@@ -33,6 +34,18 @@ menu {
     width:100vw;
     z-index:2;
     overflow:scroll;
+}
+
+.gl-nav {
+    z-index:8;
+    /*
+        Some pages will have 'out-fit' height value.
+        Flexbox will stretch viewport divs to prevent page scroll.
+        I want to prevent navigation height changing
+    */
+    flex-shrink:0;
+    height:var(--navheight);
+    width:100vw;
 }
 
 /* Queries */

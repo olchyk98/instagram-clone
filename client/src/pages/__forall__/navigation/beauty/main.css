@@ -1,0 +1,31 @@
+.gl-nav {
+    --padding:45px;
+
+    padding-left:var(--padding);
+    padding-right:var(--padding);
+    width:calc(100vw - var(--padding) * 2);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--glbgcol);
+}
+
+.gl-nav-logo {
+    display:flex;
+    align-items:center;
+    cursor:pointer;
+}
+
+.gl-nav-logo-bw {
+    --margin:7.5px;
+
+    height:27.5px;
+    margin-right:var(--margin);
+}
+
+.gl-nav-logo-text {
+    height:37.5px;
+    position:relative;
+    bottom:-1.5px;
+    margin-left:var(--margin);
+}

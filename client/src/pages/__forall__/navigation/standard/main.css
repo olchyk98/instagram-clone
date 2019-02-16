@@ -1,18 +1,9 @@
 .gl-nav {
-    height:var(--navheight);
-    width:100vw;
     background:white;
     display:flex;
     align-items:center;
     border-bottom:2px solid rgba(0, 0, 0, .075);
     justify-content:space-around;
-    z-index:8;
-    /* 
-        Some pages will have 'out-fit' height value.
-        Flexbox will stretch viewport divs to prevent page scroll.
-        I want to prevent navigation height changing
-    */
-    flex-shrink:0;
 }
 
 .gl-nav-logo {
@@ -218,7 +209,7 @@
 
 .gl-nav-search-results-item {
     --padding:15px;
-    
+
     height:calc(65px - var(--padding) * 2);
     width:calc(100% - var(--padding) * 2);
     padding:var(--padding);
@@ -350,7 +341,7 @@
     --arrowsize:20px;
     --boxsh:0px 0px 15px -5px rgba(0, 0, 0, .25);
     --brr:1px solid rgba(0, 0, 0, .1);
-    
+
     height:360px;
     width:500px;
     background:white;
