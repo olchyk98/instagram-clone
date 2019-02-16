@@ -4,7 +4,7 @@ _Stack:_ React.JS (Typescript, Redux), GraphQL (Node.JS + Express)
 Status: in process.
 
 Tasks / Features:
-- [ ] Template
+- [ ] Templates
   - [x] Feed
   - [x] Post
   - [x] Account
