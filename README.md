@@ -12,7 +12,7 @@ Tasks / Features:
   - [x] Settings
   - [x] Photo window
   - [x] Notifications window
-  - [ ] New post window
+  - [x] New post window
   - [ ] Direct Messenger
   - [ ] Search page
   - [ ] Explore
