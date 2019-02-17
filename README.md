@@ -37,8 +37,6 @@ Tasks / Features:
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
 
 Refused ideas:
-_
-**Video calls**
-It needs many hours to implement live video, audio streaming alone.
+- **Video calls** :: It needs many hours to implement live video, audio streaming alone.
 
 
