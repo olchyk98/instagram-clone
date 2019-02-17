@@ -1,0 +1,23 @@
+.rn-404-block {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-top:45px;
+}
+
+.rn-404-block > * {
+    --margin:10px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+}
+
+.rn-404-title {
+    font-size:2rem;
+    font-family:"Arial";
+    font-weight:400;
+}
+
+.rn-404-description > a {
+    text-decoration:none;
+}

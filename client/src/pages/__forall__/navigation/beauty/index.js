@@ -2,6 +2,8 @@ import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
+import { connect } from 'react-redux';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCompass as faCompassRegular,
@@ -79,36 +81,38 @@ class RLinksButton extends Component {
             );
         } else {
             return(
-                <>
-                    <div className={ `gl-nav-routes-btn_winbg${ (!this.state.isOpened) ? "" : " active" }` } onClick={ () => this.setState({ isOpened: false }) } />
-                    <div className="gl-nav-routes-btn local" title={ this.props._title }>
-                        <button className="gl-nav-routes-btn-mat definp" onClick={ () => this.setState({ isOpened: true }) }>
-                            <FontAwesomeIcon icon={ this.props.icon } />
-                        </button>
-                        <div className={ `gl-nav-routes-btn-window ${ (this.props.windowType) }${ (!this.state.isOpened) ? "" : " active" }` }>
-                            <div className="gl-nav-routes-btn-window-list">
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                                <RLinksButtonWinItem />
-                            </div>
+                <div
+                    className="gl-nav-routes-btn local"
+                    title={ this.props._title }
+                    tabIndex="-1"
+                    onFocus={ () => this.setState({ isOpened: true }) }
+                    onBlur={ () => this.setState({ isOpened: false }) }>
+                    <button className="gl-nav-routes-btn-mat definp" onClick={ () => this.setState({ isOpened: true }) }>
+                        <FontAwesomeIcon icon={ this.props.icon } />
+                    </button>
+                    <div className={ `gl-nav-routes-btn-window ${ (this.props.windowType) }${ (!this.state.isOpened) ? "" : " active" }` }>
+                        <div className="gl-nav-routes-btn-window-list">
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
+                            <RLinksButtonWinItem />
                         </div>
                     </div>
-                </>
+                </div>
             );
         }
     }
@@ -236,10 +240,21 @@ class Hero extends Component {
             <nav className="gl-nav">
                 <Logo />
                 <SearchNav />
-                <MoreNav />
+                <MoreNav
+                    createPost={ this.props.createPost }
+                />
             </nav>
         );
     }
 }
 
-export default Hero;
+const mapStateToProps = () => ({});
+
+const mapActionsToProps = {
+    createPost: () => ({ type: "CREATE_NEW_POST", payload: true })
+}
+
+export default connect(
+    mapStateToProps,
+    mapActionsToProps
+)(Hero);

@@ -5,6 +5,7 @@ import Feed from './pages/feed';
 import Account from './pages/account';
 import Settings from './pages/settings';
 import Explore from './pages/explore';
+import P404 from './pages/404';
 
 // Stuff
 import links from './links';
@@ -76,6 +77,7 @@ class App extends Component {
                                 redirect={ Explore }
                                 exact
                             />
+                            <Route component={ P404 } />
                         </Switch>
                     </>
                 </BrowserRouter>

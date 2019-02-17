@@ -33,11 +33,21 @@
 .gl-nav-searchnav {
     display:flex;
     align-items:center;
+    z-index:15;
 }
 
 .gl-nav-routes {
     display:flex;
     align-items:center;
+}
+
+.gl-nav-routes-btn {
+    position:relative;
+}
+
+.gl-nav-routes-btn,
+.gl-nav-routes-btn * {
+    outline:0;
 }
 
 .gl-nav-routes-btn:not(.local),
@@ -72,22 +82,10 @@
     z-index:501;
 }
 
-.gl-nav-routes-btn_winbg {
-    position:fixed;
-    top:0;
-    left:0;
-    height:100vh;
-    width:100vw;
-    z-index:500;
-    background:transparent;
-}
-
-.gl-nav-routes-btn-window,
-.gl-nav-routes-btn_winbg {
+.gl-nav-routes-btn-window {
     display:none;
 }
 
-.gl-nav-routes-btn_winbg.active,
 .gl-nav-routes-btn-window.active {
     display:block;
 }
