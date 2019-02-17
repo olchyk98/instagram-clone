@@ -28,7 +28,6 @@ Tasks / Features:
 - [ ] Search system
 - [ ] Subscribe to user
 - [ ] Account settings
-- [ ] Make a machine learning classifier for photo alt description
 - [ ] Create the explore page that is sorts popular images by alt description and a topic marker
 - [ ] Notifications
 - [ ] Direct Chat
@@ -40,5 +39,6 @@ Tasks / Features:
 
 Refused ideas:
 - **Video calls** :: It needs many hours to implement live video, audio streaming alone.
+- **Machine Learning Classifier** :: I wanted to use the ML5 library to use pre-trained models, but then I discovered that the ml5 library can only run in the browser. I could force to load ml5 library and model on every client, but I think that is a very bad idea.
 
 
