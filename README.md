@@ -32,7 +32,6 @@ Tasks / Features:
 - [ ] Create the explore page that is sorts popular images by alt description and a topic marker
 - [ ] Notifications
 - [ ] Direct Chat
-- [ ] Video Calls
 - [ ] Advanced website routing
 - [ ] Dark Mode
 - [ ] Fully responsive design
