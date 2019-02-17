@@ -9,7 +9,6 @@ import links from '../../../../links';
 
 import Search from './Search';
 
-// WARNING: FontAwesome icon :: object
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCompass as faCompassRegular,
