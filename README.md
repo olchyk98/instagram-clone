@@ -16,7 +16,7 @@ Tasks / Features:
   - [x] Photo window
   - [x] Notifications window
   - [x] New post window
-  - [ ] Direct Messenger
+  - [x] Direct Messenger
   - [x] Explore (search for small devices)
   - [ ] Authentication
   - [x] 404 Page
@@ -38,3 +38,8 @@ Tasks / Features:
 - [ ] Fully responsive design
 - [ ] Guest account
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
+
+Refused ideas:
+- **Video calls** :: It needs many hours to implement live video, audio streaming alone.
+
+
