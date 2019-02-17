@@ -1,13 +1,13 @@
 # instagram-clone
-_Stack:_ React.JS (Typescript, Redux), GraphQL (Node.JS + Express)
+_Stack:_ React.JS (Redux), GraphQL (Node.JS + Express)
 
 Status: in process.
 
 Tasks / Features:
 - [ ] Templates
-  - [ ] Navigation
+  - [x] Navigation
     - [x] Standard
-    - [ ] Beauty
+    - [x] Beauty
   - [x] Feed
   - [x] Post
   - [x] Account

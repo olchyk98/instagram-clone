@@ -1,3 +1,10 @@
+/*
+    u - user
+    s - settings
+    e - explore
+    d - direct
+*/
+
 const links = {
     "FEED_PAGE": {
         route: '/',
@@ -14,6 +21,10 @@ const links = {
     "EXPLORE_PAGE": {
         route: '/e',
         absolute: '/e'
+    },
+    "MESSENGER_PAGE": {
+        route: '/d',
+        absolute: '/d'
     }
 }
 

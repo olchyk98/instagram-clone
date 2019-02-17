@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import './main.css';
 
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+
+import links from '../../../../links';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -23,10 +26,10 @@ const avatar = "https://d1ia71hq4oe7pn.cloudfront.net/og/75335251-1200px.jpg";
 class Logo extends Component {
     render() {
         return(
-            <section className="gl-nav-logo">
+            <Link className="gl-nav-logo" to="/">
                 <img className="gl-nav-logo-bw" src={ instagram_black_white_logo } alt="black white instagram logo" />
                 <img className="gl-nav-logo-text" src={ instagram_text_logo } alt="text instagram logo" />
-            </section>
+            </Link>
         );
     }
 }
@@ -73,13 +76,19 @@ class RLinksButton extends Component {
     }
 
     render() {
-        if(!this.props.onPage) {
+        if(this.props.onPage === false) {
+            return(
+                <Link className="gl-nav-routes-btn definp" title={ this.props._title } to={ this.props.link }>
+                    <FontAwesomeIcon icon={ this.props.icon } />
+                </Link>
+            );
+        } else if(this.props.onPage === null) {
             return(
                 <button className="gl-nav-routes-btn definp" title={ this.props._title } onClick={ this.props._onClick }>
                     <FontAwesomeIcon icon={ this.props.icon } />
                 </button>
             );
-        } else {
+        } else if(this.props.onPage === true) {
             return(
                 <div
                     className="gl-nav-routes-btn local"
@@ -123,7 +132,8 @@ RLinksButton.propTypes = {
     icon: PropTypes.object.isRequired,
     onPage: PropTypes.bool,
     windowType: PropTypes.string,
-    _onClick: PropTypes.func
+    _onClick: PropTypes.func,
+    link: PropTypes.string
 }
 
 class SearchResultItem extends PureComponent {
@@ -187,10 +197,12 @@ class SearchNav extends Component {
                 <RLinksButton
                     _title="Direct Messenger"
                     icon={ faPaperPlaneRegular }
+                    link={ links["MESSENGER_PAGE"].absolute }
                 />
                 <RLinksButton
                     _title="Explore"
                     icon={ faCompassRegular }
+                    link={ links["EXPLORE_PAGE"].absolute }
                 />
                 <div className="gl-nav-searchnav-search">
                     <input
@@ -214,6 +226,7 @@ class SearchNav extends Component {
                 <RLinksButton
                     _title="Account"
                     icon={ faUserRegular }
+                    link={ links["ACCOUNT_PAGE"].absolute }
                 />
             </section>
         );
@@ -227,6 +240,7 @@ class MoreNav extends Component {
                 <RLinksButton
                     _title="Add new post"
                     icon={ faPlusSolid }
+                    onPage={ null }
                     _onClick={ this.props.createPost }
                 />
             </div>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './main.css';
 
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import links from '../../links';
 
@@ -29,9 +30,11 @@ class Account extends Component {
                             <div className="rn-account-info-mat-name-verification">
                                 <img alt="This user was verified by finstagram administration" src={ verification_image } />
                             </div>
-                            <button className="definp rn-account-info-mat-name-edit">
-                                Edit profile
-                            </button>
+                            <Link to={ links["SETTINGS_PAGE"].absolute }>
+                                <button className="definp rn-account-info-mat-name-edit">
+                                    Edit profile
+                                </button>
+                            </Link>
                             <button
                                 className="definp rn-account-info-mat-name-settings"
                                 onClick={() => {

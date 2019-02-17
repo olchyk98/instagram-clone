@@ -107,6 +107,9 @@
     border-radius:5px;
     font-weight:400;
     font-size:.975rem;
+    color:black;
+    text-decoration:none;
+    text-align:center;
     cursor:pointer;
 }
 
