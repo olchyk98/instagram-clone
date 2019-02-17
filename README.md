@@ -16,9 +16,10 @@ Tasks / Features:
   - [x] Photo window
   - [x] Notifications window
   - [x] New post window
-  - [ ] Direct Messenger
+  - [x] Direct Messenger
   - [x] Explore (search for small devices)
   - [ ] Authentication
+  - [ ] Video Call / Dialog modal
   - [x] 404 Page
 - [ ] Authentication (pw, session, socket db)
 - [ ] Add post
