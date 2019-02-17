@@ -6,6 +6,7 @@ import Account from './pages/account';
 import Settings from './pages/settings';
 import Explore from './pages/explore';
 import P404 from './pages/404';
+import Direct from './pages/direct';
 
 // Stuff
 import links from './links';
@@ -75,6 +76,13 @@ class App extends Component {
                                 condition={ true }
                                 component={ Explore }
                                 redirect={ Explore }
+                                exact
+                            />
+                            <NeedleRoute
+                                path={ links["MESSENGER_PAGE"].route }
+                                condition={ true }
+                                component={ Direct }
+                                redirect={ Direct }
                                 exact
                             />
                             <Route component={ P404 } />

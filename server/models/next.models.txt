@@ -4,3 +4,4 @@
     - Comment
     - Conversation
     - Message
+    - Video Call (all chunks, last chunk)
