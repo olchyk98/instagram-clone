@@ -19,7 +19,6 @@ Tasks / Features:
   - [x] Direct Messenger
   - [x] Explore (search for small devices)
   - [ ] Authentication
-  - [ ] Video Call / Dialog modal
   - [x] 404 Page
 - [ ] Authentication (pw, session, socket db)
 - [ ] Add post
@@ -36,3 +35,10 @@ Tasks / Features:
 - [ ] Advanced website routing
 - [ ] Dark Mode
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
+
+Refused ideas:
+_
+**Video calls**
+It needs many hours to implement live video, audio streaming alone.
+
+
