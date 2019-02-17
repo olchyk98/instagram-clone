@@ -35,4 +35,6 @@ Tasks / Features:
 - [ ] Video Calls
 - [ ] Advanced website routing
 - [ ] Dark Mode
+- [ ] Fully responsive design
+- [ ] Guest account
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
