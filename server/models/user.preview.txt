@@ -7,6 +7,6 @@ User Model:
  - password
  - saved images | library
  - avatar
+ - isVerified
  - avatar description
  - subscribers // NOT subscribedTO // ->> subscribers count
-

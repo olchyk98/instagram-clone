@@ -1,0 +1,179 @@
+.rn-login {
+    display:flex;
+    flex-direction:column;
+    align-items:center
+}
+
+.rn-login > * {
+    flex-shrink:0;
+}
+
+.rn-login > *:first-child {
+    margin-top:15px;
+}
+
+.rn-login-island {
+    --paddinglr:35px;
+    --paddingud:15px;
+    --margin:10px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+    border-radius:2.5px;
+    background:white;
+    width:calc(350px - var(--paddinglr) * 2);
+    border:1px solid rgba(0, 0, 0, .05);
+    box-shadow:0px 0px 7.5px -3px rgba(0, 0, 0, .15);
+    padding:var(--paddingud) var(--paddinglr) var(--paddingud) var(--paddinglr);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.rn-login-island-logo > img {
+    height:67.5px;
+}
+
+.rn-login-island_register-inittxt {
+    --margin:5px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+    font-weight:600;
+    font-family:"Arial";
+    font-size:1.05rem;
+    color:rgba(0, 0, 0, .45);
+    text-align:center;
+}
+
+.rn-login-island_register-regsplit {
+    --margin:7.5px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+    display:flex;
+    align-items:center;
+    position:relative;
+    width:100%;
+}
+
+.rn-login-island_register-regsplit:before,
+.rn-login-island_register-regsplit:after {
+    content:'';
+    position:relative;
+    height:1px;
+    width:100%;
+    flex-shrink:1;
+    display:block;
+    background:rgba(0, 0, 0, .1);
+}
+
+.rn-login-island_register-regsplit > span {
+    --margin:12.5px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+    flex-shrink:0;
+    font-weight:500;
+    font-family:"Arial";
+    font-size:.9rem;
+    color:rgba(0, 0, 0, .5);
+    text-transform:uppercase;
+}
+
+.rn-login-island-btn {
+    --margin:7.5px;
+
+    margin-top:10px;
+    margin-bottom:7.5px;
+    height:32.5px;
+    width:100%;
+    background:#3897F0;
+    color:white;
+    font-weight:500;
+    font-family:"Arial";
+    font-size:.95rem;
+    cursor:pointer;
+    border-radius:2.5px;
+}
+
+.rn-login-island-btn > * {
+    --margin:5px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+}
+
+.rn-login-island_register-input {
+    --margin:7.5px;
+    --padding:10px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+    padding-left:var(--padding);
+    border-radius:2.5px;
+    background:#fafafa;
+    height:35px;
+    width:calc(100% - var(--padding));
+    display:flex;
+    align-items:stretch;
+    border:1px solid rgba(0, 0, 0, .1);
+}
+
+.rn-login-island_register-input-mat {
+    width:100%;
+    font-size:.9rem;
+}
+
+.rn-login-island_register-input-status {
+    width:40px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.rn-login-island_register-input-status {
+    font-size:1.5rem;
+    max-width:0;
+    opacity:0;
+    visibility:hidden;
+    transition:.45s;
+}
+
+.rn-login-island_register-input-status.red,
+.rn-login-island_register-input-status.green {
+    max-width:100px;
+    opacity:1;
+    visibility:visible;
+}
+
+.rn-login-island_register-input-status.red {
+    color:red;
+}
+
+.rn-login-island_register-input-status.green {
+    color:green;
+}
+
+.rn-login-island-translogin-title {
+    margin:10px;
+    font-size:.975rem;
+}
+
+.rn-login-island-translogin-title > * {
+    --margin:2.5px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+}
+
+.rn-login-island-translogin-title > button {
+    color:blue;
+    cursor:pointer;
+    user-select:none;
+}
+
+.rn-login-island-translogin-title > button:active {
+    color:rgb(136, 144, 249);
+}

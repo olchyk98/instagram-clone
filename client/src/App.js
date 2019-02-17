@@ -7,6 +7,7 @@ import Settings from './pages/settings';
 import Explore from './pages/explore';
 import P404 from './pages/404';
 import Direct from './pages/direct';
+import Login from './pages/login';
 
 // Stuff
 import links from './links';
@@ -48,41 +49,52 @@ class App extends Component {
                         <MultiwindowMenu />
                         <PhotoModal />
                         <PhotoAppender />
-                        <Navigation />
+                        {
+                            (!window.location.href.includes("logintest")) ? (
+                                <Navigation />
+                            ) : null
+                        }
                         <Switch>
+                            <NeedleRoute
+                                path={ '/logintest' }
+                                condition={ false }
+                                component={ Login }
+                                redirect={ Login }
+                                exact
+                            />
                             <NeedleRoute
                                 path={ links["FEED_PAGE"].route }
                                 condition={ true }
                                 component={ Feed }
-                                redirect={ Feed }
+                                redirect={ Login }
                                 exact
                             />
                             <NeedleRoute
                                 path={ links["ACCOUNT_PAGE"].route }
                                 condition={ true }
                                 component={ Account }
-                                redirect={ Account }
+                                redirect={ Login }
                                 exact
                             />
                             <NeedleRoute
                                 path={ links["SETTINGS_PAGE"].route }
                                 condition={ true }
                                 component={ Settings }
-                                redirect={ Settings }
+                                redirect={ Login }
                                 exact
                             />
                             <NeedleRoute
                                 path={ links["EXPLORE_PAGE"].route }
                                 condition={ true }
                                 component={ Explore }
-                                redirect={ Explore }
+                                redirect={ Login }
                                 exact
                             />
                             <NeedleRoute
                                 path={ links["MESSENGER_PAGE"].route }
                                 condition={ true }
                                 component={ Direct }
-                                redirect={ Direct }
+                                redirect={ Login }
                                 exact
                             />
                             <Route component={ P404 } />
