@@ -24,6 +24,8 @@ function generateNoise(l = 256) {
 	return a;
 }
 
+const str = a => a.toString();
+
 // Schema Types
 const UserType = new GraphQLObjectType({
     name: "User",
@@ -46,6 +48,10 @@ const UserType = new GraphQLObjectType({
         },
         avatar: { type: GraphQLString },
         authTokens: { type: new GraphQLList(GraphQLString) },
+        lastAuthToken: {
+            type: GraphQLString,
+            resolve: ({ authTokens }) => authTokens.slice(-1)[0] || null
+        },
         isVerified: { type: GraphQLBoolean },
         subscribers: { type: new GraphQLList(GraphQLID) }
     })
@@ -54,9 +60,9 @@ const UserType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
-        hello: {
-            type: GraphQLString,
-            resolve: () => "hi"
+        users: {
+            type: new GraphQLList(UserType),
+            resolve: () => User.find({})
         }
     }
 });
@@ -99,10 +105,41 @@ const RootMutation = new GraphQLObjectType({
                     })
                 ).save();
 
-                req.session.id = b._id;
+                req.session.id = str(b._id);
                 req.session.authToken = token;
 
                 return b;
+            }
+        },
+        loginUser: {
+            type: UserType,
+            args: {
+                login: { type: new GraphQLNonNull(GraphQLString) },
+                password: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            async resolve(_, { login, password }, { req }) {
+                const a = await User.findOne({
+                    $or: [
+                        { login },
+                        { email: login }
+                    ],
+                    password
+                });
+
+                if(a) {
+                    const token = generateNoise();
+
+                    await a.updateOne({
+                        $push: {
+                            authTokens: token
+                        }
+                    });
+
+                    req.session.authToken = token;
+                    req.session.id = str(a._id);
+                }
+
+                return a;
             }
         }
     }
