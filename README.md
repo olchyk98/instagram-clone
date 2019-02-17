@@ -20,7 +20,8 @@ Tasks / Features:
   - [x] Explore (search for small devices)
   - [x] Authentication
   - [x] 404 Page
-- [ ] Authentication (Local and Facebook)
+- [ ] Local Authentication
+- [ ] Facebook Authentication (https://github.com/keppelen/react-facebook-login)
 - [ ] Add post
 - [ ] Like post
 - [ ] Posts library system
@@ -36,6 +37,7 @@ Tasks / Features:
 - [ ] Fully responsive design
 - [ ] Guest account
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
+- [ ] Deploy app using GitHub pages and Heroku (https://www.apollographql.com/docs/apollo-server/deployment/heroku.html)
 
 Refused ideas:
 - **Video calls** :: It needs many hours to implement live video, audio streaming alone.
