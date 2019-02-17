@@ -20,7 +20,7 @@ Tasks / Features:
   - [x] Explore (search for small devices)
   - [ ] Authentication
   - [x] 404 Page
-- [ ] Authentication (pw, session, socket db)
+- [ ] Authentication (Local and Facebook)
 - [ ] Add post
 - [ ] Like post
 - [ ] Posts library system
