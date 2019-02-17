@@ -74,7 +74,7 @@ class Register extends Component {
                 />
                 <Input
                     _type="password"
-                    _placeholder="Login"
+                    _placeholder="Password"
                     isValid={ null }
                 />
                 <button type="submit" className="definp rn-login-island-btn">
