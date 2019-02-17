@@ -7,7 +7,7 @@ Tasks / Features:
 - [ ] Templates
   - [ ] Navigation
     - [x] Standard
-    - [ ] Beauty
+    - [x] Beauty
   - [x] Feed
   - [x] Post
   - [x] Account
