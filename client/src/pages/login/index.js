@@ -2,6 +2,11 @@ import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
+import { gql } from 'apollo-boost';
+
+import { cookieControl } from '../../utils';
+import client from '../../apollo';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
@@ -10,7 +15,8 @@ import logo from './images/logo.png';
 
 class Input extends PureComponent {
     static defaultProps = {
-        isValid: null
+        isValid: null,
+        _required: true
     }
 
     render() {
@@ -20,6 +26,8 @@ class Input extends PureComponent {
                     type={ this.props._type }
                     placeholder={ this.props._placeholder }
                     className="rn-login-island_register-input-mat definp"
+                    onChange={ ({ target: { value } }) => this.props._onChange(value) }
+                    required={ this.props._required }
                 />
                 <div className={ `rn-login-island_register-input-status${ (this.props.isValid === null) ? "" : (this.props.isValid === true) ? " green" : " red" }` }>
                     {
@@ -37,10 +45,38 @@ class Input extends PureComponent {
 
 Input.propTypes = {
     _type: PropTypes.string,
-    _placeholder: PropTypes.string
+    _placeholder: PropTypes.string,
+    _onChange: PropTypes.func.isRequired,
+    _required: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.bool
+    ])
 }
 
 class Register extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            email: "",
+            name: "",
+            login: "",
+            password: ""
+        }
+    }
+
+    register = () => {
+        client.mutate({
+            mutation: gql`
+
+            `
+        }).then(() => {
+
+        }).catch(() => {
+
+        })
+    }
+
     render() {
         return(
             <form className="rn-login-island rn-login-island_register" onSubmit={ e => e.preventDefault() }>
@@ -61,21 +97,25 @@ class Register extends Component {
                     _type="email"
                     _placeholder="Email"
                     isValid={ null }
+                    _onChange={ value => this.setState({ email: value }) }
                 />
                 <Input
                     _type="text"
                     _placeholder="Full Name"
                     isValid={ null }
+                    _onChange={ value => this.setState({ name: value }) }
                 />
                 <Input
                     _type="text"
                     _placeholder="Login"
                     isValid={ null }
+                    _onChange={ value => this.setState({ login: value }) }
                 />
                 <Input
                     _type="password"
                     _placeholder="Password"
                     isValid={ null }
+                    _onChange={ value => this.setState({ password: value }) }
                 />
                 <button type="submit" className="definp rn-login-island-btn">
                     Register
@@ -86,6 +126,15 @@ class Register extends Component {
 }
 
 class Login extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            login: "",
+            password: ""
+        }
+    }
+
     render() {
         return(
             <form className="rn-login-island rn-login-island_register" onSubmit={ e => e.preventDefault() }>
@@ -96,11 +145,13 @@ class Login extends Component {
                     _type="text"
                     _placeholder="Login or email"
                     isValid={ null }
+                    _onChange={ value => this.setState({ login: value }) }
                 />
                 <Input
                     _type="password"
                     _placeholder="Password"
                     isValid={ null }
+                    _onChange={ value => this.setState({ password: value }) }
                 />
                 <button type="submit" className="definp rn-login-island-btn">
                     Login
