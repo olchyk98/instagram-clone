@@ -39,6 +39,6 @@ Tasks / Features:
 
 Refused ideas:
 - **Video calls** :: It needs many hours to implement live video, audio streaming alone.
-- **Machine Learning Classifier** :: I wanted to use the ML5 library to use pre-trained models, but then I discovered that the ml5 library can only run in the browser. I could force to load ml5 library and model on every client, but I think that is a very bad idea.
+- **Machine Learning Classifier** :: I wanted to use the ML5 library to use pre-trained models, but then I discovered that the ml5 library can only run in the browser. I could force to load ml5 library and model on every client, but I think that is a very bad idea. However, I could use the tensorflow.js library, but it needs a lot of memory and time to train a classifier model to do his job well.
 
 
