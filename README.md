@@ -4,7 +4,7 @@ _Stack:_ React.JS (Redux), GraphQL (Node.JS + Express)
 Status: in process.
 
 Tasks / Features:
-- [ ] Templates
+- [x] Templates
   - [x] Navigation
     - [x] Standard
     - [x] Beauty
@@ -18,7 +18,7 @@ Tasks / Features:
   - [x] New post window
   - [x] Direct Messenger
   - [x] Explore (search for small devices)
-  - [ ] Authentication
+  - [x] Authentication
   - [x] 404 Page
 - [ ] Authentication (Local and Facebook)
 - [ ] Add post
