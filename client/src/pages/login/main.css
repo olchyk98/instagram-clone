@@ -30,6 +30,14 @@
     align-items:center;
 }
 
+.rn-login-island-error {
+    font-family:"Quicksand";
+    color:red;
+    font-weight:400;
+    font-size:.95rem;
+    text-align:center;
+}
+
 .rn-login-island-logo > img {
     height:67.5px;
 }

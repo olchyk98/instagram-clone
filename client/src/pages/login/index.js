@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './main.css';
 
 import { gql } from 'apollo-boost';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 import { cookieControl } from '../../utils';
 import client from '../../apollo';
@@ -67,7 +68,8 @@ class Register extends Component {
             password: "",
             loginValidated: null,
             emailValidated: null,
-            registering: false
+            registering: false,
+            registeringByFB: false
         }
 
         this.validateUserINT = null;
@@ -109,30 +111,55 @@ class Register extends Component {
         }).catch(console.error);
     }
 
-    register = () => {
-        if(this.state.registering) return;
+    register = (byFacebook = false, data = null) => {
+        if(this.state.registering || this.state.registeringByFB) return;
 
         this.setState(() => ({
-            registering: true
+            [ (!byFacebook) ? "registering" : "registeringByFB" ]: true
         }));
 
-        const { email, name, login, password } = this.state;
+        if(!byFacebook) {
+            var { email, name, login, password } = this.state;
+        } else if(data && data.id) {
+            // Get data
+            var { id: password, name, email } = data;
+            var login = ""
+
+            // Some of users (like me) have name in Cyrillic format.
+            // So I'll just convert it to latin.
+
+            const transCirLat = (
+                {"Ё":"YO","Й":"I","Ц":"TS","У":"U","К":"K","Е":"E","Н":"N","Г":"G","Ш":"SH","Щ":"SCH","З":"Z","Х":"H","Ъ":"","ё":"yo","й":"i","ц":"ts","у":"u","к":"k","е":"e","н":"n","г":"g","ш":"sh","щ":"sch","з":"z","х":"h","ъ":"","Ф":"F","Ы":"I","В":"V","А":"a","П":"P","Р":"R","О":"O","Л":"L","Д":"D","Ж":"ZH","Э":"E","ф":"f","ы":"i","в":"v","а":"a","п":"p","р":"r","о":"o","л":"l","д":"d","ж":"zh","э":"e","Я":"Ya","Ч":"CH","С":"S","М":"M","И":"I","Т":"T","Ь":"","Б":"B","Ю":"YU","я":"ya","ч":"ch","с":"s","м":"m","и":"y","т":"t","ь":"","б":"b","ю":"yu"}
+            );
+
+            name = name.split('').map((io) => {
+                // Unknown Char -> |
+                // F => S Char -> X
+
+                let a = transCirLat[io];
+                if(typeof a === "string") return a;
+                else return io;
+            }).join("");
+        } else {
+            return; // Fatal error
+        }
 
         client.mutate({
             mutation: gql`
-                mutation($email: String!, $name: String!, $login: String!, $password: String!) {
-                    registerUser(email: $email, name: $name, login: $login, password: $password) {
+                mutation($email: String!, $name: String!, $login: String, $password: String!, $byFacebook: Boolean) {
+                    registerUser(email: $email, name: $name, login: $login, password: $password, byFacebook: $byFacebook) {
                         id
                     }
                 }
             `,
             variables: {
                 email, name,
-                login, password
+                login, password,
+                byFacebook
             }
         }).then(({ data: { registerUser } }) => {
             this.setState(() => ({
-                registering: false
+                [ (!byFacebook) ? "registering" : "registeringByFB" ]: false
             }));
 
             if(!registerUser) return;
@@ -145,17 +172,33 @@ class Register extends Component {
 
     render() {
         return(
-            <form className="rn-login-island rn-login-island_register" onSubmit={ e => { e.preventDefault(); this.register(); } }>
+            <form className="rn-login-island rn-login-island_register" onSubmit={ e => { e.preventDefault(); this.register(false); } }>
                 <div className="rn-login-island-logo">
                     <img src={ logo } alt="Instagram logo" />
                 </div>
                 <p className="rn-login-island_register-inittxt">
                     Sign up to see photos and videos from your friends.
                 </p>
-                <button type="button" className="definp rn-login-island-btn">
-                    <FontAwesomeIcon icon={ faFacebook } />
-                    <span>Login with Facebook</span>
-                </button>
+                <FacebookLogin
+                    appId="355951248461966"
+                    callback={ data => (data.id) ? this.register(true, data) : null }
+                    fields="id, name, email"
+                    isDisabled={ this.state.registering || this.state.registeringByFB }
+                    render={props => (
+                        <button onClick={ props.onClick } type="button" className="definp rn-login-island-btn">
+                            {
+                                (!this.state.registeringByFB) ? (
+                                    <>
+                                        <FontAwesomeIcon icon={ faFacebook } />
+                                        <span>Login with Facebook</span>
+                                    </>
+                                ) : (
+                                    <img src={ loadingSpinner } className="rn-login-island-btn-spinner" alt="loading spinner" />
+                                )
+                            }
+                        </button>
+                    )}
+                />
                 <div className="rn-login-island_register-regsplit">
                     <span>Or</span>
                 </div>
@@ -200,7 +243,8 @@ class Login extends Component {
         this.state = {
             login: "",
             password: "",
-            logging: false
+            logging: false,
+            loginError: null
         }
     }
 
@@ -208,7 +252,8 @@ class Login extends Component {
         if(this.state.logging) return;
 
         this.setState(() => ({
-            logging: true
+            logging: true,
+            loginError: null
         }));
 
         const { login, password } = this.state;
@@ -226,10 +271,12 @@ class Login extends Component {
             }
         }).then(({ data: { loginUser } }) => {
             this.setState(() => ({
-                logging: true
+                logging: false
             }));
 
-            if(!loginUser) return;
+            if(!loginUser) return this.setState(() => ({
+                loginError: "Oops... Invalid email or password"
+            }));
 
             cookieControl.set("userid", loginUser.id);
             window.location.href = links["FEED_PAGE"].absolute;
@@ -242,6 +289,13 @@ class Login extends Component {
                 <div className="rn-login-island-logo">
                     <img src={ logo } alt="Instagram logo" />
                 </div>
+                {
+                    (!this.state.loginError) ? null : (
+                        <p className="rn-login-island-error">
+                            { this.state.loginError }
+                        </p>
+                    )
+                }
                 <Input
                     _type="text"
                     _placeholder="Login or email"

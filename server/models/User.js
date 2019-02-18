@@ -12,7 +12,8 @@ const UserSchema = new Schema({
     avatar: String,
     isVerified: Boolean,
     authTokens: Array,
-    subscribers: Array
+    subscribers: Array,
+    registeredByFacebook: Boolean
 });
 
 module.exports = mongoose.model("User", UserSchema);

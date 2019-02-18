@@ -27,14 +27,14 @@ const mobilenet = require('@tensorflow-models/mobilenet');
 
 // Functions
 function generateNoise(l = 256) {
-	let a = "",
-		b = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'; // lib
+    let a = "",
+        b = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'; // lib
 
-	for(let ma = 0; ma < l; ma++) {
-		a += b[Math.floor(Math.random() * b.length)];
-	}
+    for(let ma = 0; ma < l; ma++) {
+        a += b[Math.floor(Math.random() * b.length)];
+    }
 
-	return a;
+    return a;
 }
 
 const str = a => a.toString();
@@ -51,6 +51,7 @@ const UserType = new GraphQLObjectType({
         gender: { type: GraphQLString },
         password: { type: GraphQLString },
         savedImagesID: { type: new GraphQLList(GraphQLID) },
+        registeredByFacebook: { type: GraphQLBoolean },
         savedImages: {
             type: new GraphQLList(GraphQLID),
             resolve: ({ savedImages }) => Image.find({
@@ -113,43 +114,87 @@ const RootMutation = new GraphQLObjectType({
             args: {
                 email: { type: new GraphQLNonNull(GraphQLString) },
                 name: { type: new GraphQLNonNull(GraphQLString) },
-                login: { type: new GraphQLNonNull(GraphQLString) },
-                password: { type: new GraphQLNonNull(GraphQLString) }
+                login: { type: GraphQLString },
+                password: { type: new GraphQLNonNull(GraphQLString) },
+                byFacebook: { type: GraphQLBoolean }
             },
-            async resolve(_, { email, name, login, password }, { req }) {
-                const a = await User.findOne({
-                    $or: [
-                        { email },
-                        { login }
-                    ]
-                });
-                if(a) return new Error("User with that email or login already exists!");
+            async resolve(_, { email, name, login, password, byFacebook }, { req }) {
+                if(!byFacebook) {
+                    const a = await User.findOne({
+                        $or: [
+                            { email },
+                            { login }
+                        ]
+                    });
+                    if(a) return new Error("User with that email or login already exists!");
+                }
 
-                const token = generateNoise();
+                const _a = false;
 
-                const b = await (
-                    new User({
-                        login,
-                        name,
-                        bio: "",
-                        email,
-                        gender: "",
-                        password,
-                        savedImages: [],
-                        avatar: "/files/default/avatar.jpg",
-                        isVerified: false,
-                        subscribers: [],
-                        authTokens: [token]
-                    })
-                ).save();
+                if(byFacebook) {
+                    const b = await User.findOne({ // Vulnerability? I think facebook protects and checks user's email.
+                        email
+                    });
 
-                req.session.id = str(b._id);
-                req.session.authToken = token;
+                    if(b) {
+                        const token = generateNoise();
 
-                return b;
+                        await b.updateOne({
+                            $push: {
+                                authTokens: token
+                            }
+                        });
+
+                        req.session.id = str(b._id);
+                        req.session.authToken = token;
+
+                        return b;
+                    }
+                }
+
+                if(!_a) {
+                    const token = generateNoise();
+
+                    if(!login) { // If login wasn't passed -> generate a new one
+                        async function genLogin() {
+                            const a = generateNoise(12);
+
+                            const b = await User.findOne({
+                                login: a
+                            });
+
+                            if(!b) return a;
+                            else return genLogin();
+                        }
+
+                        login = await genLogin();
+                    }
+
+                    const b = await (
+                        new User({
+                            login,
+                            name,
+                            bio: "",
+                            email,
+                            gender: "",
+                            password,
+                            savedImages: [],
+                            avatar: "/files/default/avatar.jpg",
+                            isVerified: false,
+                            subscribers: [],
+                            authTokens: [token],
+                            registeredByFacebook: !!byFacebook
+                        })
+                    ).save();
+
+                    req.session.id = str(b._id);
+                    req.session.authToken = token;
+
+                    return b;
+                }
             }
         },
-        loginUser: {
+        loginUser: { // LOCAL LOGIN
             type: UserType,
             args: {
                 login: { type: new GraphQLNonNull(GraphQLString) },
@@ -161,7 +206,8 @@ const RootMutation = new GraphQLObjectType({
                         { login },
                         { email: login }
                     ],
-                    password
+                    password,
+                    registeredByFacebook: false
                 });
 
                 if(a) {
