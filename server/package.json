@@ -16,6 +16,8 @@
     "apollo-server-express": "^2.4.2",
     "express": "^4.16.4",
     "graphql": "^14.1.1",
-    "mongoose": "^5.4.13"
+    "jpeg-js": "^0.3.4",
+    "mongoose": "^5.4.13",
+    "node-fetch": "^2.3.0"
   }
 }
