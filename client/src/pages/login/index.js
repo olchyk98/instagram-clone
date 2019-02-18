@@ -50,7 +50,8 @@ Input.propTypes = {
     _required: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.bool
-    ])
+    ]),
+    isValid: PropTypes.bool
 }
 
 class Register extends Component {
@@ -61,14 +62,63 @@ class Register extends Component {
             email: "",
             name: "",
             login: "",
-            password: ""
+            password: "",
+            loginValidated: null,
+            emailValidated: null
         }
+
+        this.validateUserINT = null;
+    }
+
+    fireValidateUser = () => {
+        clearTimeout(this.validateUserINT);
+        this.validateUserINT = setTimeout(this.validateUser, 200);
+    }
+
+    validateUser = () => {
+        console.log({
+            email: this.state.email,
+            login: this.state.login
+        });
+        client.query({
+            query: gql`
+                query($email: String!, $login: String!) {
+                    validateUser(email: $email, login: $login)
+                }
+            `,
+            variables: {
+                email: this.state.email,
+                login: this.state.login
+            }
+        }).then(({ data: { validateUser } }) => {
+            this.setState(() => {
+                let a = {}
+
+                if(validateUser === 0) {
+                    a.loginValidated = a.emailValidated = true;
+                } else if(validateUser === 1) {
+                    a.loginValidated = false;
+                    a.emailValidated = null;
+                } else if(validateUser === 2) {
+                    a.emailValidated = false;
+                    a.loginValidated = null;
+                } else if(validateUser === 3) {
+                    a.loginValidated = a.emailValidated = false;
+                }
+
+                return a;
+            });
+        }).catch(console.error);
     }
 
     register = () => {
         client.mutate({
             mutation: gql`
-
+                mutation($email: String!, $name: String!, $login: String!, $password: String!) {
+                    registerUser(email: $email, name: $name, login:$ login, password: $password) {
+                        id
+                    }
+                }
             `
         }).then(() => {
 
@@ -96,25 +146,23 @@ class Register extends Component {
                 <Input
                     _type="email"
                     _placeholder="Email"
-                    isValid={ null }
-                    _onChange={ value => this.setState({ email: value }) }
+                    isValid={ this.state.emailValidated }
+                    _onChange={ value => this.setState({ email: value }, this.fireValidateUser) }
                 />
                 <Input
                     _type="text"
                     _placeholder="Full Name"
-                    isValid={ null }
                     _onChange={ value => this.setState({ name: value }) }
                 />
                 <Input
                     _type="text"
                     _placeholder="Login"
-                    isValid={ null }
-                    _onChange={ value => this.setState({ login: value }) }
+                    isValid={ this.state.loginValidated }
+                    _onChange={ value => this.setState({ login: value }, this.fireValidateUser) }
                 />
                 <Input
                     _type="password"
                     _placeholder="Password"
-                    isValid={ null }
                     _onChange={ value => this.setState({ password: value }) }
                 />
                 <button type="submit" className="definp rn-login-island-btn">

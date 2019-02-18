@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tensorflow-models/mobilenet": "^0.2.2",
     "apollo-server": "^2.4.2",
     "apollo-server-express": "^2.4.2",
     "express": "^4.16.4",

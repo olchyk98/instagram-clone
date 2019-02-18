@@ -5,12 +5,25 @@ const {
     GraphQLID,
     GraphQLList,
     GraphQLBoolean,
-    GraphQLNonNull
+    GraphQLNonNull,
+    GraphQLInt
 } = require('graphql');
 
 const {
     User
 } = require('./models');
+
+//
+const mobilenet = require('@tensorflow-models/mobilenet');
+
+// const IClassifier = require('./mobilenet');
+// let ICLModel = null;
+// (async () => {
+//     ICLModel = await mobilenet.load();
+// })();
+
+// if(ICLModel) IClassifier(ICLModel, './photo.jpg');
+//
 
 // Functions
 function generateNoise(l = 256) {
@@ -65,7 +78,7 @@ const RootQuery = new GraphQLObjectType({
             resolve: () => User.find({})
         },
         validateUser: { // Validate if user with this email | login exists
-            type: GraphQLBoolean,
+            type: GraphQLInt,
             args: {
                 email: { type: new GraphQLNonNull(GraphQLString) },
                 login: { type: new GraphQLNonNull(GraphQLString) }
@@ -79,7 +92,7 @@ const RootQuery = new GraphQLObjectType({
                     b = true;
                 }
                 if(login) {
-                    e.login = login;
+                    a.login = login;
                     b = true;
                 }
 
