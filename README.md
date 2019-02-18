@@ -20,7 +20,7 @@ Tasks / Features:
   - [x] Explore (search for small devices)
   - [x] Authentication
   - [x] 404 Page
-- [ ] Local Authentication
+- [x] Local Authentication
 - [ ] Facebook Authentication (https://github.com/keppelen/react-facebook-login)
 - [ ] Add post
 - [ ] Like post
