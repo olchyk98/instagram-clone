@@ -18,7 +18,7 @@ const client = new ApolloClient({
             }
         }),
         createUploadLink({
-            uri: api.server,
+            uri: api.api,
             credentials: 'include'
         })
     ),

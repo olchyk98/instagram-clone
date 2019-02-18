@@ -76,10 +76,6 @@ class Register extends Component {
     }
 
     validateUser = () => {
-        console.log({
-            email: this.state.email,
-            login: this.state.login
-        });
         client.query({
             query: gql`
                 query($email: String!, $login: String!) {
