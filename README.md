@@ -21,7 +21,7 @@ Tasks / Features:
   - [x] Authentication
   - [x] 404 Page
 - [x] Local Authentication
-- [ ] Facebook Authentication (https://github.com/keppelen/react-facebook-login)
+- [x] Facebook Authentication (https://github.com/keppelen/react-facebook-login)
 - [ ] Add post
 - [ ] Like post
 - [ ] Posts library system
