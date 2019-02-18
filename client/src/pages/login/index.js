@@ -6,12 +6,14 @@ import { gql } from 'apollo-boost';
 
 import { cookieControl } from '../../utils';
 import client from '../../apollo';
+import links from '../../links';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 
 import logo from './images/logo.png';
+import loadingSpinner from '../__forall__/loadingico.gif';
 
 class Input extends PureComponent {
     static defaultProps = {
@@ -64,7 +66,8 @@ class Register extends Component {
             login: "",
             password: "",
             loginValidated: null,
-            emailValidated: null
+            emailValidated: null,
+            registering: false
         }
 
         this.validateUserINT = null;
@@ -72,7 +75,15 @@ class Register extends Component {
 
     fireValidateUser = () => {
         clearTimeout(this.validateUserINT);
-        this.validateUserINT = setTimeout(this.validateUser, 200);
+
+        if(this.state.email || this.state.login) {
+            this.validateUserINT = setTimeout(this.validateUser, 200);
+        } else {
+            this.setState(() => ({
+                loginValidated: null,
+                emailValidated: null
+            }));
+        }
     }
 
     validateUser = () => {
@@ -85,47 +96,56 @@ class Register extends Component {
             variables: {
                 email: this.state.email,
                 login: this.state.login
-            }
+            },
+            fetchPolicy: 'no-cache'
         }).then(({ data: { validateUser } }) => {
-            this.setState(() => {
-                let a = {}
+            // Array[0] - Email
+            // Array[1] - Login
 
-                if(validateUser === 0) {
-                    a.loginValidated = a.emailValidated = true;
-                } else if(validateUser === 1) {
-                    a.loginValidated = false;
-                    a.emailValidated = null;
-                } else if(validateUser === 2) {
-                    a.emailValidated = false;
-                    a.loginValidated = null;
-                } else if(validateUser === 3) {
-                    a.loginValidated = a.emailValidated = false;
-                }
-
-                return a;
-            });
+            this.setState(() => ({
+                emailValidated: validateUser[0],
+                loginValidated: validateUser[1]
+            }));
         }).catch(console.error);
     }
 
     register = () => {
+        if(this.state.registering) return;
+
+        this.setState(() => ({
+            registering: true
+        }));
+
+        const { email, name, login, password } = this.state;
+
         client.mutate({
             mutation: gql`
                 mutation($email: String!, $name: String!, $login: String!, $password: String!) {
-                    registerUser(email: $email, name: $name, login:$ login, password: $password) {
+                    registerUser(email: $email, name: $name, login: $login, password: $password) {
                         id
                     }
                 }
-            `
-        }).then(() => {
+            `,
+            variables: {
+                email, name,
+                login, password
+            }
+        }).then(({ data: { registerUser } }) => {
+            this.setState(() => ({
+                registering: false
+            }));
 
-        }).catch(() => {
+            if(!registerUser) return;
 
-        })
+            cookieControl.set("userid", registerUser.id);
+            window.location.href = links["FEED_PAGE"].absolute;
+
+        }).catch(console.error);
     }
 
     render() {
         return(
-            <form className="rn-login-island rn-login-island_register" onSubmit={ e => e.preventDefault() }>
+            <form className="rn-login-island rn-login-island_register" onSubmit={ e => { e.preventDefault(); this.register(); } }>
                 <div className="rn-login-island-logo">
                     <img src={ logo } alt="Instagram logo" />
                 </div>
@@ -162,7 +182,11 @@ class Register extends Component {
                     _onChange={ value => this.setState({ password: value }) }
                 />
                 <button type="submit" className="definp rn-login-island-btn">
-                    Register
+                    {
+                        (!this.state.registering) ? <>Sign up</> : (
+                            <img src={ loadingSpinner } className="rn-login-island-btn-spinner" alt="loading spinner" />
+                        )
+                    }
                 </button>
             </form>
         );
@@ -175,13 +199,46 @@ class Login extends Component {
 
         this.state = {
             login: "",
-            password: ""
+            password: "",
+            logging: false
         }
+    }
+
+    login = () => {
+        if(this.state.logging) return;
+
+        this.setState(() => ({
+            logging: true
+        }));
+
+        const { login, password } = this.state;
+
+        client.mutate({
+            mutation: gql`
+                mutation($login: String!, $password: String!) {
+                    loginUser(login: $login, password: $password) {
+                        id
+                    }
+                }
+            `,
+            variables: {
+                login, password
+            }
+        }).then(({ data: { loginUser } }) => {
+            this.setState(() => ({
+                logging: true
+            }));
+
+            if(!loginUser) return;
+
+            cookieControl.set("userid", loginUser.id);
+            window.location.href = links["FEED_PAGE"].absolute;
+        }).catch(console.error);
     }
 
     render() {
         return(
-            <form className="rn-login-island rn-login-island_register" onSubmit={ e => e.preventDefault() }>
+            <form className="rn-login-island rn-login-island_register" onSubmit={ e => { e.preventDefault(); this.login(); } }>
                 <div className="rn-login-island-logo">
                     <img src={ logo } alt="Instagram logo" />
                 </div>
@@ -198,7 +255,11 @@ class Login extends Component {
                     _onChange={ value => this.setState({ password: value }) }
                 />
                 <button type="submit" className="definp rn-login-island-btn">
-                    Login
+                    {
+                        (!this.state.logging) ? <>Login</> : (
+                            <img src={ loadingSpinner } className="rn-login-island-btn-spinner" alt="loading spinner" />
+                        )
+                    }
                 </button>
             </form>
         );

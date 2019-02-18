@@ -78,32 +78,28 @@ const RootQuery = new GraphQLObjectType({
             resolve: () => User.find({})
         },
         validateUser: { // Validate if user with this email | login exists
-            type: GraphQLInt,
+            type: new GraphQLList(GraphQLBoolean),
             args: {
                 email: { type: new GraphQLNonNull(GraphQLString) },
                 login: { type: new GraphQLNonNull(GraphQLString) }
             },
             async resolve(_, { email, login }) {
-                let a = {},
-                    b = false;
+                let a = [];
 
                 if(email) {
-                    a.email = email;
-                    b = true;
+                    if(await User.findOne({ email })) a[0] = false;
+                    else a[0] = true;
+                } else {
+                    a[0] = null;
                 }
                 if(login) {
-                    a.login = login;
-                    b = true;
+                    if(await User.findOne({ login })) a[1] = false;
+                    else a[1] = true;
+                } else {
+                    a[1] = null;
                 }
 
-                const c = await User.findOne(a);
-                if(!c) {
-                    return 0;
-                } else {
-                    if(login && !email) return 1;
-                    else if(email && !login) return 2;
-                    else return 3; // login && email
-                }
+                return a;
             }
         }
     }

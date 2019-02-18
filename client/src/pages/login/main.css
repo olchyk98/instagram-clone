@@ -104,6 +104,11 @@
     margin-right:var(--margin);
 }
 
+.rn-login-island-btn-spinner {
+    height:45%;
+    margin:0;
+}
+
 .rn-login-island_register-input {
     --margin:7.5px;
     --padding:10px;

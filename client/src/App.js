@@ -15,6 +15,7 @@ import Navigation from './pages/__forall__/navigation';
 import MultiwindowMenu from './pages/__forall__/multiwindow.menu';
 import PhotoModal from './pages/__forall__/image.modal';
 import PhotoAppender from './pages/__forall__/photocreator';
+import { cookieControl } from './utils';
 
 // Router
 import { BrowserRouter } from 'react-router-dom';
@@ -41,6 +42,12 @@ const NeedleRoute = ({ path, condition, component: Component, redirect: Redirect
 );
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+
+        this.clientID = cookieControl.get("userid");
+    }
+
     render() {
         return(
             <Provider store={ reduxStore }>
@@ -50,49 +57,42 @@ class App extends Component {
                         <PhotoModal />
                         <PhotoAppender />
                         {
-                            (!window.location.href.includes("logintest")) ? (
+                            (this.clientID) ? (
                                 <Navigation />
                             ) : null
                         }
                         <Switch>
                             <NeedleRoute
-                                path={ '/logintest' }
-                                condition={ false }
-                                component={ Login }
-                                redirect={ Login }
-                                exact
-                            />
-                            <NeedleRoute
                                 path={ links["FEED_PAGE"].route }
-                                condition={ true }
+                                condition={ this.clientID }
                                 component={ Feed }
                                 redirect={ Login }
                                 exact
                             />
                             <NeedleRoute
                                 path={ links["ACCOUNT_PAGE"].route }
-                                condition={ true }
+                                condition={ this.clientID }
                                 component={ Account }
                                 redirect={ Login }
                                 exact
                             />
                             <NeedleRoute
                                 path={ links["SETTINGS_PAGE"].route }
-                                condition={ true }
+                                condition={ this.clientID }
                                 component={ Settings }
                                 redirect={ Login }
                                 exact
                             />
                             <NeedleRoute
                                 path={ links["EXPLORE_PAGE"].route }
-                                condition={ true }
+                                condition={ this.clientID }
                                 component={ Explore }
                                 redirect={ Login }
                                 exact
                             />
                             <NeedleRoute
                                 path={ links["MESSENGER_PAGE"].route }
-                                condition={ true }
+                                condition={ this.clientID }
                                 component={ Direct }
                                 redirect={ Login }
                                 exact
