@@ -24,12 +24,14 @@ Tasks / Features:
 - [x] Facebook Authentication (https://github.com/keppelen/react-facebook-login)
 - [ ] Add post
 - [ ] Like post
+- [ ] Comment post
+- [ ] Like comment
 - [ ] Posts library system
 - [ ] Comment post
 - [ ] Search system
 - [ ] Subscribe to user
 - [ ] Account settings
-- [ ] Create the explore page that is sorts popular images by alt description and a topic marker
+- [ ] Create the explore page based on alt descriptions and topics marker
 - [ ] Notifications
 - [ ] Direct Chat
 - [ ] Advanced website routing
