@@ -13,6 +13,7 @@ class CommentInput extends Component {
                     className="gle-post-commentinput-mat definp"
                     type="text"
                     placeholder="Add a comment"
+                    ref={ ref => (this.props.onRef) ? this.props.onRef(ref) : null }
                 />
                 <div className="gle-post-commentinput-options">
                     <button className="definp gle-post-commentinput-options-btn" onClick={ this.props.callMenu }>
@@ -26,7 +27,8 @@ class CommentInput extends Component {
 
 CommentInput.propTypes = {
     callMenu: PropTypes.func.isRequired,
-    className: PropTypes.string
+    className: PropTypes.string,
+    onRef: PropTypes.func
 }
 
 export default CommentInput;

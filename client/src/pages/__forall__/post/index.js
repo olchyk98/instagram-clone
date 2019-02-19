@@ -1,17 +1,28 @@
-import React, { PureComponent } from 'react';
+import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
 import { connect } from 'react-redux';
+import { gql } from 'apollo-boost';
+
+import api from '../../../api';
+import client from '../../../apollo';
 
 import PostCommentItem from '../post.comment';
 import CommentInput from '../post.commentinput';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { faHeart, faComment, faBookmark } from '@fortawesome/free-regular-svg-icons';
-
-const avatar = "https://instagram.fbtz1-2.fna.fbcdn.net/vp/c9ab85cb6f08ab4f94827ad427030841/5CDDD9F1/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fbtz1-2.fna.fbcdn.net";
+import {
+    faChevronLeft as faChevronLeftSolid,
+    faChevronRight as faChevronRightSolid,
+    faHeart as faHeartSolid,
+    faBookmark as faBookmarkSolid
+} from '@fortawesome/free-solid-svg-icons';
+import {
+    faHeart as faHeartRegular,
+    faComment as faCommentRegular,
+    faBookmark as faBookmarkRegular
+} from '@fortawesome/free-regular-svg-icons';
 
 class PostCarousel extends PureComponent {
     constructor(props) {
@@ -41,7 +52,7 @@ class PostCarousel extends PureComponent {
                                 <button
                                     className="gle-post-carousel-controls-btn definp"
                                     onClick={ () => this.moveCarousel(-1) }>
-                                    <FontAwesomeIcon icon={ faChevronLeft } />
+                                    <FontAwesomeIcon icon={ faChevronLeftSolid } />
                                 </button>
                             ) : <div />
                         }
@@ -50,7 +61,7 @@ class PostCarousel extends PureComponent {
                                 <button
                                     className="gle-post-carousel-controls-btn definp"
                                     onClick={ () => this.moveCarousel(1) }>
-                                    <FontAwesomeIcon icon={ faChevronRight } />
+                                    <FontAwesomeIcon icon={ faChevronRightSolid } />
                                 </button>
                             ) : <div />
                         }
@@ -78,16 +89,16 @@ class PostCarousel extends PureComponent {
                     </div>
                     <div className="gle-port-carousel-feedback">
                     <div>
-                            <button className="gle-port-carousel-feedback-btn definp" onClick={ () => null }>
-                                <FontAwesomeIcon icon={ faHeart } />
+                            <button className={ `gle-port-carousel-feedback-btn definp${ (!this.props.isLiked) ? "" : " liked" }` } onClick={ this.props.likePost }>
+                                <FontAwesomeIcon icon={ (!this.props.isLiked) ? faHeartRegular : faHeartSolid } />
                             </button>
-                            <button className="gle-port-carousel-feedback-btn definp" onClick={ () => null }>
-                                <FontAwesomeIcon icon={ faComment } />
+                            <button className="gle-port-carousel-feedback-btn definp" onClick={ this.props.focusCommentInput }>
+                                <FontAwesomeIcon icon={ faCommentRegular } />
                             </button>
                         </div>
                         <div>
-                            <button className="gle-port-carousel-feedback-btn definp" onClick={ () => null }>
-                                <FontAwesomeIcon icon={ faBookmark } />
+                            <button className="gle-port-carousel-feedback-btn definp" onClick={ this.props.pushBookmark }>
+                                <FontAwesomeIcon icon={ (!this.props.inBookmarks) ? faBookmarkRegular : faBookmarkSolid } />
                             </button>
                         </div>
                     </div>
@@ -97,44 +108,144 @@ class PostCarousel extends PureComponent {
     }
 }
 
+PostCarousel.propTypes = {
+    isLiked: PropTypes.bool.isRequired,
+    likePost: PropTypes.func.isRequired
+}
+
 class PostComments extends PureComponent {
     render() {
         return(
             <div className="gle-post-comments">
-                <button className="gle-post-comments-lmore definp">
-                    Load more comments
-                </button>
-                <PostCommentItem />
-                <PostCommentItem />
-                <PostCommentItem />
-                <PostCommentItem />
-                <PostCommentItem />
-                <PostCommentItem />
-                <PostCommentItem />
-                <PostCommentItem />
-                <PostCommentItem />
+                {
+                    (this.props.comments.length) ? (
+                        <button className="gle-post-comments-lmore definp">
+                            Load more comments
+                        </button>
+                    ) : null
+                }
+                {
+                    this.props.comments.map(({ id, creator, content, isLiked }) => (
+                        <PostCommentItem
+                            key={ id }
+                            id={ id }
+                            authID={ creator.id }
+                            name={ creator.getName }
+                            content={ content }
+                            isLiked={ isLiked }
+                        />
+                    ))
+                }
             </div>
         );
     }
 }
 
-class Post extends PureComponent {
+class Post extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            likesInt: null,
+            isLiked: null,
+            inBookmarks: null
+        }
+
+        this.likeProcessing = this.pushingBookmark = false;
+        this.commentInputRef = React.createRef();
+    }
+
+    likePost = () => {
+        if(this.likeProcessing) return;
+        this.likeProcessing = true;
+
+        this.setState(({ likesInt: a, isLiked: b }, { likesInt: c, isLiked: d }) => ({
+            likesInt: (a === null) ? (!d) ? c + 1 : c - 1 : (!b) ? a + 1 : c - 1,
+            isLiked: (b === null) ? !d : !b
+        }));
+
+        client.mutate({
+            mutation: gql`
+                mutation($postID: ID!) {
+                    likePost(postID: $postID) {
+                        id,
+                        isLiked,
+                        likesInt
+                    }
+                }
+            `,
+            variables: {
+                postID: this.props.id
+            }
+        }).then(({ data: { likePost } }) => {
+            this.likeProcessing = false;
+            if(likePost === null) return this.props.castError("An error occured while tried to submit your like. Please, try again.");
+
+            this.setState(() => ({
+                likesInt: likePost.likesInt,
+                isLiked: likePost.isLiked
+            }));
+        }).catch(console.error);
+    }
+
+    pushBookmark = () => {
+        if(this.pushingBookmark) return;
+        this.pushingBookmark = true;
+
+        this.setState(({ inBookmarks: a }, { inBookmarks: b }) => ({
+            inBookmarks: (a === null) ? !b : !a
+        }));
+
+        client.mutate({
+            mutation: gql`
+                mutation($postID: ID!) {
+                    pushBookmark(postID: $postID)
+                }
+            `,
+            variables: {
+                postID: this.props.id
+            }
+        }).then(({ data: { pushBookmark } }) => {
+            this.pushingBookmark = false;
+            if(pushBookmark === null) return this.props.castError("An error occured while tried to submit your like. Please, try again.");
+
+            this.setState(() => ({
+                inBookmarks: pushBookmark
+            }))
+        }).catch(console.error);
+    }
+
     render() {
         return(
             <article className="gle-post">
                 <section className="gle-post-auth">
                     <div className="gle-post-auth-avatar">
-                        <img src={ avatar } alt="post author" />
+                        <img src={ api.storage + this.props.aavatar } alt="post author" />
                     </div>
-                    <span className="gle-post-auth-name">oles.odynets</span>
+                    <span className="gle-post-auth-name">{ this.props.aname }</span>
                     {/* with: @..., @.... in ... */}
                     {/* if creatorID === clientID > "Your image was classified as ... You can correct it to help users with problems to understand the image" */}
                 </section>
-                <PostCarousel />
-                <span className="gle-post-stricts">3 893 likes</span>
-                <PostCommentItem />
-                <PostComments />
+                <PostCarousel
+                    media={ this.props.media }
+                    isLiked={ (this.state.isLiked === null) ? this.props.isLiked : this.state.isLiked }
+                    inBookmarks={ (this.state.inBookmarks === null) ? this.props.inBookmarks : this.state.inBookmarks }
+                    likePost={ this.likePost }
+                    pushBookmark={ this.pushBookmark }
+                    focusCommentInput={ () => this.commentInputRef.focus() }
+                />
+                <span className="gle-post-stricts">{ (this.state.likesInt === null) ? this.props.likesInt : this.state.likesInt } likes</span>
+                <PostCommentItem
+                    content={ this.props.text }
+                    name={ this.props.aname }
+                    canLike={ false }
+                />
+                <PostComments
+                    postID={ this.props.id }
+                    comments={ this.props.comments }
+                />
                 <CommentInput
+                    onRef={ ref => this.commentInputRef = ref }
                     callMenu={() => this.props.callGlobalMenu({
                         type: "OPTIONS",
                         buttons: [
@@ -171,18 +282,21 @@ class Post extends PureComponent {
 
 Post.propTypes = {
     id: PropTypes.string.isRequired,
-    likes: PropTypes.number.isRequired,
+    likesInt: PropTypes.number.isRequired,
     aid: PropTypes.string.isRequired,
     aname: PropTypes.string.isRequired,
     aavatar: PropTypes.string.isRequired,
     comments: PropTypes.array.isRequired,
-    media: PropTypes.array.isRequired
+    media: PropTypes.array.isRequired,
+    isLiked: PropTypes.bool.isRequired,
+    text: PropTypes.string.isRequired
 }
 
 const mapStateToProps = () => ({});
 
 const mapActionsToProps = {
-    callGlobalMenu: payload => ({ type: 'SET_GLOBAL_MENU', payload })
+    callGlobalMenu: payload => ({ type: 'SET_GLOBAL_MENU', payload }),
+    castError: text => ({ type: "CAST_GLOBAL_ERROR", payload: { text } })
 }
 
 export default connect(

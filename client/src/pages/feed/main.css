@@ -12,6 +12,7 @@
 
 .rn-feed-mat {
     height:auto;
+    min-width:650px;
 }
 
 .rn-feed-block {

@@ -6,7 +6,8 @@ const PostSchema = new Schema({
     likes: Array,
     time: String,
     people: Array,
-    places: Array
+    places: Array,
+    text: String
 });
 
 module.exports = mongoose.model("Post", PostSchema);

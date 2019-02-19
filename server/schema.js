@@ -13,16 +13,18 @@ const {
 } = require('graphql');
 
 const {
-    AuthenticationError
+    AuthenticationError,
+    GraphQLUpload
 } = require('apollo-server');
 
 const {
     User,
-    Post
+    Post,
+    Comment
 } = require('./models');
 
 //
-const mobilenet = require('@tensorflow-models/mobilenet');
+// const mobilenet = require('@tensorflow-models/mobilenet');
 
 // const IClassifier = require('./mobilenet');
 // let ICLModel = null;
@@ -33,7 +35,8 @@ const mobilenet = require('@tensorflow-models/mobilenet');
 // if(ICLModel) IClassifier(ICLModel, './photo.jpg');
 //
 
-// Functions
+// Stuff
+
 function generateNoise(l = 256) {
     let a = "",
         b = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'; // lib
@@ -57,14 +60,18 @@ const UserType = new GraphQLObjectType({
         bio: { type: GraphQLString },
         email: { type: GraphQLString },
         gender: { type: GraphQLString },
+        getName: {
+            type: GraphQLString,
+            resolve: ({ name, login }) => name || login
+        },
         password: { type: GraphQLString },
-        savedImagesID: { type: new GraphQLList(GraphQLID) },
+        savedPostsID: { type: new GraphQLList(GraphQLID) },
         registeredByFacebook: { type: GraphQLBoolean },
-        savedImages: {
-            type: new GraphQLList(GraphQLID),
-            resolve: ({ savedImages }) => Image.find({
+        savedPosts: {
+            type: new GraphQLList(PostType),
+            resolve: ({ savedPosts }) => Post.find({
                 _id: {
-                    $in: savedImages
+                    $in: savedPosts
                 }
             })
         },
@@ -77,7 +84,7 @@ const UserType = new GraphQLObjectType({
         isVerified: { type: GraphQLBoolean },
         subscribedTo: { type: new GraphQLList(GraphQLID) },
         feed: {
-            type: UserType,
+            type: new GraphQLList(PostType),
             resolve({ id, subscribedTo }) {
                 return Post.find({
                     $or: [
@@ -107,6 +114,30 @@ const MediaType = new GraphQLObjectType({
     }
 });
 
+const CommentType = new GraphQLObjectType({
+    name: "Comment",
+    fields: () => ({
+        id: { type: GraphQLID },
+        postID: { type: GraphQLID },
+        creatorID: { type: GraphQLID },
+        content: { type: GraphQLString },
+        likes: { type: new GraphQLList(GraphQLID) },
+        isLiked: {
+            type: GraphQLBoolean,
+            resolve: ({ likes }, _, { req: { session: { id } } }) => (id) ? likes.includes(id) : false
+        },
+        time: { type: GraphQLString },
+        creator: {
+            type: UserType,
+            resolve: ({ creatorID }) => User.findById(creatorID)
+        },
+        post: {
+            type: PostType,
+            resolve: ({ postID }) => Post.findById(postID)
+        }
+    })
+})
+
 const PostType = new GraphQLObjectType({
     name: "Post",
     fields: () => ({
@@ -116,10 +147,21 @@ const PostType = new GraphQLObjectType({
             type: UserType,
             resolve: ({ creatorID }) => User.findById(creatorID)
         },
-        likes: { type: GraphQLInt },
+        likes: { type: new GraphQLList(GraphQLID) },
         likesInt: {
             type: GraphQLInt,
             resolve: ({ likes }) => likes.length
+        },
+        isLiked: {
+            type: GraphQLBoolean,
+            resolve: ({ likes }, _, { req: { session: { id } } }) => (id) ? likes.includes(id) : false
+        },
+        inBookmarks: {
+            type: GraphQLBoolean,
+            resolve: async ({ id }, _, { req: { session: { id: clientID } } }) => {
+                const a = await User.findById(clientID).select("savedPosts");
+                return a.savedPosts.includes(str(id))
+            }
         },
         time: { type: GraphQLString },
         people: { type: new GraphQLList(GraphQLID) },
@@ -129,13 +171,33 @@ const PostType = new GraphQLObjectType({
             resolve: ({ id }) => Media.find({
                 postID: str(id)
             })
-        }
+        },
+        comments: {
+            type: new GraphQLList(CommentType),
+            args: {
+                limit: { type: GraphQLInt }
+            },
+            resolve: ({ id }, { limit }) => Comment.find({
+                postID: str(id)
+            }).sort({ time: -1 }).limit(limit || 0)
+        },
+        text: { type: GraphQLString }
     })
 });
 
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
+        // --- DEVELOPMENT ---
+        users: {
+            type: new GraphQLList(UserType),
+            resolve: () => User.find({})
+        },
+        posts: {
+            type: new GraphQLList(PostType),
+            resolve: () => Post.find({})
+        },
+        // --- DEVELOPMENT ---
         user: {
             type: UserType,
             args: {
@@ -147,10 +209,6 @@ const RootQuery = new GraphQLObjectType({
 
                 return User.findById(targetID || req.session.id);
             }
-        },
-        users: {
-            type: new GraphQLList(UserType),
-            resolve: () => User.find({})
         },
         validateUser: { // Validate if user with this email | login exists
             type: new GraphQLList(GraphQLBoolean),
@@ -207,8 +265,9 @@ const RootMutation = new GraphQLObjectType({
                 const _a = false;
 
                 if(byFacebook) {
-                    const b = await User.findOne({ // Vulnerability? I think facebook protects and checks user's email.
-                        email
+                    const b = await User.findOne({
+                        email,
+                        registeredByFacebook: true
                     });
 
                     if(b) {
@@ -253,7 +312,9 @@ const RootMutation = new GraphQLObjectType({
                             });
                         }));
 
-                        avatar = `/files/avatars/${ generateNoise(128) }.jpeg`;
+                        // I can pass any image format here.
+                        // Thanks, Mark blyad' Cucumber -_-
+                        avatar = `/files/avatars/${ generateNoise(128) }.png`;
                         stream.pipe(fs.createWriteStream('.' + avatar));
                     }
 
@@ -265,7 +326,7 @@ const RootMutation = new GraphQLObjectType({
                             email,
                             gender: "",
                             password,
-                            savedImages: [],
+                            savedPosts: [],
                             avatar,
                             isVerified: false,
                             subscribedTo: [],
@@ -311,6 +372,148 @@ const RootMutation = new GraphQLObjectType({
                 }
 
                 return a;
+            }
+        },
+        createPost: {
+            type: PostType,
+            args: {
+                text: { type: new GraphQLNonNull(GraphQLString) },
+                places: { type: new GraphQLList(GraphQLString) },
+                people: { type: new GraphQLList(GraphQLID) },
+                media: { type: new GraphQLNonNull(new GraphQLList(GraphQLUpload)) }
+            },
+            async resolve(_, { text, places, people, media }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await (
+                    new Post({
+                        creatorID: str(req.session.id),
+                        likes: [],
+                        time: str(+new Date),
+                        people: people || [],
+                        places: places || [],
+                        text
+                    })
+                ).save();
+
+                return a;
+            }
+        },
+        likePost: {
+            type: PostType,
+            args: {
+                postID: { type: new GraphQLNonNull(GraphQLID) }
+            },
+            async resolve(_, { postID }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await Post.findById(postID);
+                if(!a) return null;
+
+                if(!a.likes.includes(req.session.id)) {
+                    await a.updateOne({
+                        $push: {
+                            likes: req.session.id
+                        }
+                    });
+
+                    a.likes.push(str(req.session.id));
+                } else {
+                    await a.updateOne({
+                        $pull: {
+                            likes: req.session.id
+                        }
+                    });
+
+                    a.likes.splice(a.likes.findIndex(io => io === req.session.id), 1);
+                }
+
+                return a;
+            }
+        },
+        commentPost: {
+            type: CommentType,
+            args: {
+                postID: { type: new GraphQLNonNull(GraphQLID) },
+                content: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            async resolve(_, { postID, content }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await (
+                    new Comment({
+                        postID,
+                        creatorID: req.session.id,
+                        content,
+                        likes: [],
+                        time: str(+new Date)
+                    })
+                ).save();
+
+                return a;
+            }
+        },
+        pushBookmark: {
+            type: GraphQLBoolean,
+            args: {
+                postID: { type: new GraphQLNonNull(GraphQLID) }
+            },
+            async resolve(_, { postID }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await User.findById(req.session.id).select("savedPosts");
+                if(!a.savedPosts.includes(postID)) {
+                    await a.updateOne({
+                        $push: {
+                            savedPosts: postID
+                        }
+                    });
+
+                    return true;
+                } else {
+                    await a.updateOne({
+                        $pull: {
+                            savedPosts: postID
+                        }
+                    });
+
+                    return false;
+                }
+            }
+        },
+        likeComment: {
+            type: GraphQLBoolean,
+            args: {
+                commentID: { type: new GraphQLNonNull(GraphQLID) }
+            },
+            async resolve(_, { commentID }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await Comment.findById(commentID);
+                if(!a) return null;
+
+                if(!a.likes.includes(req.session.id)) {
+                    await a.updateOne({
+                        $push: {
+                            likes: req.session.id
+                        }
+                    });
+
+                    return true;
+                } else {
+                    await a.updateOne({
+                        $pull: {
+                            likes: req.session.id
+                        }
+                    });
+
+                    return false;
+                }
             }
         }
     }
