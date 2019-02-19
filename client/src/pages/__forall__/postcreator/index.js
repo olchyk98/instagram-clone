@@ -1,10 +1,11 @@
 import React, { Component, PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import './main.css';
 
 import { connect } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarker, faUserPlus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarker, faUserPlus, faPlus, faImage, faVideo, faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
 const image = "https://scontent-arn2-1.cdninstagram.com/vp/0a7093bc1183ffe944e0b05a5e5feecd/5CE06CFB/t51.2885-15/e35/51725722_811239225875013_2879130140697820953_n.jpg?_nc_ht=scontent-arn2-1.cdninstagram.com";
 
@@ -26,14 +27,71 @@ class DataInstructor extends PureComponent {
     }
 }
 
+class Media extends PureComponent {
+    render() {
+        return(
+            <div className={ `gle-newpost-target-preview-image ${ (this.props.status) }` }>
+                <div className="gle-newpost-target-preview-image-type">
+                    <FontAwesomeIcon icon={ {image:faImage,video:faVideo}[this.props.type] || faImage } />
+                </div>
+                {
+                    (this.props.type === "image") ? (
+                        <img className="gle-newpost-target-preview-image-media" src={ this.props.source } alt="preview" />
+                    ) : (this.props.type === "video") ? (
+                        <video autoPlay muted loop className="gle-newpost-target-preview-image-media">
+                            <source src={ this.props.soruce } type={ this.props.fullType } />
+                            Please, update your browser.
+                        </video>
+                    ) : null
+                }
+            </div>
+        );
+    }
+}
+
+Media.propTypes = {
+    status: PropTypes.string.isRequired
+}
+
 class Hero extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             tagPeopleOpen: false,
-            setPlaceOpen: false
+            setPlaceOpen: false,
+            scrollPos: 0,
+            media: []
         }
+    }
+
+    moveScroll = a => this.setState(({ scrollPos: b }) => ({
+        scrollPos: b + a
+    }));
+
+    setMedia = file => {
+        let a = this.state.media;
+
+        if(a[this.state.scrollPos]) {
+            URL.revokeObjectURL(a[this.state.scrollPos].preview);
+        }
+
+        const type = (file.type.includes("image")) ? "image" : (
+            (file.type.includes("video")) ? "video" : null
+        );
+
+        if(!type) return;
+
+        a[this.state.scrollPos] = {
+            preview: URL.createObjectURL(file),
+            file: file,
+            type,
+            fullType: file.type
+        }
+
+        this.setState(() => ({
+            media: a
+        }));
     }
 
     render() {
@@ -43,12 +101,55 @@ class Hero extends Component {
                     <h3 className="gle-newpost-title">Set up your post</h3>
                     <div className="gle-newpost-target">
                         <section className="gle-newpost-target-preview">
-                            <img className="gle-newpost-target-preview-image" src={ image } alt="preview" />
+                            {
+                                this.state.media.map(({ preview, type, fullType }, index) => {
+                                    const a = this.state.scrollPos;
+
+                                    return(
+                                        <Media
+                                            key={ index }
+                                            source={ preview }
+                                            type={ type }
+                                            fullType={ fullType }
+                                            status={
+                                                (index < a) ? "old" : (
+                                                    (index > a) ? "new" : "curr"
+                                                )
+                                            }
+                                        />
+                                    );
+                                })
+                            }
                             <div className="gle-newpost-target-preview-load">
-                                <label className="definp" onClick={ () => null }>
+                                <label htmlFor="gle-newpost-target-preview-load-fi" className="definp" onClick={ () => null }>
                                     <FontAwesomeIcon icon={ faPlus } />
                                 </label>
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*, video/*"
+                                    id="gle-newpost-target-preview-load-fi"
+                                    onChange={ ({ target: { files: [file] } }) => (file) ? this.setMedia(file) : null }
+                                />
                             </div>
+                            {
+                                (this.state.media[this.state.scrollPos - 1]) ? (
+                                    <button
+                                        className="gle-newpost-target-preview-scroll-btn definp l"
+                                        onClick={ () => this.moveScroll(-1) }>
+                                        <FontAwesomeIcon icon={ faCaretLeft } />
+                                    </button>
+                                ) : null
+                            }
+                            {
+                                (this.state.media[this.state.scrollPos]) ? (
+                                    <button
+                                        className="gle-newpost-target-preview-scroll-btn definp r"
+                                        onClick={ () => this.moveScroll(1) }>
+                                        <FontAwesomeIcon icon={ faCaretRight } />
+                                    </button>
+                                ) : null
+                            }
                             <div className="gle-newpost-target-preview-controls">
                                 <div className="gle-newpost-target-preview-controls-container">
                                     <div className={ `gle-newpost-target-preview-controls-container-win gle-newpost-target-preview-controls-container-people${ (!this.state.tagPeopleOpen) ? "" : " active" }` }>

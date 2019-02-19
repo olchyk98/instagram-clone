@@ -29,6 +29,14 @@ menu {
     font-size:1em;
 }
 
+.hidden {
+    position:absolute;
+    display:none;
+    visibility:hidden;
+    opacity:0;
+    transition:all 99999999999999999 ease-in;
+}
+
 .rn {
     height:calc(100vh - var(--navheight));
     width:100vw;
@@ -50,6 +58,43 @@ menu {
     flex-shrink:0;
     height:var(--navheight);
     width:100vw;
+}
+
+/* text margin margin.l text.one3 margin:not(.prevent) margin.prevent.ts */
+
+.glei-placeholder {
+    position:relative;
+}
+
+.glei-placeholder.margin:not(.prevent) {
+    --margin:5px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+}
+
+.glei-placeholder.margin.prevent.ts {
+    margin-top:10px;
+}
+
+.glei-placeholder.margin.l {
+    margin-left:7.5px;
+}
+
+.glei-placeholder.text {
+    width:210px;
+    max-width:100%;
+    height:20px;
+    border-radius:2.5px;
+}
+
+.glei-placeholder.text.one3 {
+    width:150px;
+}
+
+.glei-placeholder.big {
+    width:100%;
+    height:400px;
 }
 
 /* Queries */

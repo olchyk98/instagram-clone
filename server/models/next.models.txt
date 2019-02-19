@@ -1,6 +1,7 @@
     - User
-    - Photo
-    - Tag (name)
+    - Post
+    - Media (type)
+    - Hashtag (name)
     - Comment
     - Conversation
     - Message

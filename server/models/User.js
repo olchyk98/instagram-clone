@@ -12,7 +12,7 @@ const UserSchema = new Schema({
     avatar: String,
     isVerified: Boolean,
     authTokens: Array,
-    subscribers: Array,
+    subscribedTo: Array,
     registeredByFacebook: Boolean
 });
 

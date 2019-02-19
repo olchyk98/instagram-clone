@@ -119,11 +119,13 @@ class Register extends Component {
         }));
 
         if(!byFacebook) {
+            // eslint-disable-next-line
             var { email, name, login, password } = this.state;
         } else if(data && data.id) {
             // Get data
+            // eslint-disable-next-line
             var { id: password, name, email } = data;
-            var login = ""
+            login = ""
 
             // Some of users (like me) have name in Cyrillic format.
             // So I'll just convert it to latin.

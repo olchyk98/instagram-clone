@@ -10,7 +10,12 @@ const {
 } = require('graphql');
 
 const {
-    User
+    AuthenticationError
+} = require('apollo-server');
+
+const {
+    User,
+    Post
 } = require('./models');
 
 //
@@ -67,13 +72,71 @@ const UserType = new GraphQLObjectType({
             resolve: ({ authTokens }) => authTokens.slice(-1)[0] || null
         },
         isVerified: { type: GraphQLBoolean },
-        subscribers: { type: new GraphQLList(GraphQLID) }
+        subscribedTo: { type: new GraphQLList(GraphQLID) },
+        feed: {
+            type: UserType,
+            resolve({ id, subscribedTo }) {
+                return Post.find({
+                    $or: [
+                        {
+                            creatorID: {
+                                $in: subscribedTo
+                            }
+                        },
+                        {
+                            creatorID: str(id)
+                        }
+                    ]
+                });
+            }
+        }
+    })
+});
+
+const MediaType = new GraphQLObjectType({
+    name: "Media",
+    fields: {
+        durationS: { type: GraphQLInt },
+        altDescription: { type: GraphQLString },
+        url: { type: GraphQLString },
+        type: { type: GraphQLString },
+        postID: { type: GraphQLString }
+    }
+});
+
+const PostType = new GraphQLObjectType({
+    name: "Post",
+    fields: () => ({
+        id: { type: GraphQLID },
+        creatorID: { type: GraphQLID },
+        likes: { type: GraphQLInt },
+        time: { type: GraphQLString },
+        people: { type: new GraphQLList(GraphQLID) },
+        places: { type: new GraphQLList(GraphQLString) },
+        media: {
+            type: new GraphQLList(MediaType),
+            resolve: ({ id }) => Media.find({
+                postID: str(id)
+            })
+        }
     })
 });
 
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
+        user: {
+            type: UserType,
+            args: {
+                targetID: { type: GraphQLID }
+            },
+            resolve(_, { targetID }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                return User.findById(targetID || req.session.id);
+            }
+        },
         users: {
             type: new GraphQLList(UserType),
             resolve: () => User.find({})
@@ -181,7 +244,7 @@ const RootMutation = new GraphQLObjectType({
                             savedImages: [],
                             avatar: "/files/default/avatar.jpg",
                             isVerified: false,
-                            subscribers: [],
+                            subscribedTo: [],
                             authTokens: [token],
                             registeredByFacebook: !!byFacebook
                         })

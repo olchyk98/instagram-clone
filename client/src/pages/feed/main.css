@@ -18,6 +18,20 @@
     margin-top:65px;
 }
 
+.rn-feed-mat-placeholder {
+    overflow:hidden;
+    padding-top:15px;
+    width:650px;
+    border:1px solid rgba(0, 0, 0, .05);
+    border-radius:2.5px;
+    background:white;
+    display:flex;
+    flex-direction:column;
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-position:center;
+}
+
 .rn-feed-more {
     width:295px;
     height:400px;

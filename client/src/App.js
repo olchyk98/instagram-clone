@@ -14,8 +14,9 @@ import links from './links';
 import Navigation from './pages/__forall__/navigation';
 import MultiwindowMenu from './pages/__forall__/multiwindow.menu';
 import PhotoModal from './pages/__forall__/image.modal';
-import PhotoAppender from './pages/__forall__/photocreator';
+import PhotoAppender from './pages/__forall__/postcreator';
 import { cookieControl } from './utils';
+import GlobalError from './pages/__forall__/global.error';
 
 // Router
 import { BrowserRouter } from 'react-router-dom';
@@ -56,6 +57,7 @@ class App extends Component {
                         <MultiwindowMenu />
                         <PhotoModal />
                         <PhotoAppender />
+                        <GlobalError />
                         {
                             (this.clientID) ? (
                                 <Navigation />

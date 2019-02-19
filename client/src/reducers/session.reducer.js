@@ -27,6 +27,9 @@ export default function reducer(state = {}, { type, payload }) {
         case 'CREATE_NEW_POST':
             a.newPostWin = payload;
         break;
+        case 'CAST_GLOBAL_ERROR':
+            a.globalError = payload;
+        break;
         default:break;
     }
 
