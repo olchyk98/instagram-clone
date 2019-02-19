@@ -54,6 +54,8 @@ class Comment extends Component {
     }
 
     render() {
+        const isLiked = !((this.state.isLiked === null && !this.props.isLiked) || this.state.isLiked === false);
+
         return(
             <article className="gle-post-commentitem">
                 <div className="gle-post-commentitem-content">
@@ -66,8 +68,8 @@ class Comment extends Component {
                 </div>
                 {
                     (this.props.canLike) ? (
-                        <button className="gle-post-commentitem-like definp" onClick={ this.likeComment }>
-                            <FontAwesomeIcon icon={ ( (this.state.isLiked === null && !this.props.isLiked) || this.state.isLiked === false ) ? faHeartRegular : faHeartSolid } />
+                        <button className={ `gle-post-commentitem-like definp${ (!isLiked) ? "" : " liked" }` } onClick={ this.likeComment }>
+                            <FontAwesomeIcon icon={ (!isLiked) ? faHeartRegular : faHeartSolid } />
                         </button>
                     ) : null
                 }

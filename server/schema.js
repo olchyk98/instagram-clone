@@ -105,13 +105,13 @@ const UserType = new GraphQLObjectType({
 
 const MediaType = new GraphQLObjectType({
     name: "Media",
-    fields: {
+    fields: () => ({
         durationS: { type: GraphQLInt },
         altDescription: { type: GraphQLString },
         url: { type: GraphQLString },
         type: { type: GraphQLString },
         postID: { type: GraphQLString }
-    }
+    })
 });
 
 const CommentType = new GraphQLObjectType({
@@ -179,7 +179,7 @@ const PostType = new GraphQLObjectType({
             },
             resolve: ({ id }, { limit }) => Comment.find({
                 postID: str(id)
-            }).sort({ time: -1 }).limit(limit || 0)
+            }).sort({ time: 1 }).limit(limit || 0)
         },
         text: { type: GraphQLString }
     })
@@ -514,6 +514,29 @@ const RootMutation = new GraphQLObjectType({
 
                     return false;
                 }
+            }
+        },
+        commentPost: {
+            type: CommentType,
+            args: {
+                postID: { type: new GraphQLNonNull(GraphQLID) },
+                content: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            async resolve(_, { postID, content }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await (
+                    new Comment({
+                        postID,
+                        creatorID: req.session.id,
+                        content,
+                        likes: [],
+                        time: str(+new Date)
+                    })
+                ).save();
+
+                return a;
             }
         }
     }

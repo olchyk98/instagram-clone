@@ -6,21 +6,41 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 
 class CommentInput extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            content: ""
+        }
+
+        this.matRef = React.createRef();
+    }
+
     render() {
         return(
-            <section className={ `gle-post-commentinput ${ (this.props.className) }` }>
+            <form className={ `gle-post-commentinput ${ (this.props.className) }` } onSubmit={(e) => {
+                e.preventDefault();
+                this.props.onSubmit(this.state.content);
+                this.matRef.value = "";
+                this.matRef.blur();
+            }}>
                 <input
                     className="gle-post-commentinput-mat definp"
                     type="text"
                     placeholder="Add a comment"
-                    ref={ ref => (this.props.onRef) ? this.props.onRef(ref) : null }
+                    onChange={ ({ target: { value } }) => this.setState({ content: value }) }
+                    ref={(ref) => {
+                        if(this.props.onRef) this.props.onRef(ref);
+
+                        this.matRef = ref;
+                    }}
                 />
                 <div className="gle-post-commentinput-options">
-                    <button className="definp gle-post-commentinput-options-btn" onClick={ this.props.callMenu }>
+                    <button type="button" className="definp gle-post-commentinput-options-btn" onClick={ this.props.callMenu }>
                         <FontAwesomeIcon icon={ faEllipsisH } />
                     </button>
                 </div>
-            </section>
+            </form>
         );
     }
 }
@@ -28,7 +48,8 @@ class CommentInput extends Component {
 CommentInput.propTypes = {
     callMenu: PropTypes.func.isRequired,
     className: PropTypes.string,
-    onRef: PropTypes.func
+    onRef: PropTypes.func,
+    onSubmit: PropTypes.func.isRequired
 }
 
 export default CommentInput;

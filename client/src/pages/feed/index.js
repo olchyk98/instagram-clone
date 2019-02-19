@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import './main.css';
 
 import { gql } from 'apollo-boost';
@@ -12,7 +11,6 @@ import Post from '../__forall__/post';
 
 import placeholderIMG from '../__forall__/placeholderINST.gif';
 
-const avatar = "https://instagram.fbtz1-2.fna.fbcdn.net/vp/c9ab85cb6f08ab4f94827ad427030841/5CDDD9F1/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fbtz1-2.fna.fbcdn.net";
 const postCommentsLimit = 15;
 
 class Feed extends Component {

@@ -1,6 +1,6 @@
 .gle-post-commentitem {
     --margin:5px;
-    
+
     margin-top:var(--margin);
     margin-bottom:var(--margin);
     display:flex;
@@ -31,6 +31,10 @@
     cursor:pointer;
     margin-left:20px;
     transition:.1s;
+}
+
+.gle-post-commentitem-like.liked {
+    color:red;
 }
 
 .gle-post-commentitem-like:active {

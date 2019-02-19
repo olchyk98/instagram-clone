@@ -7,8 +7,6 @@ import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarker, faUserPlus, faPlus, faImage, faVideo, faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
-const image = "https://scontent-arn2-1.cdninstagram.com/vp/0a7093bc1183ffe944e0b05a5e5feecd/5CE06CFB/t51.2885-15/e35/51725722_811239225875013_2879130140697820953_n.jpg?_nc_ht=scontent-arn2-1.cdninstagram.com";
-
 class DataInstructorItem extends PureComponent {
     render() {
         return(

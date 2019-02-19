@@ -113,7 +113,7 @@ PostCarousel.propTypes = {
     likePost: PropTypes.func.isRequired
 }
 
-class PostComments extends PureComponent {
+class PostComments extends Component {
     render() {
         return(
             <div className="gle-post-comments">
@@ -148,7 +148,8 @@ class Post extends Component {
         this.state = {
             likesInt: null,
             isLiked: null,
-            inBookmarks: null
+            inBookmarks: null,
+            comments: null
         }
 
         this.likeProcessing = this.pushingBookmark = false;
@@ -215,6 +216,62 @@ class Post extends Component {
         }).catch(console.error);
     }
 
+    postComment = content => {
+        {
+            const _a = this.state.comments;
+            var a_id = this.props.comments.length + ((_a) ? _a.length : 0);
+
+            const a = {
+                id: a_id,
+                creator: {
+                    id: 0,
+                    getName: "YOU"
+                },
+                isLiked: false,
+                content
+            }
+
+            this.setState(({ comments: _a }, { comments: _b }) => ({
+                comments: (_a === null) ? ([
+                    ..._b,
+                    a
+                ]) : ([
+                    ..._a,
+                    a
+                ])
+            }));
+        }
+
+        client.mutate({
+            mutation: gql`
+                mutation($postID: ID!, $content: String!) {
+                    commentPost(postID: $postID, content: $content) {
+                        id,
+                        creator {
+                            id,
+                            getName
+                        },
+                        isLiked,
+                        content
+                    }
+                }
+            `,
+            variables: {
+                postID: this.props.id,
+                content
+            }
+        }).then(({ data: { commentPost } }) => {
+            if(!commentPost) return this.props.castError("Something went wrong. Please, try again.");
+
+            const a = this.state.comments;
+            a[a.findIndex(io => io.id === a_id)] = commentPost;
+
+            this.setState(() => ({
+                comments: a
+            }), () => this.forceUpdate());
+        });
+    }
+
     render() {
         return(
             <article className="gle-post">
@@ -242,10 +299,11 @@ class Post extends Component {
                 />
                 <PostComments
                     postID={ this.props.id }
-                    comments={ this.props.comments }
+                    comments={ this.state.comments || this.props.comments }
                 />
                 <CommentInput
                     onRef={ ref => this.commentInputRef = ref }
+                    onSubmit={ this.postComment }
                     callMenu={() => this.props.callGlobalMenu({
                         type: "OPTIONS",
                         buttons: [
