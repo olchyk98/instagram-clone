@@ -24,7 +24,7 @@ Tasks / Features:
 - [x] Facebook Authentication (https://github.com/keppelen/react-facebook-login)
 - [ ] Add post
 - [x] Like post
-- [ ] Comment post
+- [x] Comment post
 - [x] Like comment
 - [ ] Posts library system
 - [ ] Comment post
