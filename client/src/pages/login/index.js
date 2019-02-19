@@ -121,11 +121,13 @@ class Register extends Component {
         if(!byFacebook) {
             // eslint-disable-next-line
             var { email, name, login, password } = this.state;
+            var pictureURL = "";
         } else if(data && data.id) {
             // Get data
             // eslint-disable-next-line
-            var { id: password, name, email } = data;
-            login = ""
+            var { id: password, name, email, picture } = data;
+            login = "";
+            pictureURL = picture.data.url;
 
             // Some of users (like me) have name in Cyrillic format.
             // So I'll just convert it to latin.
@@ -148,8 +150,8 @@ class Register extends Component {
 
         client.mutate({
             mutation: gql`
-                mutation($email: String!, $name: String!, $login: String, $password: String!, $byFacebook: Boolean) {
-                    registerUser(email: $email, name: $name, login: $login, password: $password, byFacebook: $byFacebook) {
+                mutation($email: String!, $name: String!, $login: String, $password: String!, $byFacebook: Boolean, $pictureURL: String) {
+                    registerUser(email: $email, name: $name, login: $login, password: $password, byFacebook: $byFacebook, pictureURL: $pictureURL) {
                         id
                     }
                 }
@@ -157,7 +159,7 @@ class Register extends Component {
             variables: {
                 email, name,
                 login, password,
-                byFacebook
+                byFacebook, pictureURL
             }
         }).then(({ data: { registerUser } }) => {
             this.setState(() => ({
@@ -184,7 +186,7 @@ class Register extends Component {
                 <FacebookLogin
                     appId="355951248461966"
                     callback={ data => (data.id) ? this.register(true, data) : null }
-                    fields="id, name, email"
+                    fields="id, name, email, picture"
                     isDisabled={ this.state.registering || this.state.registeringByFB }
                     render={props => (
                         <button onClick={ props.onClick } type="button" className="definp rn-login-island-btn">

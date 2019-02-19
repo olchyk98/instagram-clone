@@ -1,5 +1,5 @@
 const { createServer } = require('http');
-const app = require('express')();
+const express = require('express');
 const cookieSession = require('cookie-session');
 const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
@@ -13,6 +13,9 @@ mongoose.connect('mongodb://oles:0password@ds139435.mlab.com:39435/instagram-clo
 });
 mongoose.connection.once('open', () => console.timeEnd(mongodbtimetit));
 
+const app = express();
+
+app.use('/files', express.static('./files'));
 app.use(new cookieSession({
     age: 24 * 60 * 60 * 1000,
     name: 'session',

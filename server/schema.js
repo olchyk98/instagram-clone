@@ -1,3 +1,6 @@
+const fs = require('fs');
+const https = require('https');
+
 const {
     GraphQLObjectType,
     GraphQLSchema,
@@ -109,7 +112,15 @@ const PostType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         creatorID: { type: GraphQLID },
+        creator: {
+            type: UserType,
+            resolve: ({ creatorID }) => User.findById(creatorID)
+        },
         likes: { type: GraphQLInt },
+        likesInt: {
+            type: GraphQLInt,
+            resolve: ({ likes }) => likes.length
+        },
         time: { type: GraphQLString },
         people: { type: new GraphQLList(GraphQLID) },
         places: { type: new GraphQLList(GraphQLString) },
@@ -178,10 +189,11 @@ const RootMutation = new GraphQLObjectType({
                 email: { type: new GraphQLNonNull(GraphQLString) },
                 name: { type: new GraphQLNonNull(GraphQLString) },
                 login: { type: GraphQLString },
+                pictureURL: { type: GraphQLString },
                 password: { type: new GraphQLNonNull(GraphQLString) },
                 byFacebook: { type: GraphQLBoolean }
             },
-            async resolve(_, { email, name, login, password, byFacebook }, { req }) {
+            async resolve(_, { email, name, login, password, pictureURL, byFacebook }, { req }) {
                 if(!byFacebook) {
                     const a = await User.findOne({
                         $or: [
@@ -217,6 +229,7 @@ const RootMutation = new GraphQLObjectType({
 
                 if(!_a) {
                     const token = generateNoise();
+                    let avatar = "/files/default/avatar.jpg";
 
                     if(!login) { // If login wasn't passed -> generate a new one
                         async function genLogin() {
@@ -233,6 +246,17 @@ const RootMutation = new GraphQLObjectType({
                         login = await genLogin();
                     }
 
+                    if(pictureURL) {
+                        const stream = await (new Promise((resolve) => {
+                            https.get(pictureURL, response => {
+                                resolve(response);
+                            });
+                        }));
+
+                        avatar = `/files/avatars/${ generateNoise(128) }.jpeg`;
+                        stream.pipe(fs.createWriteStream('.' + avatar));
+                    }
+
                     const b = await (
                         new User({
                             login,
@@ -242,7 +266,7 @@ const RootMutation = new GraphQLObjectType({
                             gender: "",
                             password,
                             savedImages: [],
-                            avatar: "/files/default/avatar.jpg",
+                            avatar,
                             isVerified: false,
                             subscribedTo: [],
                             authTokens: [token],

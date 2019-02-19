@@ -169,6 +169,16 @@ class Post extends PureComponent {
     }
 }
 
+Post.propTypes = {
+    id: PropTypes.string.isRequired,
+    likes: PropTypes.number.isRequired,
+    aid: PropTypes.string.isRequired,
+    aname: PropTypes.string.isRequired,
+    aavatar: PropTypes.string.isRequired,
+    comments: PropTypes.array.isRequired,
+    media: PropTypes.array.isRequired
+}
+
 const mapStateToProps = () => ({});
 
 const mapActionsToProps = {

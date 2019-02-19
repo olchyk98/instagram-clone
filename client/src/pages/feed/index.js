@@ -19,7 +19,18 @@ class Feed extends Component {
             <section className="rn-feed-block rn-feed-mat">
                 {
                     (this.props.feed) ? (
-                        <Post />
+                        this.props.feed.map(({ id, likesInt, creator, comments, media }, index) => (
+                            <Post
+                                key={ id }
+                                id={ id }
+                                likes={ likesInt }
+                                aid={ creator.id }
+                                aname={ creator.name }
+                                aavatar={ creator.avatar }
+                                comments={ comments }
+                                media={ media }
+                            />
+                        ))
                     ) : (
                         <div className="rn-feed-mat-placeholder">
                             <img src={ placeholderIMG } alt="placeholder" className="glei-placeholder text margin l" />
@@ -86,6 +97,8 @@ class Hero extends Component {
     }
 
     fetchMain = () => {
+        // TODO: Comments
+
         client.query({
             query: gql`
                 query {
@@ -95,7 +108,13 @@ class Hero extends Component {
                         login,
                         avatar,
                         feed {
-                            id
+                            id,
+                            likesInt,
+                            creator {
+                                id,
+                                name,
+                                avatar
+                            }
                         }
                     }
                 }

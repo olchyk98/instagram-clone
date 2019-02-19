@@ -9,8 +9,6 @@ global.fetch = require('node-fetch');
 
 // Load model
 
-const CHANNELS = 3;
-
 const readImage = path => {
     const buf = fs.readFileSync(path)
     const pixels = jpeg.decode(buf, true)
@@ -41,7 +39,7 @@ const imageToInput = (image, numChannels) => {
 
 const classify = async (model, path) => {
     const image = readImage(path);
-    const input = imageToInput(image, CHANNELS);
+    const input = imageToInput(image, 3);
 
     const predictions = await model.classify(input);
 
