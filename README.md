@@ -26,6 +26,7 @@ Tasks / Features:
 - [x] Like post
 - [x] Comment post
 - [x] Like comment
+- [ ] Fast like post (Double click)
 - [ ] Posts library system
 - [ ] Comment post
 - [ ] Search system
