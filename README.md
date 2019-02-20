@@ -22,23 +22,24 @@ Tasks / Features:
   - [x] 404 Page
 - [x] Local Authentication
 - [x] Facebook Authentication (https://github.com/keppelen/react-facebook-login)
-- [ ] Add post
+- [x] Add post
 - [x] Like post
 - [x] Comment post
 - [x] Like comment
+- [ ] Fast like post (Double click)
 - [ ] Posts library system
 - [ ] Comment post
 - [ ] Search system
 - [ ] Subscribe to user
 - [ ] Account settings
-- [ ] Create the explore page based on alt descriptions and topics marker
+- [ ] Create the explore page based on subscription recommendations
 - [ ] Notifications
 - [ ] Direct Chat
 - [ ] Advanced website routing
 - [ ] Dark Mode
-- [ ] Machine Learning Classifier
+- [ ] ~~Machine Learning Classifier~~
   - [x] Classify function
-  - [ ] Photo description autofill
+  - [ ] ~~Photo description autofill~~
 - [ ] Fully responsive design
 - [ ] Guest account
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
