@@ -20,23 +20,31 @@ const {
 const {
     User,
     Post,
-    Comment
+    Comment,
+    Media
 } = require('./models');
 
 //
 // const mobilenet = require('@tensorflow-models/mobilenet');
-
+//
 // const IClassifier = require('./mobilenet');
 // let ICLModel = null;
 // (async () => {
 //     ICLModel = await mobilenet.load();
+//     console.log("MobileNet model was successfully loaded.");
 // })();
-
-// if(ICLModel) IClassifier(ICLModel, './photo.jpg');
+//
+// async function mobilenet_classify(url) {
+//     if(ICLModel) {
+//         return await IClassifier(ICLModel, url);
+//     } else {
+//         console.log("An image was didn't classified because mobilenet model wasn't loaded yet");
+//         return "";
+//     }
+// }
 //
 
 // Stuff
-
 function generateNoise(l = 256) {
     let a = "",
         b = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'; // lib
@@ -49,6 +57,8 @@ function generateNoise(l = 256) {
 }
 
 const str = a => a.toString();
+
+const getExtension = a => a.match(/[^\\]*\.(\w+)$/)[1];
 
 // Schema Types
 const UserType = new GraphQLObjectType({
@@ -97,7 +107,7 @@ const UserType = new GraphQLObjectType({
                             creatorID: str(id)
                         }
                     ]
-                });
+                }).sort({ time: -1 });
             }
         }
     })
@@ -106,7 +116,7 @@ const UserType = new GraphQLObjectType({
 const MediaType = new GraphQLObjectType({
     name: "Media",
     fields: () => ({
-        durationS: { type: GraphQLInt },
+        id: { type: GraphQLID },
         altDescription: { type: GraphQLString },
         url: { type: GraphQLString },
         type: { type: GraphQLString },
@@ -234,6 +244,25 @@ const RootQuery = new GraphQLObjectType({
 
                 return a;
             }
+        },
+        searchPeople: {
+            type: new GraphQLList(UserType),
+            args: {
+                query: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve(_, { query }, { req }) {
+                const a = new RegExp(query, "i");
+
+                return User.find({
+                    $or: [
+                        { name: a },
+                        { login: a }
+                    ],
+                    _id: {
+                        $ne: req.session.id
+                    }
+                }).limit(20);
+            }
         }
     }
 });
@@ -312,8 +341,7 @@ const RootMutation = new GraphQLObjectType({
                             });
                         }));
 
-                        // I can pass any image format here.
-                        // Thanks, Mark blyad' Cucumber -_-
+                        // ORIGINAL: .jpg (.jpeg), MODIFIED: .png
                         avatar = `/files/avatars/${ generateNoise(128) }.png`;
                         stream.pipe(fs.createWriteStream('.' + avatar));
                     }
@@ -378,9 +406,9 @@ const RootMutation = new GraphQLObjectType({
             type: PostType,
             args: {
                 text: { type: new GraphQLNonNull(GraphQLString) },
-                places: { type: new GraphQLList(GraphQLString) },
-                people: { type: new GraphQLList(GraphQLID) },
-                media: { type: new GraphQLNonNull(new GraphQLList(GraphQLUpload)) }
+                places: { type: new GraphQLList(new GraphQLNonNull(GraphQLString)) },
+                people: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
+                media: { type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLUpload))) }
             },
             async resolve(_, { text, places, people, media }, { req }) {
                 if(!req.session.id || !req.session.authToken)
@@ -396,6 +424,43 @@ const RootMutation = new GraphQLObjectType({
                         text
                     })
                 ).save();
+
+                for(let io of media) {
+                    const { filename, createReadStream, mimetype } = await io;
+                    const stream = createReadStream();
+
+                    const url = `/files/media/${ a._id }_${ generateNoise(16) }.${ getExtension(filename) }`;
+                    stream.pipe(fs.createWriteStream('.' + url));
+
+                    let type;
+
+                    /*
+                        I cannot use classifier here.
+                        stream.on('finish', callback) doesn't work,
+                        so I cannot use full-writed fire.
+                        Package crashes with 'SOI not found' error.
+                        SOI - Start Of File.
+
+                        Maybe... in the future... I will realize that.
+                    */
+
+                    if(mimetype.includes("image")) {
+                        type = "image";
+                    } else if(mimetype.includes("video")) {
+                        type = "video";
+                    } else {
+                        return new Error("Invalid file type.");
+                    }
+
+                    await (
+                        new Media({
+                            altDescription: "",
+                            url,
+                            type,
+                            postID: str(a._id)
+                        })
+                    ).save();
+                }
 
                 return a;
             }

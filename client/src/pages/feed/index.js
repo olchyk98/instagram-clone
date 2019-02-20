@@ -112,6 +112,11 @@ class Hero extends Component {
                             isLiked,
                             inBookmarks,
                             text,
+                            media {
+                                id,
+                                url,
+                                type
+                            },
                             creator {
                                 id,
                                 name,

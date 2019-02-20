@@ -16,7 +16,9 @@ import {
     faChevronLeft as faChevronLeftSolid,
     faChevronRight as faChevronRightSolid,
     faHeart as faHeartSolid,
-    faBookmark as faBookmarkSolid
+    faBookmark as faBookmarkSolid,
+    faPlay as faPlaySolid,
+    faPause as faPauseSolid
 } from '@fortawesome/free-solid-svg-icons';
 import {
     faHeart as faHeartRegular,
@@ -24,65 +26,100 @@ import {
     faBookmark as faBookmarkRegular
 } from '@fortawesome/free-regular-svg-icons';
 
-class PostCarousel extends PureComponent {
+class PostCarouselVideo extends PureComponent {
+    constructor(props) {
+        super(props);
+
+        this.matRef = React.createRef();
+    }
+
+    toggleVideo = () => {
+        const a = this.matRef;
+
+        if(!a.paused) a.pause();
+        else a.play();
+
+        this.forceUpdate(); // Update icon
+    }
+
+    render() {
+        return(
+            <div className="gle-post-carousel-image video" onClick={ this.toggleVideo }>
+                <button className="gle-post-carousel-image-videotogg definp">
+                    <FontAwesomeIcon icon={ (!this.matRef.paused) ? faPlaySolid : faPauseSolid } />
+                </button>
+                <video autoPlay muted loop paused={ true } ref={ ref => this.matRef = ref }>
+                    <source src={ this.props.url } type="video/mp4" />
+                    Please, update your browser.
+                </video>
+            </div>
+        );
+    }
+}
+
+PostCarouselVideo.propTypes = {
+    url: PropTypes.string.isRequired
+}
+
+class PostCarousel extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            images: [
-                'http://all4desktop.com/data_images/original/4235788-wallpaper-full-hd.jpg',
-                'http://all4desktop.com/data_images/original/4235788-wallpaper-full-hd.jpg',
-                'http://all4desktop.com/data_images/original/4235788-wallpaper-full-hd.jpg'
-            ],
             position: 0
         }
     }
 
-    moveCarousel = dir => this.setState(({ images, position }) => ({
-        position: (images[position + dir]) ? position + dir : position
+    moveCarousel = dir => this.setState(({ position }, { media }) => ({
+        position: (media[position + dir]) ? position + dir : position
     }));
 
     render() {
+
         return(
             <section className="gle-post-carousel">
                 <div className="gle-post-carousel-target">
-                    <div className="gle-post-carousel-controls">
-                        {
-                            (this.state.images[this.state.position - 1]) ? (
-                                <button
-                                    className="gle-post-carousel-controls-btn definp"
-                                    onClick={ () => this.moveCarousel(-1) }>
-                                    <FontAwesomeIcon icon={ faChevronLeftSolid } />
-                                </button>
-                            ) : <div />
-                        }
-                        {
-                            (this.state.images[this.state.position + 1]) ? (
-                                <button
-                                    className="gle-post-carousel-controls-btn definp"
-                                    onClick={ () => this.moveCarousel(1) }>
-                                    <FontAwesomeIcon icon={ faChevronRightSolid } />
-                                </button>
-                            ) : <div />
-                        }
-                    </div>
                     {
-                        this.state.images.map((session, index) => (
-                            <img
-                                key={ index }
-                                className={
-                                    `gle-post-carousel-image${ (this.state.position > index) ? " old" : (this.state.position < index) ? " new" : " current" }`
-                                }
-                                alt="target" // TODO: Use cfc AI
-                                src={ session }
-                            />
+                        (this.props.media[this.state.position - 1]) ? (
+                            <button
+                                className="gle-post-carousel-controls-btn l definp"
+                                onClick={ () => this.moveCarousel(-1) }>
+                                <FontAwesomeIcon icon={ faChevronLeftSolid } />
+                            </button>
+                        ) : <div />
+                    }
+                    {
+                        (this.props.media[this.state.position + 1]) ? (
+                            <button
+                                className="gle-post-carousel-controls-btn r definp"
+                                onClick={ () => this.moveCarousel(1) }>
+                                <FontAwesomeIcon icon={ faChevronRightSolid } />
+                            </button>
+                        ) : <div />
+                    }
+                    {
+                        this.props.media.map(({ id, url, type }, index) => (
+                            (type === "image") ? (
+                                <img
+                                    key={ id }
+                                    className={
+                                        `gle-post-carousel-image${ (this.state.position > index) ? " old" : (this.state.position < index) ? " new" : " current" }`
+                                    }
+                                    alt="target"
+                                    src={ api.storage + url }
+                                />
+                            ) : (type === "video") ? (
+                                <PostCarouselVideo
+                                    url={ api.storage + url }
+                                />
+                            ) : null // Fatal error
                         ))
                     }
                 </div>
                 <div className="gle-post-carousel-path">
                     <div className="gle-post-carousel-path-mat">
                         {
-                            Array(this.state.images.length).fill(null).map((_, index) => (
+                            Array(this.props.media.length).fill(null).map((_, index) => (
                                 <button key={ index } className={ `gle-post-carousel-path-btn definp${ (this.state.position !== index) ? "" : " active" }` } />
                             ))
                         }
@@ -110,7 +147,8 @@ class PostCarousel extends PureComponent {
 
 PostCarousel.propTypes = {
     isLiked: PropTypes.bool.isRequired,
-    likePost: PropTypes.func.isRequired
+    likePost: PropTypes.func.isRequired,
+    media: PropTypes.array.isRequired
 }
 
 class PostComments extends Component {
@@ -284,7 +322,7 @@ class Post extends Component {
                     {/* if creatorID === clientID > "Your image was classified as ... You can correct it to help users with problems to understand the image" */}
                 </section>
                 <PostCarousel
-                    media={ this.props.media }
+                    media={ this.props.media || [] }
                     isLiked={ (this.state.isLiked === null) ? this.props.isLiked : this.state.isLiked }
                     inBookmarks={ (this.state.inBookmarks === null) ? this.props.inBookmarks : this.state.inBookmarks }
                     likePost={ this.likePost }
