@@ -22,7 +22,7 @@ Tasks / Features:
   - [x] 404 Page
 - [x] Local Authentication
 - [x] Facebook Authentication (https://github.com/keppelen/react-facebook-login)
-- [ ] Add post
+- [x] Add post
 - [x] Like post
 - [x] Comment post
 - [x] Like comment
