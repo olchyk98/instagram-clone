@@ -1,21 +1,19 @@
 .gle-glerror {
-    --posgap:15px;
     --paddingud:10.5px;
-    --paddinglr:15px;
+    --paddinglr:5px;
 
     position:fixed;
-    bottom:var(--posgap);
-    left:var(--posgap);
+    bottom:0;
+    left:0;
     padding:var(--paddingud) var(--paddinglr) var(--paddingud) var(--paddinglr);
     z-index:5000;
     box-shadow:0px 0px 7.5px -2.5px rgba(0, 0, 0, .25);
-    border-radius:5px;
     align-items:center;
     display:flex;
-    width:auto;
-    max-width:calc(100vw - var(--paddinglr) * 2 - var(--posgap) - 15px);
+    height:auto;
+    width:100vw;
     background:#333333;
-    transform:translateY(calc(100% + var(--posgap)));
+    transform:translateY(100%);
     opacity:0;
     transition:.2s ease-in-out;
 }
@@ -25,26 +23,11 @@
     opacity:1;
 }
 
-.gle-glerror-info {
-    font-weight:200;
-    color:white;
-    font-family:"Quicksand";
-    font-size:1.05rem;
-    min-width:0;
-}
-
-.gle-glerror-info > * {
-    margin:0;
-    text-overflow:ellipsis;
-    overflow:hidden;
-    white-space:nowrap;
-}
-
 .gle-glerror-closebtn {
     --size:35px;
 
     flex-shrink:0;
-    margin-left:7.5px;
+    margin-right:7.5px;
     color:white;
     font-size:1.15rem;
     cursor:pointer;
@@ -73,4 +56,21 @@
 
 .gle-glerror-closebtn:hover:before {
     opacity:1;
+}
+
+.gle-glerror-info {
+    font-weight:500;
+    color:white;
+    font-family:"Quicksand";
+    font-size:1.1rem;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:.5px;
+    min-width:0;
+}
+
+.gle-glerror-info > * {
+    margin:0;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
 }

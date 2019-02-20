@@ -10,12 +10,12 @@ class Hero extends PureComponent {
     render() {
         return(
             <div className={ `gle-glerror${ (!this.props.error) ? "" : " active" }` }>
-                <section className="gle-glerror-info">
-                    <p>{ this.props.error && this.props.error.text }</p>
-                </section>
                 <button className="gle-glerror-closebtn definp" onClick={ this.props.closeSelf }>
                     <FontAwesomeIcon icon={ faTimes } />
                 </button>
+                <section className="gle-glerror-info">
+                    <p>{ this.props.error && this.props.error.text }</p>
+                </section>
             </div>
         );
     }
