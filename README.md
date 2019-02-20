@@ -32,14 +32,14 @@ Tasks / Features:
 - [ ] Search system
 - [ ] Subscribe to user
 - [ ] Account settings
-- [ ] Create the explore page based on alt descriptions and topics marker
+- [ ] Create the explore page based on subscription recommendations
 - [ ] Notifications
 - [ ] Direct Chat
 - [ ] Advanced website routing
 - [ ] Dark Mode
-- [ ] Machine Learning Classifier
+- [ ] ~~Machine Learning Classifier~~
   - [x] Classify function
-  - [ ] Photo description autofill
+  - [ ] ~~Photo description autofill~~
 - [ ] Fully responsive design
 - [ ] Guest account
 - [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
