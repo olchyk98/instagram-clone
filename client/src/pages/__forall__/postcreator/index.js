@@ -93,7 +93,7 @@ class Hero extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.defaultValues = {
             tagPeopleOpen: false,
             setPlaceOpen: false,
             scrollPos: 0,
@@ -105,7 +105,16 @@ class Hero extends Component {
             places: []
         }
 
+        this.state = {
+            ...this.defaultValues
+        }
+
         this.placeInputRef = React.createRef();
+    }
+
+    reset = () => {
+        this.setState(() => this.defaultValues);
+        this.placeInputRef.value = "";
     }
 
     moveScroll = a => this.setState(({ scrollPos: b }) => ({
@@ -171,7 +180,8 @@ class Hero extends Component {
             `,
             variables: {
                 query
-            }
+            },
+            fetchPolicy: 'no-cache'
         }).then(({ data: { searchPeople } }) => {
             this.setState(() => ({
                 searchingPeople: false
@@ -200,9 +210,6 @@ class Hero extends Component {
     }
 
     submitPost = () => {
-        // TODO: Show spinner
-        // TOOD: Make original Instagram notififier
-
         const { description, media, people, places } = this.state;
 
         // Post
@@ -223,8 +230,8 @@ class Hero extends Component {
         }).then(({ data: { createPost } }) => {
             if(!createPost) return this.props.castError("Something went wrong. Please, try again.");
 
-            // TODO: Disable spinner
-            // TODO: Clear data
+            this.reset();
+
             // Close modal
             this.props.closeSelf();
         }).catch(console.error);
@@ -261,7 +268,7 @@ class Hero extends Component {
                                 }
                             </div>
                             <div className="gle-newpost-target-preview-load">
-                                <label htmlFor="gle-newpost-target-preview-load-fi" className="definp" onClick={ () => null }>
+                                <label htmlFor="gle-newpost-target-preview-load-fi" className="definp">
                                     <FontAwesomeIcon icon={ faPlus } />
                                 </label>
                                 <input
@@ -396,7 +403,7 @@ class Hero extends Component {
                         </section>
                     </div>
                     <div className="gle-newpost-controls">
-                        <button className="gle-newpost-controls-btn definp" onClick={ this.props.closeSelf }>
+                        <button className="gle-newpost-controls-btn definp" onClick={ () => { this.reset(); this.props.closeSelf(); } }>
                             Discard
                         </button>
                         <button className="gle-newpost-controls-btn definp dark" disabled={ this.state.media.length === 0 } onClick={ this.submitPost }>

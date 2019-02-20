@@ -174,7 +174,15 @@ const PostType = new GraphQLObjectType({
             }
         },
         time: { type: GraphQLString },
-        people: { type: new GraphQLList(GraphQLID) },
+        peopleID: { type: new GraphQLList(GraphQLID) },
+        people: {
+            type: new GraphQLList(UserType),
+            resolve: ({ people }) => User.find({
+                _id: {
+                    $in: people
+                }
+            })
+        },
         places: { type: new GraphQLList(GraphQLString) },
         media: {
             type: new GraphQLList(MediaType),

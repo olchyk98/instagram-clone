@@ -310,6 +310,34 @@ class Post extends Component {
         });
     }
 
+    getEDescription(places, people) {
+        return(
+            <p className="gle-post-auth-desc">
+                In
+                {
+                    places.map((session, index) => {
+                        const a = !!places[index + 1];
+
+                        // mm - minimal margin :)
+                        return(
+                            <span className={ (a) ? "mm" : "" } key={ index }>Ukraine, Lviv{ (a) ? ", " : "" }</span>
+                        );
+                    })
+                }
+                with
+                {
+                    people.map((session, index) => {
+                        const a = !!people[index + 1];
+
+                        return(
+                            <button className={ `definp${ (a) ? " mm" : "" }` } key={ index }>Oles Odynets{ (a) ? ", " : "" }</button>
+                        );
+                    })
+                }
+            </p>
+        );
+    }
+
     render() {
         return(
             <article className="gle-post">
@@ -317,9 +345,10 @@ class Post extends Component {
                     <div className="gle-post-auth-avatar">
                         <img src={ api.storage + this.props.aavatar } alt="post author" />
                     </div>
-                    <span className="gle-post-auth-name">{ this.props.aname }</span>
-                    {/* with: @..., @.... in ... */}
-                    {/* if creatorID === clientID > "Your image was classified as ... You can correct it to help users with problems to understand the image" */}
+                    <div className="gle-post-auth-info">
+                        <span className="gle-post-auth-name">{ this.props.aname }</span>
+                        { this.getEDescription(this.props.places, this.props.people) }
+                    </div>
                 </section>
                 <PostCarousel
                     media={ this.props.media || [] }
@@ -385,7 +414,9 @@ Post.propTypes = {
     comments: PropTypes.array.isRequired,
     media: PropTypes.array.isRequired,
     isLiked: PropTypes.bool.isRequired,
-    text: PropTypes.string.isRequired
+    text: PropTypes.string.isRequired,
+    places: PropTypes.array,
+    people: PropTypes.array
 }
 
 const mapStateToProps = () => ({});

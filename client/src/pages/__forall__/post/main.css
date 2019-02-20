@@ -46,11 +46,52 @@
     object-position:center;
 }
 
+.gle-post-auth-info {
+    display:flex;
+    flex-direction:column;
+}
+
+.gle-post-auth-info > * {
+    --margin:2.5px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+}
+
 .gle-post-auth-name {
     font-size:.95rem;
     color:rgba(0, 0, 0, .95);
     font-weight:500;
     font-family:"Arial";
+}
+
+.gle-post-auth-desc {
+    font-family:"Arial";
+    margin:0;
+    font-weight:300;
+    font-size:.85rem;
+    display:flex;
+    align-items:center;
+}
+
+.gle-post-auth-desc > * {
+    --margin:3.5px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+}
+
+.gle-post-auth-desc > .mm {
+    margin-right:1px;
+}
+
+.gle-post-auth-desc > span {
+    color:#81B85E;
+    font-family:"Lato";
+}
+
+.gle-post-auth-desc > button {
+    color:blue;
 }
 
 .gle-post-carousel {

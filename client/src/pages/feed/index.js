@@ -19,7 +19,7 @@ class Feed extends Component {
             <section className="rn-feed-block rn-feed-mat">
                 {
                     (this.props.feed) ? (
-                        this.props.feed.map(({ id, likesInt, creator, comments, media, isLiked, text, inBookmarks }, index) => (
+                        this.props.feed.map(({ id, likesInt, creator, comments, media, isLiked, text, inBookmarks, people, places }, index) => (
                             <Post
                                 key={ id }
                                 id={ id }
@@ -32,6 +32,8 @@ class Feed extends Component {
                                 media={ media }
                                 isLiked={ isLiked }
                                 inBookmarks={ inBookmarks }
+                                people={ people }
+                                places={ places }
                             />
                         ))
                     ) : (
@@ -112,6 +114,11 @@ class Hero extends Component {
                             isLiked,
                             inBookmarks,
                             text,
+                            people {
+                                id,
+                                name
+                            },
+                            places,
                             media {
                                 id,
                                 url,
