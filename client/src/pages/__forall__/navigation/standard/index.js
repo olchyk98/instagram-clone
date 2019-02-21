@@ -4,8 +4,11 @@ import './main.css';
 
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { gql } from 'apollo-boost';
 
 import links from '../../../../links';
+import client from '../../../../apollo';
+import { cookieControl } from '../../../../utils';
 
 import Search from './Search';
 
@@ -84,7 +87,13 @@ class RLinksButton extends Component {
     }
 
     render() {
-        if(!this.props.onPage) {
+        if(this.props.onPage === false) {
+            return(
+                <Link className="gl-nav-routes-btn definp" title={ this.props._title } to={ this.props.link }>
+                    <FontAwesomeIcon icon={ this.props.icon } />
+                </Link>
+            );
+        } else if(this.props.onPage === null) {
             return(
                 <button className="gl-nav-routes-btn definp" title={ this.props._title } onClick={ this.props._onClick }>
                     <FontAwesomeIcon icon={ this.props.icon } />
@@ -132,7 +141,8 @@ RLinksButton.propTypes = {
     icon: PropTypes.object.isRequired,
     onPage: PropTypes.bool,
     windowType: PropTypes.string,
-    _onClick: PropTypes.func
+    _onClick: PropTypes.func,
+    link: PropTypes.string
 }
 
 class RLinks extends PureComponent { // RouteLinks
@@ -142,15 +152,20 @@ class RLinks extends PureComponent { // RouteLinks
                 <RLinksButton
                     _title="Add new post"
                     icon={ faPlusSolid }
+                    onPage={ null }
                     _onClick={ this.props.createPost }
                 />
                 <RLinksButton
                     _title="Direct Messenger"
+                    onPage={ false }
                     icon={ faPaperPlaneRegular }
+                    link={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.clientURL }` }
                 />
                 <RLinksButton
                     _title="Explore"
+                    onPage={ false }
                     icon={ faCompassRegular }
+                    link={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.clientURL }` }
                 />
                 <RLinksButton
                     _title="Notifications"
@@ -161,6 +176,8 @@ class RLinks extends PureComponent { // RouteLinks
                 <RLinksButton
                     _title="Account"
                     icon={ faUserRegular }
+                    onPage={ false }
+                    link={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.clientURL }` }
                 />
             </section>
         );
@@ -168,12 +185,47 @@ class RLinks extends PureComponent { // RouteLinks
 }
 
 class Hero extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            clientURL: ""
+        }
+    }
+
+    componentDidMount() {
+        client.query({
+            query: gql`
+                query {
+                    user {
+                        id,
+                        login
+                    }
+                }
+            `
+        }).then(({ data: { user } }) => {
+            if(!user) { // Session was not confirmed.
+                this.props.castError("Session wasn't confirmed. Please, log in.");
+
+                cookieControl.delete("userid");
+                window.location.href = "/";
+
+                return;
+            }
+
+            this.setState(() => ({
+                clientURL: user.login
+            }));
+        }).catch(console.error);
+    }
+
     render() {
         return(
             <nav className="gl-nav">
                 <Logo />
                 <Search />
                 <RLinks
+                    clientURL={ this.state.clientURL }
                     createPost={ this.props.createPost }
                 />
             </nav>
@@ -184,7 +236,8 @@ class Hero extends Component {
 const mapStateToProps = () => ({});
 
 const mapActionsToProps = {
-    createPost: () => ({ type: "CREATE_NEW_POST", payload: true })
+    createPost: () => ({ type: "CREATE_NEW_POST", payload: true }),
+    castError: text => ({ type: "CAST_GLOBAL_ERROR", payload: { text } })
 }
 
 export default connect(

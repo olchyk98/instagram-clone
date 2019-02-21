@@ -17,6 +17,8 @@ const {
     GraphQLUpload
 } = require('apollo-server');
 
+const ffmpeg = require('fluent-ffmpeg');
+
 const {
     User,
     Post,
@@ -85,6 +87,14 @@ const UserType = new GraphQLObjectType({
                 }
             })
         },
+        taggedPosts: {
+            type: new GraphQLList(PostType),
+            resolve: ({ id }) => Post.find({
+                people: {
+                    $in: [str(id)]
+                }
+            })
+        },
         avatar: { type: GraphQLString },
         authTokens: { type: new GraphQLList(GraphQLString) },
         lastAuthToken: {
@@ -93,6 +103,10 @@ const UserType = new GraphQLObjectType({
         },
         isVerified: { type: GraphQLBoolean },
         subscribedTo: { type: new GraphQLList(GraphQLID) },
+        followingInt: {
+            type: GraphQLInt,
+            resolve: ({ subscribedTo }) => subscribedTo.length
+        },
         feed: {
             type: new GraphQLList(PostType),
             resolve({ id, subscribedTo }) {
@@ -109,6 +123,26 @@ const UserType = new GraphQLObjectType({
                     ]
                 }).sort({ time: -1 });
             }
+        },
+        posts: {
+            type: new GraphQLList(PostType),
+            resolve: ({ id }) => Post.find({
+                creatorID: str(id)
+            })
+        },
+        postsInt: {
+            type: GraphQLInt,
+            resolve: ({ id }) => Post.countDocuments({
+                creatorID: str(id)
+            })
+        },
+        followersInt: {
+            type: GraphQLInt,
+            resolve: ({ id }) => User.countDocuments({
+                subscribedTo: {
+                    $in: [str(id)]
+                }
+            })
         }
     })
 });
@@ -183,6 +217,16 @@ const PostType = new GraphQLObjectType({
                 }
             })
         },
+        preview: {
+            type: MediaType,
+            async resolve({ id }) {
+                const a = await Media.findOne({
+                    postID: str(id)
+                });
+
+                return a;
+            }
+        },
         places: { type: new GraphQLList(GraphQLString) },
         media: {
             type: new GraphQLList(MediaType),
@@ -199,7 +243,23 @@ const PostType = new GraphQLObjectType({
                 postID: str(id)
             }).sort({ time: 1 }).limit(limit || 0)
         },
-        text: { type: GraphQLString }
+        commentsInt: {
+            type: GraphQLInt,
+            resolve: ({ id }) =>  Comment.countDocuments({
+                postID: str(id)
+            })
+        },
+        text: { type: GraphQLString },
+        isMultimedia: {
+            type: GraphQLBoolean,
+            async resolve({ id }) {
+                const a = await Media.countDocuments({
+                    postID: str(id)
+                });
+
+                return a > 1;
+            }
+        }
     })
 });
 
@@ -219,13 +279,20 @@ const RootQuery = new GraphQLObjectType({
         user: {
             type: UserType,
             args: {
-                targetID: { type: GraphQLID }
+                targetID: { type: GraphQLID },
+                url: { type: GraphQLString }
             },
-            resolve(_, { targetID }, { req }) {
+            resolve(_, { targetID, url }, { req }) {
                 if(!req.session.id || !req.session.authToken)
                     throw new AuthenticationError("No current session.");
 
-                return User.findById(targetID || req.session.id);
+                if(!url) {
+                    return User.findById(targetID || req.session.id);
+                } else {
+                    return User.findOne({
+                        login: url
+                    });
+                }
             }
         },
         validateUser: { // Validate if user with this email | login exists

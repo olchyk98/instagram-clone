@@ -4,8 +4,11 @@ import './main.css';
 
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { gql } from 'apollo-boost';
 
 import links from '../../../../links';
+import { cookieControl } from '../../../../utils';
+import client from '../../../../apollo';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -226,7 +229,7 @@ class SearchNav extends Component {
                 <RLinksButton
                     _title="Account"
                     icon={ faUserRegular }
-                    link={ links["ACCOUNT_PAGE"].absolute }
+                    link={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.clientURL }` }
                 />
             </section>
         );
@@ -249,11 +252,47 @@ class MoreNav extends Component {
 }
 
 class Hero extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            clientURL: ""
+        }
+    }
+
+    componentDidMount() {
+        client.query({
+            query: gql`
+                query {
+                    user {
+                        id,
+                        login
+                    }
+                }
+            `
+        }).then(({ data: { user } }) => {
+            if(!user) { // Session was not confirmed.
+                this.props.castError("Session wasn't confirmed. Please, log in.");
+
+                cookieControl.delete("userid");
+                window.location.href = "/";
+
+                return;
+            }
+
+            this.setState(() => ({
+                clientURL: user.login
+            }));
+        }).catch(console.error);
+    }
+
     render() {
         return(
             <nav className="gl-nav">
                 <Logo />
-                <SearchNav />
+                <SearchNav
+                    clientURL={ this.state.clientURL }
+                />
                 <MoreNav
                     createPost={ this.props.createPost }
                 />
@@ -265,7 +304,8 @@ class Hero extends Component {
 const mapStateToProps = () => ({});
 
 const mapActionsToProps = {
-    createPost: () => ({ type: "CREATE_NEW_POST", payload: true })
+    createPost: () => ({ type: "CREATE_NEW_POST", payload: true }),
+    castError: text => ({ type: "CAST_GLOBAL_ERROR", payload: { text } })
 }
 
 export default connect(

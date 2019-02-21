@@ -121,12 +121,12 @@
     z-index:15;
     color:red;
     filter:drop-shadow(0px 0px 5px rgba(0, 0, 0, .25));
-    /*display:none;*/
+    display:none;
     opacity:0;
 }
 
 .gle-post-carousel-target-likeamico[amrun] { /* WARNING: Only one animation allowed */
-    /*display:block;*/
+    display:block;
     animation:post-target-dblike-am 1000ms ease-in-out;
 }
 
@@ -208,6 +208,7 @@
     z-index:3;
     opacity:0;
     transition:.25s;
+    cursor:pointer;
 }
 
 .gle-post-carousel-image.video {

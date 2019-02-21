@@ -130,6 +130,8 @@
     font-family:"Arial";
     list-style-type:none;
     margin-right:30px;
+    display:flex;
+    align-items:center;
 }
 
 .rn-account-info-mat-stats-item-number {
@@ -165,6 +167,7 @@
 .rn-account-postsmenu {
     border-top:1px solid rgba(0, 0, 0, .075);
     margin-top:45px;
+    margin-bottom:15px;
     display:flex;
     justify-content:center;
 }

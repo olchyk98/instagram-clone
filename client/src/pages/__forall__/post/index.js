@@ -79,6 +79,8 @@ class PostCarousel extends Component {
         return(
             <section className="gle-post-carousel">
                 <div className="gle-post-carousel-target" onDoubleClick={() => {
+                    if(this.props.media[this.state.position].type === "video") return;
+
                     this.setState({ likeAnimation: true });
                     if(!this.props.isLiked) this.props.likePost();
                 }}>

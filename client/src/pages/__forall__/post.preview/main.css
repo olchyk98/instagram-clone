@@ -24,7 +24,7 @@
     padding-bottom:100%;
 }
 
-.rn-account-posts-item > img {
+.rn-account-posts-item-preview {
     height:100%;
     object-fit:cover;
     object-position:center;

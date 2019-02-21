@@ -11,7 +11,7 @@ const links = {
         absolute: '/'
     },
     "ACCOUNT_PAGE": {
-        route: '/u/:id',
+        route: '/u/:url',
         absolute: '/u'
     },
     "SETTINGS_PAGE": {
