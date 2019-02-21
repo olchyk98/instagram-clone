@@ -46,6 +46,6 @@ Tasks / Features:
 - [ ] Deploy app using GitHub pages and Heroku (https://www.apollographql.com/docs/apollo-server/deployment/heroku.html)
 
 Refused ideas:
-- **Video calls** :: It needs many hours to implement live video, audio streaming alone.
+- **Video calls** :: It needs many hours to implement live video, audio streaming. I am too lazy to do it alone.
 
 
