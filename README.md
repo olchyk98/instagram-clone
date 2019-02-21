@@ -27,8 +27,10 @@ Tasks / Features:
 - [x] Comment post
 - [x] Like comment
 - [x] Fast like post (Double click)
+- [ ] Account page
+- [ ] Accounts routing
+- [ ] Google Authentication (485575764210-lqlm81nvaubk48hhcq5niao1bb84ttm0.apps.googleusercontent.com)
 - [ ] Posts library system
-- [ ] Comment post
 - [ ] Search system
 - [ ] Subscribe to user
 - [ ] Account settings
