@@ -28,7 +28,6 @@ Tasks / Features:
 - [x] Like comment
 - [x] Fast like post (Double click)
 - [ ] Posts library system
-- [ ] Comment post
 - [ ] Search system
 - [ ] Subscribe to user
 - [ ] Account settings
