@@ -30,7 +30,7 @@ Tasks / Features:
 - [ ] Account page
   - [ ] Advanced settings
   - [ ] Subscribe / Unsubscribe
-  - [ ] Fetch posts / Tagged / Saved
+  - [x] Fetch posts / Tagged / Saved
 - [x] Accounts routing
 - [ ] Google Authentication (485575764210-lqlm81nvaubk48hhcq5niao1bb84ttm0.apps.googleusercontent.com)
 - [ ] Posts library system
