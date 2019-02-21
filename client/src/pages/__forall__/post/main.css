@@ -91,7 +91,7 @@
 }
 
 .gle-post-auth-desc > button {
-    color:blue;
+    color:blue; 
 }
 
 .gle-post-carousel {
@@ -107,6 +107,50 @@
     height:425px;
     width:100%;
     position:relative;
+}
+
+.gle-post-carousel-target-likeamico {
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-right:50%;
+    transform:translate(-50%, -50%);
+    margin:0;
+    opacity:0;
+    font-size:5em;
+    z-index:15;
+    color:red;
+    filter:drop-shadow(0px 0px 5px rgba(0, 0, 0, .25));
+    /*display:none;*/
+    opacity:0;
+}
+
+.gle-post-carousel-target-likeamico[amrun] { /* WARNING: Only one animation allowed */
+    /*display:block;*/
+    animation:post-target-dblike-am 1000ms ease-in-out;
+}
+
+@keyframes post-target-dblike-am {
+    0% {
+        transform:translate(-50%, -50%) scale(.25);
+        opacity:0;
+    }
+    25% {
+        transform:translate(-50%, -50%) scale(1.5);
+        opacity:1;
+    }
+    50% {
+        transform:translate(-50%, -50%) scale(.9);
+        opacity:1;
+    }
+    75% {
+        transform:translate(-50%, -50%) scale(1);
+        opacity:1;
+    }
+    100% {
+        transform:translate(-50%, -50%) scale(1);
+        opacity:0;
+    }
 }
 
 .gle-post-carousel-controls-btn {
@@ -171,7 +215,7 @@
     z-index:5;
 }
 
-.gle-post-carousel-image.video:hover .gle-post-carousel-image-videotogg {
+.gle-post-carousel-image.video:not(.hide):hover .gle-post-carousel-image-videotogg {
     opacity:1;
 }
 

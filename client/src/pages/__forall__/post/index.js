@@ -45,7 +45,7 @@ class PostCarouselVideo extends PureComponent {
     render() {
         return(
             <div className="gle-post-carousel-image video" onClick={ this.toggleVideo }>
-                <button className="gle-post-carousel-image-videotogg definp">
+                <button className={ `gle-post-carousel-image-videotogg definp${ (!this.props.hideControls) ? "" : " hide" }` }>
                     <FontAwesomeIcon icon={ (!this.matRef.paused) ? faPlaySolid : faPauseSolid } />
                 </button>
                 <video autoPlay muted loop paused={ true } ref={ ref => this.matRef = ref }>
@@ -66,7 +66,8 @@ class PostCarousel extends Component {
         super(props);
 
         this.state = {
-            position: 0
+            position: 0,
+            likeAnimation: false
         }
     }
 
@@ -75,10 +76,23 @@ class PostCarousel extends Component {
     }));
 
     render() {
-
         return(
             <section className="gle-post-carousel">
-                <div className="gle-post-carousel-target">
+                <div className="gle-post-carousel-target" onDoubleClick={() => {
+                    this.setState({ likeAnimation: true });
+                    if(!this.props.isLiked) this.props.likePost();
+                }}>
+                    <div
+                        // WARNING: Only one animation allowed
+                        className="gle-post-carousel-target-likeamico"
+                        {
+                            // Hmm.. It works, but I'm not sure it is correct.
+                            ...( (!this.state.likeAnimation) ? null : { amrun: "true" } )
+                        }
+                        onAnimationEnd={ () => this.setState({ likeAnimation: false }) }>
+                        <FontAwesomeIcon icon={ faHeartSolid } />
+                    </div>
+                    <div />
                     {
                         (this.props.media[this.state.position - 1]) ? (
                             <button
@@ -111,6 +125,7 @@ class PostCarousel extends Component {
                             ) : (type === "video") ? (
                                 <PostCarouselVideo
                                     url={ api.storage + url }
+                                    hideControls={ this.state.likeAnimation }
                                 />
                             ) : null // Fatal error
                         ))
@@ -313,26 +328,40 @@ class Post extends Component {
     getEDescription(places, people) {
         return(
             <p className="gle-post-auth-desc">
-                In
                 {
-                    places.map((session, index) => {
-                        const a = !!places[index + 1];
+                    (places.length) ? (
+                        <>
+                            In
+                            {
+                                places.map((session, index) => {
+                                    const a = !!places[index + 1];
 
-                        // mm - minimal margin :)
-                        return(
-                            <span className={ (a) ? "mm" : "" } key={ index }>Ukraine, Lviv{ (a) ? ", " : "" }</span>
-                        );
-                    })
+                                    // mm - minimal margin :)
+                                    return(
+                                        <span className={ (a) ? "mm" : "" } key={ index }>Ukraine, Lviv{ (a) ? ", " : "" }</span>
+                                    );
+                                })
+                            }
+                        </>
+                    ) : <></>
                 }
-                with
                 {
-                    people.map((session, index) => {
-                        const a = !!people[index + 1];
+                    (people.length) ? (
+                        <>
+                            {
+                                (places.length) ? "with" : "With"
+                            }
+                            {
+                                people.map((session, index) => {
+                                    const a = !!people[index + 1];
 
-                        return(
-                            <button className={ `definp${ (a) ? " mm" : "" }` } key={ index }>Oles Odynets{ (a) ? ", " : "" }</button>
-                        );
-                    })
+                                    return(
+                                        <button className={ `definp${ (a) ? " mm" : "" }` } key={ index }>Oles Odynets{ (a) ? ", " : "" }</button>
+                                    );
+                                })
+                            }
+                        </>
+                    ) : <></>
                 }
             </p>
         );
