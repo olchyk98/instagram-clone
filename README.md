@@ -32,7 +32,7 @@ Tasks / Features:
   - [ ] Subscribe / Unsubscribe
   - [x] Fetch posts / Tagged / Saved
 - [x] Accounts routing
-- [ ] Google Authentication (485575764210-lqlm81nvaubk48hhcq5niao1bb84ttm0.apps.googleusercontent.com)
+- [ ] Google Authentication
 - [ ] Posts library system
 - [ ] Settings page
 - [ ] Search system
