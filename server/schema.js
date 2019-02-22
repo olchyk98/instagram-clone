@@ -78,7 +78,7 @@ const UserType = new GraphQLObjectType({
         },
         password: { type: GraphQLString },
         savedPostsID: { type: new GraphQLList(GraphQLID) },
-        registeredByFacebook: { type: GraphQLBoolean },
+        registeredByExternal: { type: GraphQLBoolean },
         savedPosts: {
             type: new GraphQLList(PostType),
             resolve: ({ savedPosts }) => Post.find({
@@ -353,10 +353,10 @@ const RootMutation = new GraphQLObjectType({
                 login: { type: GraphQLString },
                 pictureURL: { type: GraphQLString },
                 password: { type: new GraphQLNonNull(GraphQLString) },
-                byFacebook: { type: GraphQLBoolean }
+                byExternal: { type: GraphQLBoolean }
             },
-            async resolve(_, { email, name, login, password, pictureURL, byFacebook }, { req }) {
-                if(!byFacebook) {
+            async resolve(_, { email, name, login, password, pictureURL, byExternal }, { req }) {
+                if(!byExternal) {
                     const a = await User.findOne({
                         $or: [
                             { email },
@@ -368,10 +368,10 @@ const RootMutation = new GraphQLObjectType({
 
                 const _a = false;
 
-                if(byFacebook) {
+                if(byExternal) {
                     const b = await User.findOne({
                         email,
-                        registeredByFacebook: true
+                        registeredByExternal: true
                     });
 
                     if(b) {
@@ -434,7 +434,7 @@ const RootMutation = new GraphQLObjectType({
                             isVerified: false,
                             subscribedTo: [],
                             authTokens: [token],
-                            registeredByFacebook: !!byFacebook
+                            registeredByExternal: !!byExternal
                         })
                     ).save();
 
@@ -458,7 +458,7 @@ const RootMutation = new GraphQLObjectType({
                         { email: login }
                     ],
                     password,
-                    registeredByFacebook: false
+                    registeredByExternal: false
                 });
 
                 if(a) {

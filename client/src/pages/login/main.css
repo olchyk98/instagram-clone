@@ -112,6 +112,14 @@
     margin-right:var(--margin);
 }
 
+.rn-login-island-btn.google {
+    background:#34A853;
+}
+
+.rn-login-island-btn.minimalmargin {
+    margin-top:1.5px;
+}
+
 .rn-login-island-btn-spinner {
     height:45%;
     margin:0;

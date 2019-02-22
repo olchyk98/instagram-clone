@@ -63,7 +63,7 @@ class Account extends Component {
                         followersInt,
                         followingInt,
                         bio,
-                        registeredByFacebook
+                        registeredByExternal
                     }
                 }
             `,
@@ -162,7 +162,7 @@ class Account extends Component {
                             {
                                 (!this.state.isLoading) ? (
                                     <span className="rn-account-info-mat-name-mat">
-                                        { (!this.state.user.registeredByFacebook) ? this.state.user.login : this.state.user.name }
+                                        { (!this.state.user.registeredByExternal) ? this.state.user.login : this.state.user.name }
                                     </span>
                                 ) : (
                                     <img className="glei-placeholder text one3 bgh" alt="placeholder" src={ placeholderGIF } />
@@ -217,7 +217,10 @@ class Account extends Component {
                                                         },
                                                         {
                                                             isRed: true,
-                                                            action: () => null,
+                                                            action: () => {
+                                                                cookieControl.delete("userid");
+                                                                window.location.href = "/";
+                                                            },
                                                             text: "Log out",
                                                             close: true
                                                         },

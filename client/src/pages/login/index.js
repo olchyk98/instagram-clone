@@ -4,6 +4,7 @@ import './main.css';
 
 import { gql } from 'apollo-boost';
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+import GoogleLogin from 'react-google-login';
 
 import { cookieControl } from '../../utils';
 import client from '../../apollo';
@@ -11,7 +12,7 @@ import links from '../../links';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 
 import logo from './images/logo.png';
 import loadingSpinner from '../__forall__/loadingico.gif';
@@ -111,14 +112,22 @@ class Register extends Component {
         }).catch(console.error);
     }
 
-    register = (byFacebook = false, data = null) => {
-        if(this.state.registering || this.state.registeringByFB) return;
+    register = (byExternal = false, data = null) => {
+        if(
+            this.state.registering ||
+            this.state.registeringByFB || (
+                !byExternal && (
+                    !this.state.loginValidated ||
+                    !this.state.emailValidated
+                )
+            )
+        ) return;
 
         this.setState(() => ({
-            [ (!byFacebook) ? "registering" : "registeringByFB" ]: true
+            [ (!byExternal) ? "registering" : "registeringByFB" ]: true
         }));
 
-        if(!byFacebook) {
+        if(!byExternal) {
             // eslint-disable-next-line
             var { email, name, login, password } = this.state;
             var pictureURL = "";
@@ -127,7 +136,7 @@ class Register extends Component {
             // eslint-disable-next-line
             var { id: password, name, email, picture } = data;
             login = "";
-            pictureURL = picture.data.url;
+            pictureURL = (picture) ? picture.data.url : "";
 
             // Some of users (like me) have name in Cyrillic format.
             // So I'll just convert it to latin.
@@ -150,8 +159,8 @@ class Register extends Component {
 
         client.mutate({
             mutation: gql`
-                mutation($email: String!, $name: String!, $login: String, $password: String!, $byFacebook: Boolean, $pictureURL: String) {
-                    registerUser(email: $email, name: $name, login: $login, password: $password, byFacebook: $byFacebook, pictureURL: $pictureURL) {
+                mutation($email: String!, $name: String!, $login: String, $password: String!, $byExternal: Boolean, $pictureURL: String) {
+                    registerUser(email: $email, name: $name, login: $login, password: $password, byExternal: $byExternal, pictureURL: $pictureURL) {
                         id
                     }
                 }
@@ -159,16 +168,17 @@ class Register extends Component {
             variables: {
                 email, name,
                 login, password,
-                byFacebook, pictureURL
+                byExternal, pictureURL
             }
         }).then(({ data: { registerUser } }) => {
             this.setState(() => ({
-                [ (!byFacebook) ? "registering" : "registeringByFB" ]: false
+                [ (!byExternal) ? "registering" : "registeringByFB" ]: false
             }));
 
             if(!registerUser) return;
 
             cookieControl.set("userid", registerUser.id);
+            cookieControl.delete("G_AUTHUSER_H"); // I have no idea why this cookie destroys whole application.
             window.location.href = links["FEED_PAGE"].absolute;
 
         }).catch(console.error);
@@ -202,6 +212,36 @@ class Register extends Component {
                             }
                         </button>
                     )}
+                />
+                <GoogleLogin
+                    clientId="485575764210-jdv452uq27bqpu5b9ulvuo34f5f57spv.apps.googleusercontent.com"
+                    isDisabled={ this.state.registering || this.state.registeringByFB }
+                    render={(props) => (
+                        <button onClick={ props.onClick } type="button" className="definp rn-login-island-btn google minimalmargin">
+                            {
+                                (!this.state.registeringByFB) ? (
+                                    <>
+                                        <FontAwesomeIcon icon={ faGoogle } />
+                                        <span>Login with Google</span>
+                                    </>
+                                ) : (
+                                    <img src={ loadingSpinner } className="rn-login-island-btn-spinner" alt="loading spinner" />
+                                )
+                            }
+                        </button>
+                    )}
+                    onSuccess={({ w3: { Eea: id, U3: email, ig: name } }) => {
+                        /*
+                            I don't know what's wrong with that API.
+                            ...
+                            Picture url is not valid... :| Thanks, fycken gugle
+                        */
+
+                        this.register(true, {
+                            id, email, name,
+                            picture: null
+                        });
+                    }}
                 />
                 <div className="rn-login-island_register-regsplit">
                     <span>Or</span>

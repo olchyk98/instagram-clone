@@ -107,7 +107,7 @@ class Hero extends Component {
                         login,
                         email,
                         avatar,
-                        registeredByFacebook,
+                        registeredByExternal,
                         feed {
                             id,
                             likesInt,
@@ -155,7 +155,7 @@ class Hero extends Component {
                     name: user.name,
                     login: user.login,
                     avatar: user.avatar,
-                    rbfb: user.registeredByFacebook,
+                    rbfb: user.registeredByExternal,
                     email: user.email
                 },
                 posts: user.feed

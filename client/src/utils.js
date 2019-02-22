@@ -11,6 +11,12 @@ const cookieControl = {
 		let ca = decodedCookie.split(';');
 		for (var i = 0; i < ca.length; i++) {
 			var c = ca[i];
+			
+			if(c.substring(1).includes("_AUTHUSER_H")) {
+				console.log("a");
+				continue;
+			}
+
 			while (c.charAt(0) === ' ') {
 				c = JSON.parse(c.substring(1));
 			}

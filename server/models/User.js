@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     isVerified: Boolean,
     authTokens: Array,
     subscribedTo: Array,
-    registeredByFacebook: Boolean
+    registeredByExternal: Boolean
 });
 
 module.exports = mongoose.model("User", UserSchema);
