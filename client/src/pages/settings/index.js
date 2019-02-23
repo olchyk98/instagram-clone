@@ -2,12 +2,26 @@ import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
+import { gql } from 'apollo-boost';
+import { connect } from 'react-redux';
+
+import client from '../../apollo';
+import api from '../../api';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+
+import placeholderINST from '../__forall__/placeholderINST.gif';
+import loadingSpinner from '../__forall__/loadingico.gif'
+
 const avatar = "https://instagram.fbtz1-2.fna.fbcdn.net/vp/c9ab85cb6f08ab4f94827ad427030841/5CDDD9F1/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fbtz1-2.fna.fbcdn.net";
 
 class Input extends Component {
     static defaultProps = {
         isInput: true,
-        _type: "text"
+        _type: "text",
+        isValid: null
+
     }
 
     render() {
@@ -20,20 +34,40 @@ class Input extends Component {
                 </div>
                 <div className="rn-settings-window-options-sbody">
                     {
-                        (this.props.isInput) ? (
-                            <input
-                                className="rn-settings-window-options-sbody-input definp"
-                                type={ this.props._type }
-                                title={ this.props._title }
-                                defaultValue={ this.props.defVal }
-                                onChange={ ({ target: { value } }) => this.props._onChange(value) }
-                            />
+                        (!this.props.isLoading) ? (
+                            (this.props.isInput) ? (
+                                <>
+                                    <input
+                                        className="rn-settings-window-options-sbody-input definp"
+                                        type={ this.props._type }
+                                        title={ this.props._title }
+                                        defaultValue={ this.props.defVal }
+                                        required={ this.props._required }
+                                        onChange={ ({ target: { value } }) => this.props._onChange(value) }
+                                        disabled={ this.props._disabled }
+                                    />
+                                    {
+                                        (this.props.isValid === null) ? null : (
+                                            <div className="rn-settings-window-options-sbody-inputstatus">
+                                                <FontAwesomeIcon icon={ (this.props.isValid) ? faCheck : faTimes } />
+                                            </div>
+                                        )
+                                    }
+                                </>
+                            ) : (
+                                <textarea
+                                    className="rn-settings-window-options-sbody-input textarea definp"
+                                    title={ this.props._title }
+                                    defaultValue={ this.props.defVal }
+                                    required={ this.props._required }
+                                    onChange={ ({ target: { value } }) => this.props._onChange(value) }
+                                />
+                            )
                         ) : (
-                            <textarea
-                                className="rn-settings-window-options-sbody-input textarea definp"
-                                title={ this.props._title }
-                                defaultValue={ this.props.defVal }
-                                onChange={ ({ target: { value } }) => this.props._onChange(value) }
+                            <img
+                                alt="loading placeholder"
+                                src={ placeholderINST }
+                                className="rn-settings-window-options-sbody-input placeholder"
                             />
                         )
                     }
@@ -48,7 +82,9 @@ Input.propTypes = {
     isInput: PropTypes.bool,
     _type: PropTypes.string,
     defVal: PropTypes.string,
-    _onChange: PropTypes.func.isRequired
+    _onChange: PropTypes.func.isRequired,
+    _disabled: PropTypes.bool,
+    _required: PropTypes.bool.isRequired
 }
 
 class Select extends Component {
@@ -61,13 +97,26 @@ class Select extends Component {
                     </span>
                 </div>
                 <div className="rn-settings-window-options-sbody">
-                    <select className="rn-settings-window-options-sbody-select definp" onClick={ ({ target: { value } }) => this.props._onChange(value) }>
-                        {
-                            this.props.options.map((session, index) => (
-                                <option value={ session.value } key={ index }>{ session.text }</option>
-                            ))
-                        }
-                    </select>
+                    {
+                        (!this.props.isLoading) ? (
+                            <select
+                                defaultValue={ this.props._defaultValue.toLowerCase() }
+                                className="rn-settings-window-options-sbody-select definp"
+                                onChange={ ({ target: { value } }) => this.props._onChange(value) }>
+                                {
+                                    this.props.options.map((session, index) => (
+                                        <option value={ session.value } key={ index }>{ session.text }</option>
+                                    ))
+                                }
+                            </select>
+                        ) : (
+                            <img
+                                src={ placeholderINST }
+                                alt="loading placeholder"
+                                className="rn-settings-window-options-sbody-select placeholder"
+                            />
+                        )
+                    }
                 </div>
             </div>
         );
@@ -77,17 +126,28 @@ class Select extends Component {
 Select.propTypes = {
     text: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
-    _onChange: PropTypes.func.isRequired
+    _onChange: PropTypes.func.isRequired,
+    _defaultValue: PropTypes.string.isRequired
 }
 
 class SubmitBtn extends PureComponent {
+    static defaultValue = {
+        _disabled: false
+    }
+
     render() {
-        // rotating ios spin |> fetch ac
         return(
             <button
-                className="rn-settings-window-options-itemrails-submit definp"
-                onClick={ this.props._onClick }>
-                { this.props.text }
+                type="submit"
+                className={ `rn-settings-window-options-itemrails-submit definp${ (!this.props.isLoading) ? "" : " loading" }` }
+                disabled={ this.props._disabled }>
+                {
+                    (!this.props.isLoading) ? (
+                        this.props.text
+                    ) : (
+                        <img src={ loadingSpinner } alt="loading spinner" className="glei-lspinner almparent" />
+                    )
+                }
             </button>
         )
     }
@@ -95,51 +155,201 @@ class SubmitBtn extends PureComponent {
 
 SubmitBtn.propTypes = {
     text: PropTypes.string.isRequired,
-    _onClick: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool.isRequired
+    isLoading: PropTypes.bool.isRequired,
+    _disabled: PropTypes.bool
 }
 
 class SettingsProfile extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            login: null,
+            name: null,
+            bio: null,
+            email: null,
+            gender: null,
+            emailValid: null,
+            loginValid: null,
+            submittingData: false,
+            avatar: null,
+            avatarPreview: null,
+            validatingData: false
+        }
+
+        this.validatingDataINT = null;
+    }
+
+    validateUser() {
+        clearTimeout(this.validatingDataINT);
+        this.validatingDataINT = setTimeout(() => {
+            if(this.state.validatingData || (!this.state.login && !this.state.email)) return;
+
+            const { email, login } = this.state;
+
+            this.setState(() => ({
+                validatingData: true
+            }));
+
+            client.query({
+                query: gql`
+                    query($email: String!, $login: String!) {
+                        validateUser(email: $email, login: $login)
+                    }
+                `,
+                variables: {
+                    email: (email && this.props.client.email !== email) ? email : "",
+                    login: (login && this.props.client.login !== login) ? login : ""
+                }
+            }).then(({ data: { validateUser } }) => {
+                this.setState(() => ({
+                    validatingData: false
+                }));
+                if(!validateUser) return this.props.castError("Something went wrong");
+
+                // 0 - email
+                // 1 - login
+
+                let [emailValid, loginValid] = validateUser;
+
+                this.setState(() => ({
+                    emailValid, loginValid
+                }));
+            }).catch(console.error);
+        }, 400);
+    }
+
+    submit = () => {
+        const { login, name, bio, email, gender, avatar } = this.state;
+
+        if(
+            this.state.submittingData || (
+                (!login || login === this.props.client.login) &&
+                (!name || name === this.props.client.name) &&
+                (!bio || bio === this.props.client.bio) &&
+                (!email || email === this.props.client.email) &&
+                (!gender || gender === this.props.client.gender) &&
+                !avatar
+            )
+        ) return;
+
+        this.setState(() => ({
+            submittingData: true
+        }));
+
+        client.mutate({
+            mutation: gql`
+                mutation($login: String, $name: String, $bio: String, $email: String, $gender: String, $avatar: Upload) {
+                    settingAccountData(login: $login, name: $name, bio: $bio, email: $email, gender: $gender, avatar: $avatar) {
+                        id
+                    }
+                }
+            `,
+            variables: {
+                login: login || "",
+                name: name || "",
+                bio: bio || "",
+                email: email || "",
+                gender: gender || "",
+                avatar: avatar || null
+            }
+        }).then(({ data: { settingAccountData } }) => {
+            this.setState(() => ({
+                submittingData: false
+            }));
+            if(!settingAccountData) return this.props.castError("Something went wrong. Please, try again.");
+        });
+    }
+
     render() {
         return(
-            <>
+            <form className="rn-settings-window-options" onSubmit={ e => { e.preventDefault(); this.submit(); } }>
                 <div className="rn-settings-window-options-itemrails rn-settings-window-options-account">
                     <div className="rn-settings-window-options-stitle">
                         <div className="rn-settings-window-options-account-avatar">
-                            <img src={ avatar } alt="profile" />
+                            <img src={ (!this.props.isLoading) ? this.state.avatarPreview || (api.storage + this.props.client.avatar) : placeholderINST } alt="profile" />
                         </div>
                     </div>
                     <div className="rn-settings-window-options-sbody rn-settings-window-options-account-name">
-                        <span className="rn-settings-window-options-account-name-mat">oles.odynets</span>
-                        <button className="rn-settings-window-options-account-name-changel definp">
-                            Change Profile Photo
-                        </button>
+                        {
+                            (!this.props.isLoading) ? (
+                                <>
+                                    <span className="rn-settings-window-options-account-name-mat">{ this.props.client.getName }</span>
+                                    <label
+                                        htmlFor="rn-settings-window-options-account-name-changep_input"
+                                        type="button"
+                                        className="rn-settings-window-options-account-name-changep definp">
+                                        Change Profile Photo
+                                    </label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        id="rn-settings-window-options-account-name-changep_input"
+                                        onChange={({ target: { files: [file] } }) => (file) ? (file => {
+                                            this.setState(() => ({
+                                                avatar: file,
+                                                avatarPreview: URL.createObjectURL(file)
+                                            }));
+                                        })(file) : null}
+                                    />
+                                </>
+                            ) : (
+                                <img
+                                    className="glei-placeholder text bgh one3"
+                                    src={ placeholderINST }
+                                    alt="loading placeholder"
+                                />
+                            )
+                        }
                     </div>
                 </div>
                 <Input
                     text="Login"
                     _type="text"
-                    _onChange={ value => null }
+                    _onChange={(value) => {
+                        this.setState({ login: value }, this.validateUser);
+                    }}
+                    isLoading={ this.props.isLoading }
+                    defVal={ (this.props.client && this.props.client.login) || "" }
+                    isValid={ this.state.loginValid }
+                    _disabled={ this.props.client && this.props.client.registeredByExternal }
+                    _required={ true }
                 />
                 <Input
                     text="Name"
                     _type="text"
-                    _onChange={ value => null }
+                    _onChange={ value => this.setState({ name: value }) }
+                    isLoading={ this.props.isLoading }
+                    defVal={ (this.props.client && this.props.client.name) || "" }
+                    _disabled={ this.props.client && this.props.client.registeredByExternal }
+                    _required={ false }
                 />
                 <Input
                     text="Bio"
                     isInput={ false }
-                    defVal=""
-                    _onChange={ value => null }
+                    _onChange={ value => this.setState({ bio: value }) }
+                    isLoading={ this.props.isLoading }
+                    defVal={ (this.props.client && this.props.client.bio) || "" }
+                    _required={ false }
                 />
                 <Input
                     text="Email"
                     _type="text"
-                    _onChange={ value => null }
+                    _onChange={(value) => {
+                        this.setState({ email: value }, this.validateUser);
+                    }}
+                    isLoading={ this.props.isLoading }
+                    isValid={ this.state.emailValid }
+                    defVal={ (this.props.client && this.props.client.email) || "" }
+                    _disabled={ this.props.client && this.props.client.registeredByExternal }
+                    _required={ true }
                 />
                 <Select
                     text="Gender"
-                    _onChange={ value => null }
+                    _onChange={ value => this.setState({ gender: value }) }
+                    isLoading={ this.props.isLoading }
+                    _defaultValue={ (this.props.client && this.props.client.gender) || "unknown" } // XXX
                     options={[
                         {
                             value: "male",
@@ -155,12 +365,19 @@ class SettingsProfile extends Component {
                         }
                     ]}
                 />
-                <SubmitBtn
-                    text="Submit"
-                    isLoading={ false }
-                    _onClick={ () => null }
-                />
-            </>
+                {
+                    (!this.props.isLoading) ? (
+                        <SubmitBtn
+                            text="Submit"
+                            isLoading={ this.state.submittingData }
+                            _disabled={
+                                this.state.validatingData || this.state.submittingData ||
+                                this.state.emailValid === false || this.state.loginValid === false
+                            }
+                        />
+                    ) : null
+                }
+            </form>
         );
     }
 }
@@ -168,11 +385,11 @@ class SettingsProfile extends Component {
 class SettingsPassword extends Component {
     render() {
         return(
-            <>
+            <form className="rn-settings-window-options" onSubmit={ e => e.preventDefault() }>
                 <div className="rn-settings-window-options-itemrails rn-settings-window-options-account">
                     <div className="rn-settings-window-options-stitle">
                         <div className="rn-settings-window-options-account-avatar">
-                            <img src={ avatar } alt="profile" />
+                            <img src={ (!this.props.isLoading) ? placeholderINST : api.storage + this.props.client.avatar } alt="profile" />
                         </div>
                     </div>
                     <div className="rn-settings-window-options-sbody rn-settings-window-options-account-name">
@@ -183,23 +400,25 @@ class SettingsPassword extends Component {
                     text="Old password"
                     _type="password"
                     _onChange={ value => null }
+                    _required={ true }
                 />
                 <Input
                     text="New password"
                     _type="password"
                     _onChange={ value => null }
+                    _required={ true }
                 />
                 <Input
                     text="Confirm New Password"
                     _type="password"
                     _onChange={ value => null }
+                    _required={ true }
                 />
                 <SubmitBtn
                     text="Change Password"
                     isLoading={ false }
-                    _onClick={ () => null }
                 />
-            </>
+            </form>
         );
     }
 }
@@ -211,7 +430,9 @@ class Settings extends Component {
         this.startTab = "EDIT_PROFILE";
 
         this.state = {
-            tab: this.startTab
+            tab: this.startTab,
+            client: null,
+            isLoading: true
         }
     }
 
@@ -224,12 +445,57 @@ class Settings extends Component {
                         'eprofile': "EDIT_PROFILE",
                         'cpass': "CHANGE_PASSWORD"
                     }[a] || this.startTab
-                }))
+                }), this.loadData); // Two times, because this function should be fired after state appling.
+            } else {
+                this.loadData();
             }
         }
     }
 
-    setTab = tab => this.setState({ tab });
+    setTab = tab => {
+        this.setState({ tab });
+        window.history.pushState(null, null, `${ links["SETTINGS_PAGE"].absolute }/${{
+            "EDIT_PROFILE": 'eprofile',
+            "CHANGE_PASSWORD": 'cpass'
+        }[tab]}`);
+    }
+
+    loadData = () => {
+        const fields = {
+            "EDIT_PROFILE": `
+                login,
+                name,
+                bio,
+                email,
+                gender
+            `
+        }[this.state.tab];
+
+        client.query({
+            query: gql`
+                query {
+                    user {
+                      id,
+                      getName,
+                      avatar,
+                      registeredByExternal,
+                      ${ fields || "" }  
+                    }
+                }
+            `
+        }).then(({ data: { user } }) => {
+            if(!user) return this.props.castError("Something went wrong...");
+
+            // If I'd add more tabs.. and now
+            this.setState(({ client }) => ({
+                client: (!client) ? user : ({
+                    ...client,
+                    ...user
+                }),
+                isLoading: false
+            }));
+        }).catch(console.error);
+    }
 
     render() {
         return(
@@ -256,18 +522,37 @@ class Settings extends Component {
                             ))
                         }
                     </menu>
-                    <section className="rn-settings-window-options">
+                    {
                         {
-                            {
-                                "EDIT_PROFILE": <SettingsProfile />,
-                                "CHANGE_PASSWORD": <SettingsPassword />
-                            }[this.state.tab]
-                        }
-                    </section>
+                            "EDIT_PROFILE": (
+                                <SettingsProfile
+                                    client={ this.state.client }
+                                    isLoading={ this.state.isLoading }
+                                    castError={ this.props.castError }
+                                />
+                            ),
+                            "CHANGE_PASSWORD": (
+                                <SettingsPassword
+                                    client={ this.state.client }
+                                    isLoading={ this.state.isLoading }
+                                    castError={ this.props.castError }
+                                />
+                            )
+                        }[this.state.tab]
+                    }
                 </div>
             </div>
         );
     }
 }
 
-export default Settings;
+const mapStateToProps = () => ({});
+
+const mapActionsToProps = {
+    castError: text => ({ type: "CAST_GLOBAL_ERROR", payload: { text } })
+}
+
+export default connect(
+    mapStateToProps,
+    mapActionsToProps
+)(Settings);

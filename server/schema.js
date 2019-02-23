@@ -17,8 +17,6 @@ const {
     GraphQLUpload
 } = require('apollo-server');
 
-const ffmpeg = require('fluent-ffmpeg');
-
 const {
     User,
     Post,
@@ -26,7 +24,8 @@ const {
     Media
 } = require('./models');
 
-//
+// 
+// const ffmpeg = require('fluent-ffmpeg');
 // const mobilenet = require('@tensorflow-models/mobilenet');
 //
 // const IClassifier = require('./mobilenet');
@@ -315,6 +314,8 @@ const RootQuery = new GraphQLObjectType({
                 login: { type: new GraphQLNonNull(GraphQLString) }
             },
             async resolve(_, { email, login }) {
+                if(!email && !login) return [null, null];
+
                 let a = [];
 
                 if(email) {
@@ -720,6 +721,55 @@ const RootMutation = new GraphQLObjectType({
                 }
 
                 return User.findById(targetID);
+            }
+        },
+        settingAccountData: {
+            type: UserType,
+            args: {
+                login: { type: GraphQLString },
+                name: { type: GraphQLString },
+                bio: { type: GraphQLString },
+                email: { type: GraphQLString },
+                gender: { type: GraphQLString },
+                avatar: { type: GraphQLUpload }
+            },
+            async resolve(_, { login, name, bio, email, gender, avatar }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = {}
+
+                // Required
+                if(login) a.login = login;
+                if(email) a.email = email;
+
+                // Validate
+                const b = await User.findOne({
+                    $or: [
+                        { login },
+                        { email }
+                    ]
+                });
+
+                if(b) return null;
+
+                // ...
+                a.bio = bio;
+                a.name = name;
+                a.gender = gender;
+
+                if(avatar) {
+                    const { filename, createReadStream } = await avatar;
+                    const stream = createReadStream();
+
+                    const url = `/files/avatars/${ generateNoise(128) }.${ getExtension(filename) }`;
+
+                    stream.pipe(fs.createWriteStream('.' + url));
+
+                    a.avatar = url;
+                }
+
+                return User.findByIdAndUpdate(req.session.id, a, (_, a) => a);
             }
         }
     }

@@ -122,6 +122,19 @@
     transition:border-color .15s;
 }
 
+.rn-settings-window-options-sbody-input:disabled {
+    background:#F7F7F7;
+    color:rgba(0, 0, 0, .5);
+}
+
+.rn-settings-window-options-sbody-input.placeholder {
+    padding:0;
+}
+
+.rn-settings-window-options-sbody-inputstatus {
+    margin-left:12.5px;
+}
+
 .rn-settings-window-options-sbody-select {
     --padding:7.5px;
 
@@ -131,6 +144,12 @@
     font-size:.975rem;
     font-weight:500;
     font-family:"Lato";
+}
+
+.rn-settings-window-options-sbody-select.placeholder {
+    width:95px;
+    border-radius:2.5px;
+    border:none;
 }
 
 .rn-settings-window-options-sbody-input.textarea {
@@ -165,15 +184,16 @@
     margin-bottom:var(--margin);
 }
 
-.rn-settings-window-options-account-name-changel {
+.rn-settings-window-options-account-name-changep {
     color:#0997da;
     font-weight:600;
     font-family:"Arial";
+    text-transform:capitalize;
     font-size:.925rem;
     cursor:pointer;
 }
 
-.rn-settings-window-options-account-name-changel:active {
+.rn-settings-window-options-account-name-changep:active {
     color:rebeccapurple;
 }
 
@@ -226,7 +246,7 @@
     transition:.15s ease-in-out;
 }
 
-.rn-settings-window-options-itemrails-submit:hover {
+.rn-settings-window-options-itemrails-submit:not(.loading):not(:disabled):hover {
     background:#69aae7;
     border-color:transparent;
 }

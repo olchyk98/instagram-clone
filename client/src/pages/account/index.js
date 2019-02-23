@@ -64,7 +64,8 @@ class Account extends Component {
                         followersInt,
                         followingInt,
                         bio,
-                        registeredByExternal
+                        registeredByExternal,
+                        isFollowing
                     }
                 }
             `,
@@ -220,68 +221,66 @@ class Account extends Component {
                             }
                             {
                                 (!this.state.isLoading) ? (
-                                    <>
-                                        {
-                                            (this.state.user.id !== this.clientID) ? (
-                                                <button className="definp rn-account-info-mat-name-action" onClick={ this.subscribe }>
-                                                    {
-                                                        (!this.state.subscribing) ? (
-                                                            `Subscribe${ (!this.state.user.isFollowing) ? "" : "d" }`
-                                                        ) : (
-                                                            <img src={ loadingSpinner } alt="loading spinner" className="glei-lspinner almparent" />
-                                                        )
-                                                    }
-                                                </button>
-                                            ) : (
-                                                <Link to={ links["SETTINGS_PAGE"].absolute }>
-                                                    <button className="definp rn-account-info-mat-name-action">
-                                                        Edit profile
-                                                    </button>   
-                                                </Link>       
-                                            )
-                                        }
-                                        <button
-                                            className="definp rn-account-info-mat-name-settings"
-                                            onClick={() => {
-                                                this.props.callGlobalMenu({
-                                                    type: "OPTIONS",
-                                                    buttons: [
-                                                        {
-                                                            isRed: false,
-                                                            action: () => {
-                                                                this.props.history.push(links["SETTINGS_PAGE"].absolute)
-                                                            },
-                                                            text: "Settings",
-                                                            close: true
-                                                        },
-                                                        {
-                                                            isRed: false,
-                                                            action: () => {
-                                                                this.props.history.push(`${ links["SETTINGS_PAGE"].absolute }/cpass`);
-                                                            },
-                                                            text: "Change Password",
-                                                            close: true
-                                                        },
-                                                        {
-                                                            isRed: true,
-                                                            action: () => {
-                                                                cookieControl.delete("userid");
-                                                                window.location.href = "/";
-                                                            },
-                                                            text: "Log out",
-                                                            close: true
-                                                        },
-                                                        {
-                                                            isRed: false,
-                                                            action: () => this.props.callGlobalMenu(null),
-                                                            text: "Cancel"
-                                                        }
-                                                    ]
-                                                })
-                                            }}>
-                                            <FontAwesomeIcon icon={ faCog } />
+                                    (this.state.user.id !== this.clientID) ? (
+                                        <button className="definp rn-account-info-mat-name-action" onClick={ this.subscribe }>
+                                            {
+                                                (!this.state.subscribing) ? (
+                                                    `Subscribe${ (!this.state.user.isFollowing) ? "" : "d" }`
+                                                ) : (
+                                                    <img src={ loadingSpinner } alt="loading spinner" className="glei-lspinner almparent" />
+                                                )
+                                            }
                                         </button>
-                                    </>
+                                    ) : (
+                                        <>
+                                            <Link to={ links["SETTINGS_PAGE"].absolute }>
+                                                <button className="definp rn-account-info-mat-name-action">
+                                                    Edit profile
+                                                </button>   
+                                            </Link>
+                                            <button
+                                                className="definp rn-account-info-mat-name-settings"
+                                                onClick={() => {
+                                                    this.props.callGlobalMenu({
+                                                        type: "OPTIONS",
+                                                        buttons: [
+                                                            {
+                                                                isRed: false,
+                                                                action: () => {
+                                                                    this.props.history.push(links["SETTINGS_PAGE"].absolute)
+                                                                },
+                                                                text: "Settings",
+                                                                close: true
+                                                            },
+                                                            {
+                                                                isRed: false,
+                                                                action: () => {
+                                                                    this.props.history.push(`${ links["SETTINGS_PAGE"].absolute }/cpass`);
+                                                                },
+                                                                text: "Change Password",
+                                                                close: true
+                                                            },
+                                                            {
+                                                                isRed: true,
+                                                                action: () => {
+                                                                    cookieControl.delete("userid");
+                                                                    window.location.href = "/";
+                                                                },
+                                                                text: "Log out",
+                                                                close: true
+                                                            },
+                                                            {
+                                                                isRed: false,
+                                                                action: () => this.props.callGlobalMenu(null),
+                                                                text: "Cancel"
+                                                            }
+                                                        ]
+                                                    })
+                                                }}>
+                                                <FontAwesomeIcon icon={ faCog } />
+                                            </button>
+                                        </>
+                                    )
                                 ) : null
                             }
                         </div>
