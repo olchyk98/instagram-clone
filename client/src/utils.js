@@ -6,26 +6,9 @@ const cookieControl = {
 		document.cookie = name + "=" + JSON.stringify(value) + ";" + expires + ";path=/";
 	},
 	get: function (name) {
-		name += "=";
-		let decodedCookie = decodeURIComponent(document.cookie);
-		let ca = decodedCookie.split(';');
-		for (var i = 0; i < ca.length; i++) {
-			var c = ca[i];
-			
-			if(c.substring(1).includes("_AUTHUSER_H")) {
-				console.log("a");
-				continue;
-			}
-
-			while (c.charAt(0) === ' ') {
-				c = JSON.parse(c.substring(1));
-			}
-			if (c.indexOf(name) === 0) {
-				return JSON.parse(c.substring(name.length, c.length));
-			}
-		}
-
-		return "";
+		var re = new RegExp(name + "=([^;]+)");
+	    var value = re.exec(document.cookie);
+	    return (value != null) ? unescape(value[1]) : null;
 	},
 	delete: function (name) {
 		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
