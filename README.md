@@ -32,7 +32,7 @@ Tasks / Features:
   - [ ] Subscribe / Unsubscribe
   - [x] Fetch posts / Tagged / Saved
 - [x] Accounts routing
-- [ ] Google Authentication
+- [x] Google Authentication
 - [ ] Posts library system
 - [ ] Settings page
 - [ ] Search system
