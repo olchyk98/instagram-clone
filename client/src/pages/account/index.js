@@ -167,6 +167,9 @@ class Account extends Component {
                 targetID: this.state.user.id
             }
         }).then(({ data: { subscribeToUser } }) => {
+            this.setState(() => ({
+                subscribing: false
+            }));
             if(!subscribeToUser) return this.props.castError("Oops... unexpected error. Please, try again");
 
             this.setState(({ user }) => ({

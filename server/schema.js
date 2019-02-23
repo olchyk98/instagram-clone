@@ -117,7 +117,7 @@ const UserType = new GraphQLObjectType({
 
                 const a = await User.findById(req.session.id).select("subscribedTo");
 
-                return a.subscribedTo.includes(req.session.id);
+                return a.subscribedTo.includes(id);
             }
         },
         feed: {
