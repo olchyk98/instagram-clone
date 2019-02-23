@@ -107,6 +107,19 @@ const UserType = new GraphQLObjectType({
             type: GraphQLInt,
             resolve: ({ subscribedTo }) => subscribedTo.length
         },
+        isFollowing: {
+            type: GraphQLBoolean,
+            async resolve({ id }, _, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                if(req.session.id === id) return null;
+
+                const a = await User.findById(req.session.id).select("subscribedTo");
+
+                return a.subscribedTo.includes(req.session.id);
+            }
+        },
         feed: {
             type: new GraphQLList(PostType),
             resolve({ id, subscribedTo }) {
@@ -554,7 +567,7 @@ const RootMutation = new GraphQLObjectType({
 
                 if(!a.likes.includes(req.session.id)) {
                     await a.updateOne({
-                        $push: {
+                        $addToSet: {
                             likes: req.session.id
                         }
                     });
@@ -608,7 +621,7 @@ const RootMutation = new GraphQLObjectType({
                 const a = await User.findById(req.session.id).select("savedPosts");
                 if(!a.savedPosts.includes(postID)) {
                     await a.updateOne({
-                        $push: {
+                        $addToSet: {
                             savedPosts: postID
                         }
                     });
@@ -639,7 +652,7 @@ const RootMutation = new GraphQLObjectType({
 
                 if(!a.likes.includes(req.session.id)) {
                     await a.updateOne({
-                        $push: {
+                        $addToSet: {
                             likes: req.session.id
                         }
                     });
@@ -677,6 +690,36 @@ const RootMutation = new GraphQLObjectType({
                 ).save();
 
                 return a;
+            }
+        },
+        subscribeToUser: {
+            type: UserType,
+            args: {
+                targetID: { type: new GraphQLNonNull(GraphQLID) }
+            },
+            async resolve(_, { targetID }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                if(targetID === req.session.id) return null;
+
+                const a = await User.findById(req.session.id).select("subscribedTo");
+
+                if(!a.subscribedTo.includes(targetID)) {
+                    await a.updateOne({
+                        $addToSet: {
+                            subscribedTo: targetID
+                        }
+                    });
+                } else {
+                    await a.updateOne({
+                        $pull: {
+                            subscribedTo: targetID
+                        }
+                    });
+                }
+
+                return User.findById(targetID);
             }
         }
     }

@@ -30,7 +30,8 @@ class Account extends Component {
             isLoading: true,
             user: null,
             currentBlock: "MAIN_BLOCK",
-            blockLoading: false
+            blockLoading: false,
+            subscribing: false
         }
 
         this.clientID = null;
@@ -144,6 +145,39 @@ class Account extends Component {
         }).catch(console.error);
     }
 
+    subscribe = () => {
+        if(this.state.subscribing || !this.state.user || this.state.user.id === this.clientID) return;
+
+        this.setState(() => ({
+            subscribing: true
+        }));
+
+        client.mutate({
+            mutation: gql`
+                mutation($targetID: ID!) {
+                    subscribeToUser(targetID: $targetID) {
+                        id,
+                        followersInt,
+                        followingInt,
+                        isFollowing
+                    }
+                }
+            `,
+            variables: {
+                targetID: this.state.user.id
+            }
+        }).then(({ data: { subscribeToUser } }) => {
+            if(!subscribeToUser) return this.props.castError("Oops... unexpected error. Please, try again");
+
+            this.setState(({ user }) => ({
+                user: {
+                    ...user,
+                    ...subscribeToUser
+                }
+            }));
+        });
+    }
+
     render() {
         return(
             <div className="rn rn-account">
@@ -184,15 +218,25 @@ class Account extends Component {
                             {
                                 (!this.state.isLoading) ? (
                                     <>
-                                        <Link to={ links["SETTINGS_PAGE"].absolute }>
-                                            {
-                                                (this.state.user.id !== this.clientID) ? null : (
-                                                    <button className="definp rn-account-info-mat-name-edit">
+                                        {
+                                            (this.state.user.id !== this.clientID) ? (
+                                                <button className="definp rn-account-info-mat-name-action" onClick={ this.subscribe }>
+                                                    {
+                                                        (!this.state.subscribing) ? (
+                                                            `Subscribe${ (!this.state.user.isFollowing) ? "" : "d" }`
+                                                        ) : (
+                                                            <img src={ loadingSpinner } alt="loading spinner" className="glei-lspinner almparent" />
+                                                        )
+                                                    }
+                                                </button>
+                                            ) : (
+                                                <Link to={ links["SETTINGS_PAGE"].absolute }>
+                                                    <button className="definp rn-account-info-mat-name-action">
                                                         Edit profile
-                                                    </button>
-                                                )
-                                            }
-                                        </Link>
+                                                    </button>   
+                                                </Link>       
+                                            )
+                                        }
                                         <button
                                             className="definp rn-account-info-mat-name-settings"
                                             onClick={() => {

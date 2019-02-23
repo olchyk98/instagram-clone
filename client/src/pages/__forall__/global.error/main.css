@@ -62,9 +62,9 @@
     font-weight:500;
     color:white;
     font-family:"Quicksand";
-    font-size:1.1rem;
+    font-size:1.05rem;
     -webkit-font-smoothing:antialiased;
-    letter-spacing:.5px;
+    letter-spacing:-.5px;
     min-width:0;
 }
 

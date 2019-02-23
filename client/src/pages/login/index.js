@@ -178,7 +178,6 @@ class Register extends Component {
             if(!registerUser) return;
 
             cookieControl.set("userid", registerUser.id);
-            cookieControl.delete("G_AUTHUSER_H"); // I have no idea why this cookie destroys whole application.
             window.location.href = links["FEED_PAGE"].absolute;
 
         }).catch(console.error);

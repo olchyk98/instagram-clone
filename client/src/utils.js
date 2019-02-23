@@ -1,14 +1,14 @@
 const cookieControl = {
-	set: function (name, value, daysOut = 32) {
+	set: function (name, value, daysOut = 32, isObject = false) {
 		let d = new Date();
 		d.setTime(d.getTime() + (daysOut * 24 * 60 * 60 * 1000));
 		let expires = "expires=" + d.toUTCString();
-		document.cookie = name + "=" + JSON.stringify(value) + ";" + expires + ";path=/";
+		document.cookie = name + "=" + ((!isObject) ? value : JSON.stringify(value)) + ";" + expires + ";path=/";
 	},
 	get: function (name) {
-		var re = new RegExp(name + "=([^;]+)");
-	    var value = re.exec(document.cookie);
-	    return (value != null) ? unescape(value[1]) : null;
+		const a = new RegExp(name + "=([^;]+)");
+	    const b = a.exec(document.cookie);
+	    return (b != null) ? unescape(b[1]) : null;
 	},
 	delete: function (name) {
 		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';

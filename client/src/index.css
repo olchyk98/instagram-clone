@@ -135,6 +135,12 @@ menu {
     width:var(--size);
 }
 
+.glei-lspinner.almparent {
+    height:80%;
+    width:inherit;
+    object-fit:contain;
+}
+
 /* Queries */
 @media only screen and (max-height:655px) {
     .gle-imagemodal {

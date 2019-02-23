@@ -11,7 +11,13 @@ console.time(mongodbtimetit);
 mongoose.connect('mongodb://oles:0password@ds139435.mlab.com:39435/instagram-clone', {
     useNewUrlParser: true
 });
-mongoose.connection.once('open', () => console.timeEnd(mongodbtimetit));
+mongoose.connection.once('open', () => {
+    console.timeEnd(mongodbtimetit);
+    
+    console.log("------- MEMORY -------");
+    console.table(process.memoryUsage());
+    console.log("------- MEMORY -------");
+});
 
 const app = express();
 
