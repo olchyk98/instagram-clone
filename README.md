@@ -27,17 +27,15 @@ Tasks / Features:
 - [x] Comment post
 - [x] Like comment
 - [x] Fast like post (Double click)
-- [ ] Account page
-  - [ ] Advanced settings
-  - [ ] Subscribe / Unsubscribe
+- [x] Account page
+  - [x] Advanced settings
+  - [x] Subscribe / Unsubscribe
   - [x] Fetch posts / Tagged / Saved
 - [x] Accounts routing
 - [x] Google Authentication
-- [ ] Posts library system
+- [x] Posts library system
 - [ ] Settings page
 - [ ] Search system
-- [ ] Subscribe to user
-- [ ] Account settings
 - [ ] Create the explore page based on subscription recommendations
 - [ ] Notifications
 - [ ] Direct Chat
