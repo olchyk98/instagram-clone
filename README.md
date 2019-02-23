@@ -36,8 +36,6 @@ Tasks / Features:
 - [x] Posts library system
 - [ ] Settings page
 - [ ] Search system
-- [ ] Subscribe to user
-- [ ] Account settings
 - [ ] Create the explore page based on subscription recommendations
 - [ ] Notifications
 - [ ] Direct Chat
