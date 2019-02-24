@@ -38,6 +38,11 @@ Tasks / Features:
   - [x] Update account data
   - [x] Change password
 - [ ] Tags system
+   - [ ] Tags routing
+     - [ ] Search
+     - [ ] Post description (Feed)
+     - [ ] Post description (Float)
+   - [ ] Auto
 - [ ] Tag page
 - [ ] Search system
 - [ ] Create the explore page based on 'following' state and tag subscriptions
