@@ -34,7 +34,9 @@ Tasks / Features:
 - [x] Accounts routing
 - [x] Google Authentication
 - [x] Posts library system
-- [ ] Settings page
+- [x] Settings page
+  - [x] Update account data
+  - [x] Change password
 - [ ] Search system
 - [ ] Create the explore page based on subscription recommendations
 - [ ] Notifications
