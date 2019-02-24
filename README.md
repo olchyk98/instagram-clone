@@ -40,9 +40,9 @@ Tasks / Features:
 - [ ] Tags system
    - [ ] Tags routing
      - [ ] Search
-     - [ ] Post description (Feed)
+     - [x] Post description (Feed)
      - [ ] Post description (Float)
-   - [ ] Auto
+   - [x] Auto
 - [ ] Tag page
 - [ ] Search system
 - [ ] Create the explore page based on 'following' state and tag subscriptions
