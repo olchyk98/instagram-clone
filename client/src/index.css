@@ -95,8 +95,25 @@ menu {
     width:20px;
 }
 
+.glei-placeholder.text.lowh {
+    height:12.5px;
+    margin-right:2.5px;
+}
+
+.glei-placeholder.text.lowh.smb {
+    margin-bottom:2.5px;
+}
+
 .glei-placeholder.text.one3 {
     width:150px;
+}
+
+.glei-placeholder.text.one_max {
+    width:100%;
+}
+
+.glei-placeholder.text.mb {
+    margin-top:5px;
 }
 
 .glei-placeholder.text.bgh {
