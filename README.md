@@ -40,7 +40,7 @@ Tasks / Features:
 - [ ] Tags system
 - [ ] Tag page
 - [ ] Search system
-- [ ] Create the explore page based on subscription recommendations
+- [ ] Create the explore page based on 'following' state and tag subscriptions
 - [ ] Notifications
 - [ ] Direct Chat
 - [ ] Advanced website routing
