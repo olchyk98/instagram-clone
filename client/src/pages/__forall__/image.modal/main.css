@@ -2,30 +2,18 @@
     --gle_imagemodal_matheight:600px; /* static and responsive by the media query */
 }
 
-.gle-imagemodalbg,
 .gle-imagemodal {
     --trans:.25s;
 
     opacity:0;
     visibility:hidden;
-    transition:all var(--trans), visibility 0s;
+    transition:all var(--trans), visibility var(--trans);
 }
 
-.gle-imagemodalbg.active,
-.gle-imagemodalbg.active ~ .gle-imagemodal {
-    transition:all var(--trans), visibility var(--trans);
+.gle-imagemodal.active {
+    transition:all var(--trans), visibility 0s;
     opacity:1;
     visibility:visible;
-}
-
-.gle-imagemodalbg {
-    position:fixed;
-    top:0;
-    left:0;
-    height:100vh;
-    width:100vw;
-    background:rgba(0, 0, 0, .45);
-    z-index:400;
 }
 
 .gle-imagemodal {
@@ -40,12 +28,23 @@
     z-index:401;
 }
 
+.gle-imagemodal-bg {
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    width:100vw;
+    background:rgba(0, 0, 0, .45);
+    z-index:4;
+}
+
 .gle-imagemodal-mat {
     height:var(--gle_imagemodal_matheight);
     width:auto;
     flex-shrink:0;
     display:flex;
     align-items:stretch;
+    z-index:5;
 }
 
 .gle-imagemodal-mat-image {

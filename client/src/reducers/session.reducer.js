@@ -30,6 +30,13 @@ export default function reducer(state = {}, { type, payload }) {
         case 'CAST_GLOBAL_ERROR':
             a.globalError = payload;
         break;
+        case 'PREVIEW_FLOAT_MODAL':
+            /*
+                payload = { id } || null
+            */
+
+            a.floatPhotoModal = payload;
+        break;
         default:break;
     }
 

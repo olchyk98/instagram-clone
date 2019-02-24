@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
+import { connect } from 'react-redux';
+
 import api from '../../../api';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -43,7 +45,8 @@ class PostPreview extends Component {
                 className="rn-account-posts-item"
                 title="Open photo"
                 onMouseEnter={ () => this.setState({ videoRunning: true }) }
-                onMouseLeave={ () => this.setState({ videoRunning: false }) }>
+                onMouseLeave={ () => this.setState({ videoRunning: false }) }
+                onClick={ () => this.props.openPhotoModal(this.props.id) }>
                 <div className="rn-account-posts-item-hover">
                     <div className="rn-account-posts-item-hover-stats">
                         <div>
@@ -92,4 +95,13 @@ PostPreview.propTypes = {
     preview: PropTypes.object.isRequired
 }
 
-export default PostPreview;
+const mapStateToProps = () => ({});
+
+const mapActionsToProps = {
+    openPhotoModal: id => ({ type: 'PREVIEW_FLOAT_MODAL', payload: { id } })
+}
+
+export default connect(
+    mapStateToProps,
+    mapActionsToProps
+)(PostPreview);

@@ -354,6 +354,13 @@ const RootQuery = new GraphQLObjectType({
                     }
                 }).limit(20);
             }
+        },
+        post: {
+            type: PostType,
+            args: {
+                targetID: { type: new GraphQLNonNull(GraphQLID) } 
+            },
+            resolve: (_, { targetID }) => Post.findById(targetID)
         }
     }
 });

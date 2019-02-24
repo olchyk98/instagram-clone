@@ -76,6 +76,7 @@ class Comment extends Component {
                                     } else {
                                         return(
                                             <Link
+                                                key={ index }
                                                 to={ `${ links["TAG_PAGE"].absolute }/${ session.replace("#", "") }` }
                                                 className="link">
                                                 { session }
