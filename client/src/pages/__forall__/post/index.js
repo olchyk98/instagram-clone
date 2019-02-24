@@ -392,6 +392,7 @@ class Post extends Component {
                 <span className="gle-post-stricts">{ (this.state.likesInt === null) ? this.props.likesInt : this.state.likesInt } likes</span>
                 <PostCommentItem
                     content={ this.props.text }
+                    checkTags={ true }
                     name={ this.props.aname }
                     canLike={ false }
                 />

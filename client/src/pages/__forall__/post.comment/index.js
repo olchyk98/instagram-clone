@@ -4,8 +4,10 @@ import './main.css';
 
 import { gql } from 'apollo-boost';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import client from '../../../apollo';
+import links from '../../../links';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
@@ -63,7 +65,26 @@ class Comment extends Component {
                         { this.props.name }
                     </span>
                     <span className="gle-post-commentitem-content-mat">
-                        { this.props.content }
+                        {
+                            (!this.props.checkTags) ? (
+                                this.props.content
+                            ) : ( // 
+                                this.props.content
+                                .split(" ").map((session, index) => {
+                                    if(!session.match(/#[A-z|-]+/g)) {
+                                        return session;
+                                    } else {
+                                        return(
+                                            <Link
+                                                to={ `${ links["TAG_PAGE"].absolute }/${ session.replace("#", "") }` }
+                                                className="link">
+                                                { session }
+                                            </Link>
+                                        );
+                                    }
+                                })
+                            )
+                        }
                     </span>
                 </div>
                 {
@@ -83,7 +104,8 @@ Comment.propTypes = {
     name: PropTypes.string.isRequired,
     canLike: PropTypes.bool,
     id: PropTypes.string.isRequired,
-    isLiked: PropTypes.bool
+    isLiked: PropTypes.bool,
+    checkTags: PropTypes.bool
 }
 
 const mapStateToProps = () => ({});

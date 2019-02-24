@@ -9,7 +9,7 @@
     justify-content:space-between;
 }
 
-/* .gle-post-commentitem-content {
+/*.gle-post-commentitem-content {
     display:flex;
     align-items:center;
 } */
@@ -23,6 +23,22 @@
 .gle-post-commentitem-content-mat {
     font-weight:400;
     font-size:.9rem;
+}
+
+.gle-post-commentitem-content-mat > * {
+    --margin:3px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+}
+
+.gle-post-commentitem-content-mat > a {
+    color:rebeccapurple;
+    text-decoration:none;
+}
+
+.gle-post-commentitem-content-mat > a:hover {
+    text-decoration:underline;
 }
 
 .gle-post-commentitem-like {

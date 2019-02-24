@@ -21,7 +21,8 @@ const {
     User,
     Post,
     Comment,
-    Media
+    Media,
+    Hashtag
 } = require('./models');
 
 // 
@@ -212,6 +213,7 @@ const PostType = new GraphQLObjectType({
             type: GraphQLBoolean,
             resolve: ({ likes }, _, { req: { session: { id } } }) => (id) ? likes.includes(id) : false
         },
+        hashtags: { type: new GraphQLList(GraphQLString) },
         inBookmarks: {
             type: GraphQLBoolean,
             resolve: async ({ id }, _, { req: { session: { id: clientID } } }) => {
@@ -503,6 +505,31 @@ const RootMutation = new GraphQLObjectType({
                 if(!req.session.id || !req.session.authToken)
                     throw new AuthenticationError("No current session.");
 
+                let hashtags = [];
+
+                if(text) { // Text and create not existing hashtags
+                    // That's better than if I would create a new variable. (CREATE._ARRAY.TIME.EXCHANGE)
+                    hashtags = text.match(/#[A-z|-]+/g) || [];
+
+                    if(hashtags.length) {
+                        for(let io of hashtags) {
+                            const a = await Hashtag.findOne({
+                                name: io
+                            });
+
+                            if(!a) {
+                                await (
+                                    new Hashtag({
+                                        name: io,
+                                        subscribers: []
+                                    })
+                                ).save();
+                            }
+                        }
+                    }
+                }
+
+                // Create post
                 const a = await (
                     new Post({
                         creatorID: str(req.session.id),
@@ -510,10 +537,12 @@ const RootMutation = new GraphQLObjectType({
                         time: str(+new Date),
                         people: people || [],
                         places: places || [],
+                        hashtags, 
                         text
                     })
                 ).save();
 
+                // Create media that is linked to this post
                 for(let io of media) {
                     const { filename, createReadStream, mimetype } = await io;
                     const stream = createReadStream();

@@ -7,6 +7,7 @@ const PostSchema = new Schema({
     time: String,
     people: Array,
     places: Array,
+    hashtags: Array,
     text: String
 });
 

@@ -1,7 +1,7 @@
     - User |> +
     - Post |> +
     - Media (type) |> +
-    - Hashtag (name)
+    - Hashtag (name) |> +
     - Comment |> +
     - Conversation
     - Message

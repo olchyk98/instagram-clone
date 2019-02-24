@@ -3,6 +3,7 @@
     s - settings
     e - explore
     d - direct
+    t - tag
 */
 
 const links = {
@@ -25,6 +26,10 @@ const links = {
     "MESSENGER_PAGE": {
         route: '/d',
         absolute: '/d'
+    },
+    "TAG_PAGE": {
+        route: '/t/:name',
+        absolute: '/t'
     }
 }
 
