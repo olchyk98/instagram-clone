@@ -771,6 +771,28 @@ const RootMutation = new GraphQLObjectType({
 
                 return User.findByIdAndUpdate(req.session.id, a, (_, a) => a);
             }
+        },
+        settingAccountPassword: {
+            type: UserType,
+            args: {
+                oldPassword: { type: new GraphQLNonNull(GraphQLString) },
+                newPassword: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            async resolve(_, { oldPassword, newPassword }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await User.findById(req.session.id);
+                if(!a || a.password !== oldPassword) return null;
+
+                await a.updateOne({
+                    password: newPassword
+                });
+
+                a.password = newPassword;
+
+                return a;
+            }
         }
     }
 });

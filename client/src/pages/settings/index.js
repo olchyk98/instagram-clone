@@ -7,14 +7,13 @@ import { connect } from 'react-redux';
 
 import client from '../../apollo';
 import api from '../../api';
+import links from '../../links';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import placeholderINST from '../__forall__/placeholderINST.gif';
 import loadingSpinner from '../__forall__/loadingico.gif'
-
-const avatar = "https://instagram.fbtz1-2.fna.fbcdn.net/vp/c9ab85cb6f08ab4f94827ad427030841/5CDDD9F1/t51.2885-19/44884218_345707102882519_2446069589734326272_n.jpg?_nc_ht=instagram.fbtz1-2.fna.fbcdn.net";
 
 class Input extends Component {
     static defaultProps = {
@@ -383,13 +382,78 @@ class SettingsProfile extends Component {
 }
 
 class SettingsPassword extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            oldPassword: null,
+            newPassword: null,
+            c_newPassword: null,
+            submittingData: false,
+            alert: null
+        }
+    }
+
+    submit = () => {
+        const { oldPassword, newPassword, c_newPassword } = this.state;
+
+        if(
+            this.state.submittingData || !oldPassword ||
+            !newPassword || !c_newPassword
+        ) return;
+
+        if(newPassword !== c_newPassword) return (
+            this.setState(() => ({
+                alert: { text: "Oops... passwords are not the same.", isError: true }
+            }))
+        );
+        else if(newPassword === oldPassword) return(
+            this.setState(() => ({
+                alert: { text: "newPassword = oldPassword? Huhh..", isError: true }
+            }))
+        );
+
+        this.setState(() => ({
+            submittingData: true,
+            alert: null
+        }));
+
+        client.mutate({
+            mutation: gql`
+                mutation($oldPassword: String!, $newPassword: String!) {
+                    settingAccountPassword(oldPassword: $oldPassword, newPassword: $newPassword) {
+                        id
+                    }
+                }
+            `,
+            variables: {
+                oldPassword: this.state.oldPassword,
+                newPassword: this.state.newPassword
+            }
+        }).then(({ data: { settingAccountPassword } }) => {
+            this.setState(() => ({
+                submittingData: false
+            }))
+
+            this.setState(() => ({
+                alert: (settingAccountPassword) ? {
+                    text: "Success",
+                    isError: false
+                } : {
+                    text: "Invalid old password",
+                    isError: true
+                }
+            }));
+        }).catch(console.error);
+    }
+
     render() {
         return(
-            <form className="rn-settings-window-options" onSubmit={ e => e.preventDefault() }>
+            <form className="rn-settings-window-options" onSubmit={ e => { e.preventDefault(); this.submit(); } }>
                 <div className="rn-settings-window-options-itemrails rn-settings-window-options-account">
                     <div className="rn-settings-window-options-stitle">
                         <div className="rn-settings-window-options-account-avatar">
-                            <img src={ (!this.props.isLoading) ? placeholderINST : api.storage + this.props.client.avatar } alt="profile" />
+                            <img src={ (!this.props.isLoading) ? api.storage + this.props.client.avatar : placeholderINST } alt="profile" />
                         </div>
                     </div>
                     <div className="rn-settings-window-options-sbody rn-settings-window-options-account-name">
@@ -399,24 +463,29 @@ class SettingsPassword extends Component {
                 <Input
                     text="Old password"
                     _type="password"
-                    _onChange={ value => null }
+                    _onChange={ value => this.setState({ oldPassword: value }) }
                     _required={ true }
                 />
                 <Input
                     text="New password"
                     _type="password"
-                    _onChange={ value => null }
+                    _onChange={ value => this.setState({ newPassword: value }) }
                     _required={ true }
                 />
                 <Input
                     text="Confirm New Password"
                     _type="password"
-                    _onChange={ value => null }
+                    _onChange={ value => this.setState({ c_newPassword: value }) }
                     _required={ true }
                 />
+                {
+                    (!this.state.alert) ? null : (
+                        <p className={ `rn-settings-window-cpass-error${ (!this.state.alert.isError) ? " success" : "" }` }>{ this.state.alert.text }</p>
+                    )
+                }
                 <SubmitBtn
                     text="Change Password"
-                    isLoading={ false }
+                    isLoading={ this.state.submittingData }
                 />
             </form>
         );
