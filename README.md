@@ -34,9 +34,22 @@ Tasks / Features:
 - [x] Accounts routing
 - [x] Google Authentication
 - [x] Posts library system
-- [ ] Settings page
+- [x] Settings page
+  - [x] Update account data
+  - [x] Change password
+- [ ] Tags system
+   - [ ] Tags routing
+     - [ ] Search
+     - [x] Post description (Feed)
+     - [ ] Post description (Float)
+   - [x] Auto
+- [ ] Tag page
 - [ ] Search system
-- [ ] Create the explore page based on subscription recommendations
+- [ ] Create the explore page based on 'following' state and tag subscriptions
+- [ ] Subscriptions
+   - [ ] Feed
+   - [ ] Notifications
+   - [ ] Chat
 - [ ] Notifications
 - [ ] Direct Chat
 - [ ] Advanced website routing
