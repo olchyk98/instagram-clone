@@ -46,6 +46,10 @@ Tasks / Features:
 - [ ] Tag page
 - [ ] Search system
 - [ ] Create the explore page based on 'following' state and tag subscriptions
+- [ ] Subscriptions
+   - [ ] Feed
+   - [ ] Notifications
+   - [ ] Chat
 - [ ] Notifications
 - [ ] Direct Chat
 - [ ] Advanced website routing
