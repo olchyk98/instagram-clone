@@ -37,6 +37,8 @@ Tasks / Features:
 - [x] Settings page
   - [x] Update account data
   - [x] Change password
+- [ ] Tags system
+- [ ] Tag page
 - [ ] Search system
 - [ ] Create the explore page based on subscription recommendations
 - [ ] Notifications
