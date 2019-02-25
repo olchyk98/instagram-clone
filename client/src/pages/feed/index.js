@@ -116,7 +116,7 @@ class Hero extends Component {
                             text,
                             people {
                                 id,
-                                name
+                                getName
                             },
                             places,
                             media {

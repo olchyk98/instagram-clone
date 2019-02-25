@@ -74,6 +74,10 @@
     align-items:center;
 }
 
+.gle-post-auth-desc.mb {
+    margin-bottom:5px;
+}
+
 .gle-post-auth-desc > * {
     --margin:3.5px;
 

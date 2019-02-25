@@ -1,20 +1,32 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import './main.css';
 
-class PostPage extends Component {
-    constructor(props) {
-        super(props);
+import { connect } from 'react-redux';
 
-        this.state = {
-            postData: null
-        }
+import links from '../../links';
+
+class PostPage extends PureComponent {
+    componentDidMount() {
+        let id = this.props.match.params.id;
+
+        this.props.openModal({
+            id,
+            onClose: () => this.props.history.push(links["FEED_PAGE"].absolute)
+        });
     }
 
     render() {
-        return(
-            null
-        );
+        return <div className="gle_v-postpage" />
     }
 }
 
-export default App;
+const mapStateToProps = () => ({});
+
+const mapActionsToProps = {
+    openModal: payload => ({ type: 'PREVIEW_FLOAT_MODAL', payload })
+}
+
+export default connect(
+    mapStateToProps,
+    mapActionsToProps
+)(PostPage);

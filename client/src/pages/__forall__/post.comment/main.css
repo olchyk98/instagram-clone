@@ -11,13 +11,14 @@
 
 /*.gle-post-commentitem-content {
     display:flex;
-    align-items:center;
+    align-items:flex-start;
 } */
 
 .gle-post-commentitem-content-name {
     font-weight:500;
     margin-right:5px;
     font-size:.95rem;
+    white-space:nowrap;
 }
 
 .gle-post-commentitem-content-mat {

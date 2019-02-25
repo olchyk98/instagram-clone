@@ -8,6 +8,7 @@ import Explore from './pages/explore';
 import P404 from './pages/404';
 import Direct from './pages/direct';
 import Login from './pages/login';
+import Post from './pages/post';
 
 // Stuff
 import links from './links';
@@ -96,6 +97,13 @@ class App extends Component {
                                 path={ links["MESSENGER_PAGE"].route }
                                 condition={ this.clientID }
                                 component={ Direct }
+                                redirect={ Login }
+                                exact
+                            />
+                            <NeedleRoute
+                                path={ links["POST_PAGE"].route }
+                                condition={ this.clientID }
+                                component={ Post }
                                 redirect={ Login }
                                 exact
                             />

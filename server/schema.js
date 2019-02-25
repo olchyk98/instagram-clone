@@ -141,7 +141,7 @@ const UserType = new GraphQLObjectType({
             type: new GraphQLList(PostType),
             resolve: ({ id }) => Post.find({
                 creatorID: str(id)
-            })
+            }).sort({ time: -1 })
         },
         postsInt: {
             type: GraphQLInt,

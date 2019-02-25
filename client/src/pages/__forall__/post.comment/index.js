@@ -29,7 +29,7 @@ class Comment extends Component {
     }
 
     likeComment = () => {
-        if(this.likeProcess) return;
+        if(this.likeProcess || !this.props.canLike) return;
         this.likeProcess = true;
 
         this.setState(({ isLiked: a }, { isLiked: b }) => ({
@@ -104,7 +104,7 @@ Comment.propTypes = {
     content: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     canLike: PropTypes.bool,
-    id: PropTypes.string.isRequired,
+    id: PropTypes.string,
     isLiked: PropTypes.bool,
     checkTags: PropTypes.bool
 }

@@ -45,6 +45,7 @@
     flex-shrink:0;
     display:flex;
     align-items:center;
+    position:relative;
     z-index:5;
 }
 
@@ -54,11 +55,141 @@
     height:auto;
     position:relative;
     display:flex;
+    overflow:hidden;
+    align-items:center;
+    background:black;
+}
+
+.gle-imagemodal-mat-image-item {
+    transition:.25s;
+}
+
+.gle-imagemodal-mat-image-item.old {
+    transform:translateX(-100%);
+}
+
+.gle-imagemodal-mat-image-item.current {
+    transform:translateX(0);
+}
+
+.gle-imagemodal-mat-image-item.new {
+    transform:translateX(100%);
+}
+
+.gle-imagemodal-mat-image-item:first-child > img,
+.gle-imagemodal-mat-image-item:first-child > video {
+    max-width:650px;
+    object-fit:cover;
+    object-position:center;
+}
+
+.gle-imagemodal-mat-image-item:first-child {
+    display:flex;
     align-items:center;
 }
 
-.gle-imagemodal-mat-image > img {
-    max-width:650px;
+.gle-imagemodal-mat-image-item:not(:first-child) {
+    position:absolute;
+    top:0;
+    left:0;
+    height:100%;
+    width:100%;
+    z-index:2;
+}
+
+.gle-imagemodal-mat-image-item:not(:first-child) > img,
+.gle-imagemodal-mat-image-item:not(:first-child) > video {
+    height:100%;
+    width:100%;
+    object-fit:contain;
+}
+
+.gle-imagemodal-mat-image-item-vtoggle {
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-right:50%;
+    transform:translate(-50%, -50%);
+    margin:0;
+    z-index:15;
+    font-size:3.5rem;
+    filter:drop-shadow(0px 0px 5px rgba(0, 0, 0, .25));
+    cursor:pointer;
+    color:white;
+    transition:.15s;
+    opacity:0;
+}
+
+.gle-imagemodal-mat-image:hover .gle-imagemodal-mat-image-item-vtoggle {
+    opacity:1;
+}
+
+.gle-imagemodal-mat-image-item-vtoggle:hover {
+    filter:drop-shadow(0px 0px 5px rgba(255, 255, 255, .25));
+}
+
+.gle-imagemodal-mat-image-scroll {
+    --gap:12.5px;
+    --size:35px;
+
+    height:var(--size);
+    width:var(--size);
+    position:absolute;
+    cursor:pointer;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:15;
+    font-size:.9rem;
+    box-shadow:0px 0px 5px 0px rgba(0, 0, 0, .75);
+    border:1px solid rgba(0, 0, 0, .05);
+    border-radius:50%;
+    background:rgba(255, 255, 255, .35);
+    opacity:0;
+    transition:.15s ease-in-out;
+}
+
+.gle-imagemodal-mat-image:hover .gle-imagemodal-mat-image-scroll {
+    opacity:1;
+}
+
+.gle-imagemodal-mat-image-scroll:hover {
+    background:white;
+}
+
+.gle-imagemodal-mat-image-scroll.l {
+    left:var(--gap);
+}
+
+.gle-imagemodal-mat-image-scroll.r {
+    right:var(--gap);
+}
+
+.gle-imagemodal-mat-image-path {
+    position:absolute;
+    bottom:15px;
+    display:flex;
+    align-items:center;
+    z-index:15;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.gle-imagemodal-mat-image-path-dot {
+    --size:8px;
+    --margin:5px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+    height:var(--size);
+    width:var(--size);
+    border-radius:50%;
+    background:rgba(255, 255, 255, .5);
+    filter:drop-shadow(0px 0px 2.5px rgba(0, 0, 0, 1));
+    transition:.25s;
+}
+
+.gle-imagemodal-mat-image-path-dot.active {
+    background:rgba(255, 255, 255, 1);
 }
 
 .gle-imagemodal-mat-info {
@@ -67,8 +198,8 @@
     width:calc(335px - var(--padding) * 2);
     padding-left:var(--padding);
     padding-right:var(--padding);
+    height:100%;
     /*height:var(--gle_imagemodal_matheight);*/
-    height:auto;
     background:white;
     display:flex;
     flex-direction:column;
@@ -85,10 +216,8 @@
 }
 
 .gle-imagemodal-mat-info-auth {
-    --margin:17.5px;
-
-    margin-top:var(--margin);
-    margin-bottom:var(--margin);
+    margin-top:17.5px;
+    margin-bottom:5px;
     display:flex;
     align-items:center;
 }
@@ -146,11 +275,16 @@
 }
 
 .gle-imagemodal-mat-info-comments {
+    --paddingr:15px;
+
     flex-shrink:1;
     height:100%;
+    width:calc(100% - var(--paddingr));
+    padding-right:var(--paddingr);
     overflow:scroll;
     border-top:1px solid var(--defaultborder);
     border-bottom:1px solid var(--defaultborder);
+    position:relative;
 }
 
 .gle-imagemodal-mat-info-lcomments {

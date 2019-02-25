@@ -4,6 +4,7 @@
     e - explore
     d - direct
     t - tag
+    p - post
 */
 
 const links = {
@@ -30,6 +31,10 @@ const links = {
     "TAG_PAGE": {
         route: '/t/:name',
         absolute: '/t'
+    },
+    "POST_PAGE": {
+        route: '/p/:id',
+        absolute: '/p'
     }
 }
 

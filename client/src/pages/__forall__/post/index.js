@@ -4,9 +4,11 @@ import './main.css';
 
 import { connect } from 'react-redux';
 import { gql } from 'apollo-boost';
+import { withRouter } from 'react-router-dom';
 
 import api from '../../../api';
 import client from '../../../apollo';
+import links from '../../../links';
 
 import PostCommentItem from '../post.comment';
 import CommentInput from '../post.commentinput';
@@ -48,7 +50,7 @@ class PostCarouselVideo extends PureComponent {
                 <button className={ `gle-post-carousel-image-videotogg definp${ (!this.props.hideControls) ? "" : " hide" }` }>
                     <FontAwesomeIcon icon={ (!this.matRef.paused) ? faPlaySolid : faPauseSolid } />
                 </button>
-                <video autoPlay muted loop paused={ true } ref={ ref => this.matRef = ref }>
+                <video autoPlay muted loop ref={ ref => this.matRef = ref }>
                     <source src={ this.props.url } type="video/mp4" />
                     Please, update your browser.
                 </video>
@@ -126,6 +128,7 @@ class PostCarousel extends Component {
                                 />
                             ) : (type === "video") ? (
                                 <PostCarouselVideo
+                                    key={ id }
                                     url={ api.storage + url }
                                     hideControls={ this.state.likeAnimation }
                                 />
@@ -340,7 +343,7 @@ class Post extends Component {
 
                                     // mm - minimal margin :)
                                     return(
-                                        <span className={ (a) ? "mm" : "" } key={ index }>Ukraine, Lviv{ (a) ? ", " : "" }</span>
+                                        <span className={ (a) ? "mm" : "" } key={ index }>{ session }{ (a) ? ", " : "" }</span>
                                     );
                                 })
                             }
@@ -358,7 +361,7 @@ class Post extends Component {
                                     const a = !!people[index + 1];
 
                                     return(
-                                        <button className={ `definp${ (a) ? " mm" : "" }` } key={ index }>Oles Odynets{ (a) ? ", " : "" }</button>
+                                        <button className={ `definp${ (a) ? " mm" : "" }` } key={ index }>{ session.getName }{ (a) ? ", " : "" }</button>
                                     );
                                 })
                             }
@@ -414,13 +417,15 @@ class Post extends Component {
                             },
                             {
                                 isRed: false,
-                                action: () => null,
+                                action: () => this.props.history.push(`${ links["POST_PAGE"].absolute }/${ this.props.id }`),
                                 text: "Go to post",
                                 close: true
                             },
                             {
                                 isRed: false,
-                                action: () => null,
+                                action: () => {
+                                    navigator.clipboard.writeText(`${ window.location.host }${ links["POST_PAGE"].absolute }/${ this.props.id }`);
+                                },
                                 text: "Copy link",
                                 close: true
                             },
@@ -461,4 +466,4 @@ const mapActionsToProps = {
 export default connect(
     mapStateToProps,
     mapActionsToProps
-)(Post);
+)(withRouter(Post));
