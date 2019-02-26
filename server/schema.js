@@ -122,7 +122,19 @@ const UserType = new GraphQLObjectType({
         },
         feed: {
             type: new GraphQLList(PostType),
-            resolve({ id, subscribedTo }) {
+            async resolve({ id, subscribedTo }) {
+                // DONE: Include followed tags
+                // Get followed tags
+                let tags = await Hashtag.find({
+                    subscribers: {
+                        $in: [str(id)]
+                    }
+                }).select("name");
+
+                // Take just their name
+                tags = tags.map(io => io.name);
+
+                // Search for the posts
                 return Post.find({
                     $or: [
                         {
@@ -132,6 +144,11 @@ const UserType = new GraphQLObjectType({
                         },
                         {
                             creatorID: str(id)
+                        },
+                        {
+                            hashtags: {
+                                $in: tags
+                            }
                         }
                     ]
                 }).sort({ time: -1 });
@@ -277,6 +294,35 @@ const PostType = new GraphQLObjectType({
     })
 });
 
+const HashtagType = new GraphQLObjectType({
+    name: "Hashtag",
+    fields: {
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        subscribers: { type: new GraphQLList(GraphQLID) },
+        isFollowing: {
+            type: GraphQLBoolean,
+            resolve: ({ subscribers }, _, { req }) => (req.session.id) ? subscribers.includes(req.session.id) : false
+        },
+        postsInt: {
+            type: GraphQLInt,
+            resolve: ({ name }) => Post.countDocuments({
+                hashtags: {
+                    $in: [name]
+                }
+            }).sort({ time: -1 })
+        },
+        posts: {
+            type: new GraphQLList(PostType),
+            resolve: async ({ name }) => Post.find({
+                hashtags: {
+                    $in: [name]
+                }
+            }).sort({ time: -1 })
+        }
+    }
+})
+
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
@@ -361,6 +407,13 @@ const RootQuery = new GraphQLObjectType({
                 targetID: { type: new GraphQLNonNull(GraphQLID) } 
             },
             resolve: (_, { targetID }) => Post.findById(targetID)
+        },
+        getHashtag: {
+            type: HashtagType,
+            args: {
+                name: { type: GraphQLString }
+            },
+            resolve: (_, { name }) => Hashtag.findOne({ name })
         }
     }
 });
@@ -517,6 +570,7 @@ const RootMutation = new GraphQLObjectType({
                 if(text) { // Text and create not existing hashtags
                     // That's better than if I would create a new variable. (CREATE._ARRAY.TIME.EXCHANGE)
                     hashtags = text.match(/#[A-z|-]+/g) || [];
+                    hashtags = hashtags.map(io => io.replace("#", ""));
 
                     if(hashtags.length) {
                         for(let io of hashtags) {
@@ -828,6 +882,41 @@ const RootMutation = new GraphQLObjectType({
                 a.password = newPassword;
 
                 return a;
+            }
+        },
+        followTag: {
+            type: GraphQLBoolean,
+            args: {
+                tagID: { type: new GraphQLNonNull(GraphQLID) }
+            },
+            async resolve(_, { tagID }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await Hashtag.findOne({
+                    _id: tagID,
+                    subscribers: {
+                        $in: [req.session.id]
+                    }
+                });
+
+                if(!a) { // subscribe
+                    await Hashtag.findByIdAndUpdate(tagID, {
+                        $push: {
+                            subscribers: req.session.id
+                        }
+                    });
+
+                    return true;
+                } else { // unsubscribe
+                    await a.updateOne({
+                        $pull: {
+                            subscribers: req.session.id
+                        }
+                    });
+
+                    return false;
+                }
             }
         }
     }

@@ -16,23 +16,26 @@
     justify-content:flex-start;
 }
 
-.rn-tag-header-avatar {
+.rn-tag-header-hashtag {
     --size:155px;
 
     height:var(--size);
     width:var(--size);
+    border:5px solid rgba(0, 0, 0, .05);
     border-radius:50%;
-    border:1px solid rgba(0, 0, 0, .5);
     position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     overflow:hidden;
     margin-right:45px;
 }
 
-.rn-tag-header-avatar > img {
-    height:100%;
-    width:100%;
-    object-fit:cover;
-    object-position:center;
+.rn-tag-header-hashtag > span {
+    font-size:5rem;
+    background:linear-gradient(-135deg, aqua, blue);
+    -webkit-text-fill-color:transparent;
+    -webkit-background-clip:text;
 }
 
 .rn-tag-header-info {

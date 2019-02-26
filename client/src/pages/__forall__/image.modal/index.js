@@ -508,7 +508,7 @@ class Hero extends Component {
                                                 content={ this.state.photo.text }
                                                 name={ this.state.photo.creator.getName }
                                                 canLike={ false }
-                                                checkTags={ false }
+                                                checkTags={ true }
                                             />
                                         ) : null
                                     }

@@ -104,6 +104,10 @@ menu {
     margin-bottom:2.5px;
 }
 
+.glei-placeholder.text.one2 {
+    width:50px;
+}
+
 .glei-placeholder.text.one3 {
     width:150px;
 }
@@ -140,6 +144,10 @@ menu {
     height:var(--size);
     width:var(--size);
     border-radius:50%;
+}
+
+.glei-placeholder.avatar.parent {
+    --size:100%;
 }
 
 .glei-lspinner {

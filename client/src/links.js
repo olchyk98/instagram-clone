@@ -29,7 +29,7 @@ const links = {
         absolute: '/d'
     },
     "TAG_PAGE": {
-        route: '/t/:name',
+        route: '/t/:tag',
         absolute: '/t'
     },
     "POST_PAGE": {

@@ -77,6 +77,7 @@ class Comment extends Component {
                                         return(
                                             <Link
                                                 key={ index }
+                                                onClick={ this.props.closeFloatPhoto }
                                                 to={ `${ links["TAG_PAGE"].absolute }/${ session.replace("#", "") }` }
                                                 className="link">
                                                 { session }
@@ -112,7 +113,8 @@ Comment.propTypes = {
 const mapStateToProps = () => ({});
 
 const mapActionsToProps = {
-    castError: text => ({ type: "CAST_GLOBAL_ERROR", payload: { text } })
+    castError: text => ({ type: 'CAST_GLOBAL_ERROR', payload: { text } }),
+    closeFloatPhoto: () => ({ type: 'PREVIEW_FLOAT_MODAL', payload: null })
 }
 
 export default connect(

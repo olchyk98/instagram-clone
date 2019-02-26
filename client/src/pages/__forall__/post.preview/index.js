@@ -9,8 +9,6 @@ import api from '../../../api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup, faComment, faHeart } from '@fortawesome/free-solid-svg-icons';
 
-const image = "https://scontent-arn2-1.cdninstagram.com/vp/138c59b92433cb36cc61de94f2745ec8/5CE6E0DD/t51.2885-15/e35/51989314_352340255612118_6286252316523219381_n.jpg?_nc_ht=scontent-arn2-1.cdninstagram.com";
-
 class PostPreview extends Component {
     constructor(props) {
         super(props);
@@ -92,7 +90,11 @@ PostPreview.propTypes = {
     isMultimedia: PropTypes.bool.isRequired,
     likesInt: PropTypes.number.isRequired,
     commentsInt: PropTypes.number.isRequired,
-    preview: PropTypes.object.isRequired
+    preview: PropTypes.shape({ // object
+        id: PropTypes.string,
+        type: PropTypes.string,
+        url: PropTypes.string
+    })
 }
 
 const mapStateToProps = () => ({});
