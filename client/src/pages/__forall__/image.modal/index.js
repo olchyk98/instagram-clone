@@ -90,6 +90,7 @@ class Hero extends Component {
             active: false,
             isLoading: true,
             submittingComment: false,
+            followingCreator: false,
             carouselIndex: 0
         }
 
@@ -365,6 +366,51 @@ class Hero extends Component {
         );
     }
 
+    followCreator = () => {
+        if(!this.state.photo || this.state.followingCreator) return;
+
+        this.setState(({ photo, photo: { creator } }) => ({
+            followingCreator: true,
+            photo: {
+                ...photo,
+                creator: {
+                    ...creator,
+                    isFollowing: !creator.isFollowing
+                }
+            }
+        }));
+
+        client.mutate({
+            mutation: gql`
+                mutation($targetID: ID!) {
+                    subscribeToUser(targetID: $targetID) {
+                        id,
+                        isFollowing
+                    }
+                }
+            `,
+            variables: {
+                targetID: this.state.photo.creator.id
+            }
+        }).then(({ data: { subscribeToUser } }) => {
+            this.setState(() => ({
+                followingCreator: false
+            }));
+
+            if(!subscribeToUser) return this.props.castError("We could subscribe you to this user. Please, try later.");
+
+            this.setState(({ photo, photo: { creator } }) => ({
+                photo: {
+                    ...photo,
+                    creator: {
+                        ...creator,
+                        isFollowing: subscribeToUser.isFollowing
+                    }
+                }
+            }));
+        }).catch(console.error);
+    }
+
     render() {
         return(
             <div className={ `gle-imagemodal${ (!this.state.active) ? "" : " active" }` }>
@@ -449,10 +495,10 @@ class Hero extends Component {
                                             <span className="gle-imagemodal-mat-info-auth-split">•</span>
                                         ) : null
                                     }
-                                    <button className="gle-imagemodal-mat-info-auth-follow definp" onClick={ this.followUser }>
+                                    <button className="gle-imagemodal-mat-info-auth-follow definp" disabled={ this.state.followingCreator } onClick={ this.followCreator }>
                                         {
                                             (this.state.photo.creator.id !== this.clientID) ? (
-                                                (!this.state.photo.isFollowing) ? "Follow" : "Following"
+                                                (!this.state.photo.creator.isFollowing) ? "Follow" : "Following"
                                             ) : null
                                         }
                                     </button>
