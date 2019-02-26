@@ -41,7 +41,7 @@ Tasks / Features:
    - [ ] Tags routing
      - [ ] Search
      - [x] Post description (Feed)
-     - [ ] Post description (Float)
+     - [x] Post description (Float)
    - [x] Auto
 - [ ] Tag page
 - [ ] Search system
