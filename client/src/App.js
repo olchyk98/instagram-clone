@@ -9,6 +9,7 @@ import P404 from './pages/404';
 import Direct from './pages/direct';
 import Login from './pages/login';
 import Post from './pages/post';
+import Tag from './pages/tag';
 
 // Stuff
 import links from './links';
@@ -104,6 +105,13 @@ class App extends Component {
                                 path={ links["POST_PAGE"].route }
                                 condition={ this.clientID }
                                 component={ Post }
+                                redirect={ Login }
+                                exact
+                            />
+                            <NeedleRoute
+                                path={ links["TAG_PAGE"].route }
+                                condition={ this.clientID }
+                                component={ Tag }
                                 redirect={ Login }
                                 exact
                             />

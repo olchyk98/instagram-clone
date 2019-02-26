@@ -1,0 +1,125 @@
+.rn-tag-content {
+    width:850px;
+    height:auto;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    margin-top:15px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.rn-tag-header {
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+}
+
+.rn-tag-header-avatar {
+    --size:155px;
+
+    height:var(--size);
+    width:var(--size);
+    border-radius:50%;
+    border:1px solid rgba(0, 0, 0, .5);
+    position:relative;
+    overflow:hidden;
+    margin-right:45px;
+}
+
+.rn-tag-header-avatar > img {
+    height:100%;
+    width:100%;
+    object-fit:cover;
+    object-position:center;
+}
+
+.rn-tag-header-info {
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    flex-direction:column;
+    height:var(--size);
+}
+
+.rn-tag-header-info > * {
+    --margin:3.5px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+}
+
+.rn-tag-header-info-name {
+    font-size:1.75rem;
+    color:rgba(0, 0, 0, .95);
+    font-family:"Quicksand";
+    font-weight:400;
+}
+
+.rn-tag-header-info-posts {
+    display:flex;
+    align-items:center;
+    flex-shrink:0;
+    font-family:"Arial";
+    font-size:1.05rem;
+}
+
+.rn-tag-header-info-posts > * {
+    --margin:2px;
+
+    margin-left:var(--margin);
+    margin-right:var(--margin);
+}
+
+.rn-tag-header-info-posts > *:first-child {
+    margin-left:0;
+}
+
+.rn-tag-header-info-posts > .value {
+    font-weight:600;
+}
+
+.rn-tag-header-info-follow {
+    --padding:35px;
+    --height:30px;
+
+    padding-left:var(--padding);
+    padding-right:var(--padding);
+    height:var(--height);
+    background:#3897F0;
+    color:white;
+    margin-top:20px;
+    font-size:.85rem;
+    line-height:calc(var(--height) + 1px);
+    font-weight:600;
+    font-family:"Arial";
+    border-radius:3px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.rn-tag-header-info-follow:hover {
+    background:#44AAFF;
+}
+
+.rn-tag-posts {
+    width:100%;
+    margin-top:25px;
+}
+
+.rn-tag-posts-marker {
+    font-size:.925rem;
+    font-family:"Arial";
+    font-weight:600;
+    color:rgba(0, 0, 0, .45);
+    margin-bottom:10px;
+    display:block;
+}
+
+.rn-tag-posts-grid {
+    width:100%;
+    display:grid;
+    grid-gap:25px;
+    grid-template-columns:repeat(3, 1fr);
+}

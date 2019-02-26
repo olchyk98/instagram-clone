@@ -102,13 +102,6 @@ class Hero extends Component {
         this.bookmarkProcessing = false;
     }
 
-    // DONE: Tags in the description
-    // DONE: Multimedia scroll
-    // DONE: Video play / pause
-    // DONE: People, places
-    // DONE: Erase data when user quits
-    // TOOD: Subcribe user
-
     componentDidMount() {
         this.clientID = cookieControl.get("userid");
         this.forceUpdate();
