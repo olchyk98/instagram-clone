@@ -44,6 +44,8 @@ Tasks / Features:
      - [x] Post description (Float)
    - [x] Auto
 - [ ] Tag page
+  - [ ] Template
+  - [ ] Fetching
 - [ ] Search system
 - [ ] Create the explore page based on 'following' state and tag subscriptions
 - [ ] Subscriptions
