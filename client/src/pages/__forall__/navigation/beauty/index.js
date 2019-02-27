@@ -9,6 +9,7 @@ import { gql } from 'apollo-boost';
 import links from '../../../../links';
 import { cookieControl } from '../../../../utils';
 import client from '../../../../apollo';
+import api from '../../../../api';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -23,6 +24,8 @@ import {
 
 import instagram_black_white_logo from '../images/logobw.png';
 import instagram_text_logo from '../images/logotext.png';
+
+import loadingSpinner from '../../loadingico.gif';
 
 const avatar = "https://d1ia71hq4oe7pn.cloudfront.net/og/75335251-1200px.jpg";
 
@@ -142,19 +145,25 @@ RLinksButton.propTypes = {
 class SearchResultItem extends PureComponent {
     render() {
         return(
-            <article className="gl-nav-search-results-item">
+            <Link className="gl-nav-search-results-item" onClick={ this.props.onRoute } to={ this.props._to }>
                 <section className="gl-nav-search-results-item-image">
-                    {/* <img className="gl-nav-search-results-item-image-mat" src={ image } alt="rev" /> */}
-                    <span className="gl-nav-search-results-item-image-hashtag" />
+                    {
+                        (this.props.type === "people") ? (
+                            <img className="gl-nav-search-results-item-image-mat" src={ api.storage + this.props.avatar } alt="rev" />
+                        ) : (
+                            <span className="gl-nav-search-results-item-image-hashtag" />
+                        )
+                    }
                 </section>
                 <section className="gl-nav-search-results-item-info">
-                    <span className="gl-nav-search-results-item-info-name">oles.odynets</span>
+                    <span className="gl-nav-search-results-item-info-name">
+                        { this.props.name }
+                    </span>
                     <span className="gl-nav-search-results-item-info-more">
-                        Oles Odynets
-                        {/* name if user and number of posts if it's tag */}
+                        { this.props.more }
                     </span>
                 </section>
-            </article>
+            </Link>
         );
     }
 }
@@ -164,16 +173,33 @@ class SearchResults extends PureComponent {
         return(
             <div className={ `gl-nav-search-results${ (!this.props.active) ? "" : " active" }` }>
                 <div className="gl-nav-search-results-list">
-                    <SearchResultItem />
-                    <SearchResultItem />
-                    <SearchResultItem />
-                    <SearchResultItem />
-                    <SearchResultItem />
-                    <SearchResultItem />
-                    <SearchResultItem />
-                    <SearchResultItem />
-                    <SearchResultItem />
-                    <SearchResultItem />
+                    {
+                        (!this.props.isLoading && this.props.data) ? (
+                            (this.props.data.length) ? (
+                                this.props.data.map((session) => (
+                                    <SearchResultItem
+                                        key={ session.id }
+                                        type={ session.type }
+                                        onRoute={ this.props.closeSelf }
+                                        {...((session.type === 'people') ? {
+                                            name: session.login,
+                                            more: session.name || session.email,
+                                            avatar: session.avatar,
+                                            _to: `${ links["ACCOUNT_PAGE"].absolute }/${ session.login }`
+                                        } : {
+                                            name: session.name,
+                                            more: `${ session.postsInt } post${ (session.postsInt !== 1) ? "s" : "" }`,
+                                            _to: `${ links["TAG_PAGE"].absolute }/${ session.name }`
+                                        })}
+                                    />
+                                ))
+                            ) : (
+                                <span className="gl-nav-search-results-list-empty">Nothing here...</span>
+                            )
+                        ) : (
+                            <img src={ loadingSpinner } alt="loading data icon" className="glei-lspinner margintb" /> 
+                        )
+                    }
                 </div>
             </div>
         );
@@ -190,8 +216,104 @@ class SearchNav extends Component {
 
         this.state = {
             inFocus: false,
-            query: ""
+            query: "",
+            searching: false,
+            searchData: null,
+            searched: false
         }
+
+        this.searchRef = React.createRef();
+    }
+
+    search = query => {
+        if(this.state.searching) return;
+
+        if(!query) {
+            return this.setState(() => ({
+                searchData: null,
+                searching: false,
+                query: ""
+            }));
+        }
+
+        this.setState(() => ({
+            query,
+            searching: true,
+            searched: true
+        }));
+
+        Promise.all([
+            (
+                client.query({
+                    query: gql`
+                        query($query: String!) {
+                            searchPeople(query: $query) {
+                                id,
+                                avatar,
+                                login,
+                                email,
+                                name
+                            }
+                        }
+                    `,
+                    variables: {
+                        query
+                    }
+                })
+            ),
+            (
+                client.query({
+                    query: gql`
+                        query($query: String!) {
+                            searchHashtags(query: $query) {
+                                id,
+                                name,
+                                postsInt
+                            }
+                        }
+                    `,
+                    variables: {
+                        query
+                    }
+                })
+            )
+        ]).then(([ { data: { searchPeople: people } }, { data: { searchHashtags: hashtags } } ]) => {
+            this.setState(() => ({
+                searching: false,
+                searched: false
+            }));
+
+            if(!people && !hashtags) return this.props.castError("Something went wrong...");
+
+            const searchData = [
+                ...people.map(io => ({ ...io, type: 'people' })),
+                ...hashtags.map(io => ({ ...io, type: 'hashtag' }))
+            ];
+            
+            const searchData_shuffled = [];
+            const shuffleIndexes = [];
+
+            function getIX() {
+                let a = Math.floor(Math.random() * searchData.length);
+
+                if(shuffleIndexes.findIndex(io => io === a) !== -1) {
+                    return getIX();
+                } else {
+                    shuffleIndexes.push(a);
+                    return a;
+                }
+            }
+
+            searchData.forEach((io, ia) => {
+                searchData_shuffled[ia] = searchData[getIX()];
+            });
+
+            this.setState(() => ({
+                searchData: searchData_shuffled,
+                searching: false,
+                searched: true
+            }))
+        }).catch(console.error);
     }
 
     render() {
@@ -212,12 +334,19 @@ class SearchNav extends Component {
                         className="gl-nav-searchnav-search-mat definp"
                         type="search"
                         placeholder="Search"
-                        onChange={ ({ target: { value } }) => this.setState({ query: value }) }
+                        ref={ ref => this.searchRef = ref }
+                        onChange={({ target }) => {
+                            clearTimeout(target.submitINT);
+                            target.submitINT = setTimeout(() => this.search(target.value), 400);
+                        }}
                         onFocus={ () => this.setState({ inFocus: true }) }
                         onBlur={ () => this.setState(() => ({ inFocus: false })) }
                     />
                     <SearchResults
                         active={ !!(this.state.inFocus && this.state.query) }
+                        data={ this.state.searchData }
+                        isLoading={ this.state.searching || !this.state.searched }
+                        closeSelf={ () => this.searchRef.value = "" }
                     />
                 </div>
                 <RLinksButton

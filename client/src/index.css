@@ -160,6 +160,13 @@ menu {
     width:var(--size);
 }
 
+.glei-lspinner.margintb {
+    --margin:10px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+}
+
 .glei-lspinner.almparent {
     height:80%;
     width:inherit;

@@ -273,6 +273,24 @@
     transform:translateX(-50%) rotate(45deg);
 }
 
+.gl-nav-search-results-list-empty {
+    --margin:7.5px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+    font-weight:600;
+    font-family:"Quicksand";
+    font-size:.975rem;
+    text-align:center;
+    color:rgba(0, 0, 0, .25);
+    transition:.25s;
+}
+
+.gl-nav-search-results-list-empty:hover {
+    font-weight:400;
+    color:rgba(0, 0, 0, .75);
+}
+
 .gl-nav-search-results-item {
     --padding:15px;
 
@@ -284,6 +302,7 @@
     border-bottom:1px solid rgba(0, 0, 0, .05);
     display:flex;
     align-items:stretch;
+    text-decoration:none;
 }
 
 .gl-nav-search-results-item:hover {

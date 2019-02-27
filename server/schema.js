@@ -414,6 +414,35 @@ const RootQuery = new GraphQLObjectType({
                 name: { type: GraphQLString }
             },
             resolve: (_, { name }) => Hashtag.findOne({ name })
+        },
+        searchPeople: {
+            type: new GraphQLList(UserType),
+            args: {
+                query: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve(_, { query }) {
+                const a_query = new RegExp(query, "i");
+
+                return User.find({
+                    $or: [
+                        { login: a_query },
+                        { email: a_query },
+                        { name: a_query }
+                    ]
+                });
+            }
+        },
+        searchHashtags: {
+            type: new GraphQLList(HashtagType),
+            args: {
+                query: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve: (_, { query }) => Hashtag.find({
+                $or: [
+                    { name: new RegExp(query, "i") },
+                    { name: new RegExp("#" + query, "i") }
+                ]
+            })
         }
     }
 });
