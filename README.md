@@ -37,9 +37,7 @@ Tasks / Features:
 - [x] Settings page
   - [x] Update account data
   - [x] Change password
-- [ ] Tags system
-   - [ ] Tags routing
-     - [ ] Search
+- [x] Tags system
      - [x] Post description (Feed)
      - [x] Post description (Float)
    - [x] Auto
