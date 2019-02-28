@@ -50,7 +50,7 @@ Tasks / Features:
    - [ ] Feed
    - [ ] Notifications
    - [ ] Chat
-- [ ] Notifications
+- [x] Notifications
 - [ ] Infinite Scroll
    - [ ] Tag
    - [ ] Chat
