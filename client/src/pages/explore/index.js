@@ -65,7 +65,6 @@ class Explore extends Component {
         }).then(({ data: { explorePosts } }) => {
             if(!explorePosts) return this.props.castError("Something went wrong.");
 
-            return console.log(explorePosts);
             this.setState(() => ({
                 posts: explorePosts,
                 isLoading: false

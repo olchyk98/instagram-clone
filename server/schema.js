@@ -451,18 +451,20 @@ const RootQuery = new GraphQLObjectType({
                     throw new AuthenticationError("No current session.");
 
                 const a = await Post.aggregate([
-                   { $sample: { size: 15 } },
-                   { $match: {
-                       _id: {
-                           $ne: req.session.id
-                       }
-                   }},
-                ]);
+                    { $match: {
+                        _id: {
+                            $ne: req.session.id
+                        }
+                    }},
+                ]).sample(15).exec();
 
-                // Doesn't work.
-                console.log(JSON.parse(JSON.stringify(a)));
+                return new Promise((resolve, reject) => {
+                    const b = [];
 
-                return a;
+                    a.forEach(io => b.push(new Post(io)));
+
+                    resolve(b);
+                });
             }
         }
     }

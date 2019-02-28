@@ -11,8 +11,6 @@ import Post from '../__forall__/post.preview';
 import placeholderINST from '../__forall__/placeholderINST.gif';
 import loadingSpinner from '../__forall__/loadingico.gif';
 
-const image = "https://scontent-arn2-1.cdninstagram.com/vp/eedc7e81274a06c841b9a06669fe780c/5D19D5F4/t51.2885-15/e35/c104.0.542.542/s150x150/52986083_2068252246545129_5087273367398740636_n.jpg?_nc_ht=scontent-arn2-1.cdninstagram.com";
-
 class Tag extends Component {
     constructor(props) {
         super(props);
