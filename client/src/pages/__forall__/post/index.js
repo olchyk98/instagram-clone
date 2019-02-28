@@ -150,6 +150,7 @@ class PostCarousel extends Component {
                                 console.error("Invalid post media type.");
                                 console.error("FATAL ERROR. Please commit an issue here: https://github.com/olchyk98/instagram-clone.");
                                 alert("FATAL ERROR. CHECK THE CONSOLE");
+                                return null;
                             }
                         })
                     }

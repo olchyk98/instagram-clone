@@ -7,8 +7,6 @@ const jpeg = require('jpeg-js');
 // Polyfill
 global.fetch = require('node-fetch');
 
-// Load model
-
 const readImage = path => {
     const buf = fs.readFileSync(path)
     const pixels = jpeg.decode(buf, true)

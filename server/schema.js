@@ -22,7 +22,9 @@ const {
     Post,
     Comment,
     Media,
-    Hashtag
+    Hashtag,
+    Conversation,
+    Message
 } = require('./models');
 
 // 
@@ -173,6 +175,14 @@ const UserType = new GraphQLObjectType({
                     $in: [str(id)]
                 }
             })
+        },
+        conversations: {
+            type: new GraphQLList(ConversationType),
+            resolve: ({ id }) => Conversation.find({
+                conversors: {
+                    $in: [str(id)]
+                }
+            })
         }
     })
 });
@@ -296,7 +306,7 @@ const PostType = new GraphQLObjectType({
 
 const HashtagType = new GraphQLObjectType({
     name: "Hashtag",
-    fields: {
+    fields: () => ({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
         subscribers: { type: new GraphQLList(GraphQLID) },
@@ -320,8 +330,89 @@ const HashtagType = new GraphQLObjectType({
                 }
             }).sort({ time: -1 })
         }
-    }
-})
+    })
+});
+
+const ConversationType = new GraphQLObjectType({
+    name: "Conversation",
+    fields: () => ({
+        id: { type: GraphQLID },
+        conversorsID: {
+            type: new GraphQLList(GraphQLID),
+            resolve: ({ conversors }) => conversors
+        },
+        conversors: {
+            type: new GraphQLList(UserType),
+            resolve: ({ conversors }) => User.find({
+                _id: {
+                    $in: conversors
+                }
+            })
+        },
+        image: {
+            type: GraphQLString,
+            async resolve({ conversors }, _, { req }) {
+                const { avatar } = await User.findById(conversors.find(io => io !== req.session.id)).select("avatar");
+
+                return avatar;
+            }
+        },
+        name: {
+            type: GraphQLString,
+            async resolve({ conversors }, _, { req }) {
+                const { login, name } = await User.findById(conversors.find(io => io !== req.session.id)).select("login name");
+
+                return name || login;
+            }
+        },
+        content: {
+            type: GraphQLString,
+            async resolve({ id }) {
+                const a = await Message.findOne({
+                    conversationID: str(id)
+                }).sort({ time: -1 }).select("content");
+
+                return ((a) ? a.content : "");
+            }
+        },
+        messagesInt: {
+            type: GraphQLInt,
+            async resolve({ id }) {
+                const a = Message.countDocuments({
+                    conversationID: id
+                });
+
+                return a || 0;
+            }
+        },
+        messages: {
+            type: new GraphQLList(MessageType),
+            resolve: ({ id }) => Message.find({
+                conversationID: id
+            }).sort({ time: -1 })
+        }
+    })
+});
+
+const MessageType = new GraphQLObjectType({
+    name: "Message",
+    fields: () => ({
+        id: { type: GraphQLID },
+        content: { type: GraphQLString },
+        creatorID: { type: GraphQLID },
+        creator: {
+            type: UserType,
+            resolve: ({ creatorID }) => User.findById(creatorID)
+        },
+        type: { type: GraphQLString }, // DEFAULT, LIKE, IMAGE
+        conversationID: { type: GraphQLID },
+        conversation: {
+            type: ConversationType,
+            resolve: ({ conversationID }) => Conversation.findById(conversationID)
+        },
+        time: { type: GraphQLString }
+    })
+});
 
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
@@ -464,6 +555,23 @@ const RootQuery = new GraphQLObjectType({
                     a.forEach(io => b.push(new Post(io)));
 
                     resolve(b);
+                });
+            }
+        },
+        conversation: {
+            type: ConversationType,
+            args: {
+                targetID: { type: new GraphQLNonNull(GraphQLID) }
+            },
+            async resolve(_, { targetID }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                return Conversation.findOne({
+                    _id: targetID,
+                    conversors: {
+                        $in: [req.session.id]
+                    }
                 });
             }
         }
@@ -969,6 +1077,73 @@ const RootMutation = new GraphQLObjectType({
 
                     return false;
                 }
+            }
+        },
+        createConversation: {
+            type: ConversationType,
+            args: {
+                targetID: { type: new GraphQLNonNull(GraphQLID) }  
+            },
+            async resolve(_, { targetID }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const conversors = [
+                    targetID,
+                    req.session.id
+                ];
+
+                const a = await Conversation.findOne({
+                    $or: [
+                        { conversors: conversors },
+                        { conversors: conversors.reverse() }
+                    ]
+                });
+
+                if(a) { // Conversation exists
+                    return a;
+                } else { // Create a new conversation
+                    const b = await (
+                        new Conversation({
+                            conversors: conversors
+                        })
+                    ).save();
+
+                    return b;
+                }
+            }
+        },
+        sendMessage: {
+            type: MessageType,
+            args: {
+                conversationID: { type: new GraphQLNonNull(GraphQLID) },
+                content: { type: new GraphQLNonNull(GraphQLString) },
+                type: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            async resolve(_, { conversationID, content, type }, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await Conversation.findOne({
+                    _id: conversationID,
+                    conversors: {
+                        $in: [req.session.id]
+                    }
+                });
+
+                if(!a) return null;
+
+                const b = await (
+                    new Message({
+                        content,
+                        type,
+                        creatorID: req.session.id,
+                        conversationID,
+                        time: new Date
+                    })
+                ).save();
+
+                return b;
             }
         }
     }

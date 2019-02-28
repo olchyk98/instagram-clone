@@ -24,6 +24,8 @@
 .gle-post-commentitem-content-mat {
     font-weight:400;
     font-size:.9rem;
+    width:100%;
+    word-break:break-word;
 }
 
 .gle-post-commentitem-content-mat > * {

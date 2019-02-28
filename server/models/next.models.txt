@@ -3,5 +3,5 @@
     - Media (type) |> +
     - Hashtag (name) |> +
     - Comment |> +
-    - Conversation
-    - Message
+    - Conversation |> +
+    - Message |> +

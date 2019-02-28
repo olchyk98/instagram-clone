@@ -121,7 +121,11 @@ menu {
 }
 
 .glei-placeholder.text.bgh {
-    height:40px;
+    height:40px!important;
+}
+
+.glei-placeholder.text.bgh_d {
+    height:70px!important;
 }
 
 .glei-placeholder.big {
@@ -150,6 +154,13 @@ menu {
     --size:100%;
 }
 
+.glei-placeholder.margintb {
+    --margin:5px;
+
+    margin-top:var(--margin);
+    margin-bottom:var(--margin);
+}
+
 .glei-lspinner {
     --size:30px;
 
@@ -171,6 +182,11 @@ menu {
     height:80%;
     width:inherit;
     object-fit:contain;
+}
+
+.glei-lspinner.blockcentered {
+    display:block;
+    margin:auto;
 }
 
 /* Queries */
