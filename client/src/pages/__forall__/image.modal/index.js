@@ -121,13 +121,15 @@ class Hero extends Component {
                 this.setState(() => ({
                     active: true,
                     isLoading: true,
-                    carouselIndex: 0
+                    carouselIndex: 0,
+                    directURL: ""
                 }), () => this.fetchPhoto(this.props.activeData.id));
             } else {
                 this.setState(() => ({
                     active: false,
                     isLoading: true,
-                    carouselIndex: 0
+                    carouselIndex: 0,
+                    directURL: ""
                 }));
             }
         }
@@ -183,7 +185,8 @@ class Hero extends Component {
             this.setState(() => ({
                 photo: post,
                 carouselIndex: 0,
-                isLoading: false
+                isLoading: false,
+                directURL: links["POST_PAGE"].absolute + "/" + post.id
             }));
         }).catch(console.error);
     }
@@ -568,7 +571,7 @@ class Hero extends Component {
                                             {
                                                 isRed: false,
                                                 action: () => {
-                                                    navigator.clipboard.writeText(`${ window.location.host }${ links["POST_PAGE"].absolute }/${ this.state.photo.id }`);
+                                                    navigator.clipboard.writeText(window.location.host + this.state.directURL);
                                                 },
                                                 text: "Copy Link",
                                                 close: true

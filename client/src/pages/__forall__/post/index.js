@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './main.css';
 
@@ -28,27 +28,35 @@ import {
     faBookmark as faBookmarkRegular
 } from '@fortawesome/free-regular-svg-icons';
 
-class PostCarouselVideo extends PureComponent {
+class PostCarouselVideo extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            isRunning: true
+        }
 
         this.matRef = React.createRef();
     }
 
-    toggleVideo = () => {
-        const a = this.matRef;
-
-        if(!a.paused) a.pause();
-        else a.play();
-
-        this.forceUpdate(); // Update icon
+    componentDidUpdate() {
+        if(this.state.isRunning && this.props.status === "current") {
+            this.matRef.play();
+        } else {
+            this.matRef.pause();
+        }
     }
+
+
+    toggleVideo = () => this.setState(({ isRunning: a }) => ({
+        isRunning: !a
+    }));
 
     render() {
         return(
-            <div className="gle-post-carousel-image video" onClick={ this.toggleVideo }>
+            <div className={ `gle-post-carousel-image video ${ this.props.status }` } onClick={ this.toggleVideo }>
                 <button className={ `gle-post-carousel-image-videotogg definp${ (!this.props.hideControls) ? "" : " hide" }` }>
-                    <FontAwesomeIcon icon={ (!this.matRef.paused) ? faPlaySolid : faPauseSolid } />
+                    <FontAwesomeIcon icon={ (!this.state.isRunning) ? faPlaySolid : faPauseSolid } />
                 </button>
                 <video autoPlay muted loop ref={ ref => this.matRef = ref }>
                     <source src={ this.props.url } type="video/mp4" />
@@ -60,7 +68,8 @@ class PostCarouselVideo extends PureComponent {
 }
 
 PostCarouselVideo.propTypes = {
-    url: PropTypes.string.isRequired
+    url: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired
 }
 
 class PostCarousel extends Component {
@@ -116,24 +125,33 @@ class PostCarousel extends Component {
                         ) : <div />
                     }
                     {
-                        this.props.media.map(({ id, url, type }, index) => (
-                            (type === "image") ? (
-                                <img
-                                    key={ id }
-                                    className={
-                                        `gle-post-carousel-image${ (this.state.position > index) ? " old" : (this.state.position < index) ? " new" : " current" }`
-                                    }
-                                    alt="target"
-                                    src={ api.storage + url }
-                                />
-                            ) : (type === "video") ? (
-                                <PostCarouselVideo
-                                    key={ id }
-                                    url={ api.storage + url }
-                                    hideControls={ this.state.likeAnimation }
-                                />
-                            ) : null // Fatal error
-                        ))
+                        this.props.media.map(({ id, url, type }, index) => {
+                            const status = (this.state.position > index) ? "old" : (this.state.position < index) ? "new" : "current";
+
+                            if(type === "image") {
+                                return(
+                                    <img
+                                        key={ id }
+                                        className={ "gle-post-carousel-image " + status }
+                                        alt="target"
+                                        src={ api.storage + url }
+                                    />
+                                );
+                            } else if(type === "video") {
+                                return(
+                                    <PostCarouselVideo
+                                        key={ id }
+                                        url={ api.storage + url }
+                                        hideControls={ this.state.likeAnimation }
+                                        status={ status }
+                                    />
+                                );
+                            } else {
+                                console.error("Invalid post media type.");
+                                console.error("FATAL ERROR. Please commit an issue here: https://github.com/olchyk98/instagram-clone.");
+                                alert("FATAL ERROR. CHECK THE CONSOLE");
+                            }
+                        })
                     }
                 </div>
                 <div className="gle-post-carousel-path">

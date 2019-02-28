@@ -218,6 +218,7 @@
 .gle-post-carousel-image.video {
     cursor:pointer;
     z-index:5;
+    overflow:hidden;
 }
 
 .gle-post-carousel-image.video:not(.hide):hover .gle-post-carousel-image-videotogg {
