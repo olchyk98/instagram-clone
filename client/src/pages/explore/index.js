@@ -1,88 +1,102 @@
 import React, { Component } from 'react';
 import './main.css';
 
-import Image from '../__forall__/post.preview';
+import client from '../../apollo';
 
-class ExploreSearch extends Component {
-    render() {
-        return(
-            <input
-                className="rn-explore-search definp"
-                type="text"
-                placeholder="Search"
-            />
-        );
-    }
-}
+import { gql } from 'apollo-boost';
+import { connect } from 'react-redux';
+
+import Post from '../__forall__/post.preview';
+
+import loadingSpinner from '../__forall__/loadingico.gif'
 
 class ExploreGrid extends Component {
     render() {
         return(
             <div className="rn-explore-search-grid">
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
-                <Image />
+                {
+                    this.props.posts.map(({ id: a, isMultimedia: b, likesInt: c, commentsInt: d, preview: e }) => (
+                        <Post
+                            key={ a }
+                            id={ a }
+                            isMultimedia={ b }
+                            likesInt={ c }
+                            commentsInt={ d }
+                            preview={ e }
+                        />
+                    ))
+                }
             </div>
         );
     }
 }
 
 class Explore extends Component {
-    search() {
-        if(window.innerWidth > 750) { // search for images
+    constructor(props) {
+        super(props);
 
-        } else { // search for images and people
-
+        this.state = {
+            posts: null,
+            isLoading: true
         }
+    }
+
+    componentDidMount() {
+        this.fetchAPI();
+    }
+
+    fetchAPI = () => {
+        client.query({
+            query: gql`
+                query {
+                    explorePosts {
+                        id,
+                        isMultimedia,
+                        likesInt,
+                        commentsInt,
+                        preview {
+                            id,
+                            type,
+                            url
+                        }
+                    }
+                }
+            `
+        }).then(({ data: { explorePosts } }) => {
+            if(!explorePosts) return this.props.castError("Something went wrong.");
+
+            return console.log(explorePosts);
+            this.setState(() => ({
+                posts: explorePosts,
+                isLoading: false
+            }));
+        }).catch(console.error);
     }
 
     render() {
         return(
             <div className="rn rn-explore">
-                <ExploreSearch />
-                <ExploreGrid />
+                {
+                    (this.state.isLoading) ? (
+                        <img src={ loadingSpinner } alt="explore posts loading spinner" className="glei-lspinner" />
+                    ) : (
+                        <ExploreGrid
+                            posts={ this.state.posts }
+                        />
+                    )
+                }
             </div>
         );
     }
 }
 
-export default Explore;
+const mapStateToProps = () => ({});
+
+const mapActionsToProps = {
+    castError: text => ({ type: 'CAST_GLOBAL_ERROR', payload: { text } })
+}
+
+export default connect(
+    mapStateToProps,
+    mapActionsToProps
+)(Explore);

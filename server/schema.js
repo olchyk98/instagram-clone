@@ -443,6 +443,27 @@ const RootQuery = new GraphQLObjectType({
                     { name: new RegExp("#" + query, "i") }
                 ]
             })
+        },
+        explorePosts: {
+            type: new GraphQLList(PostType),
+            async resolve(_, __, { req }) {
+                if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await Post.aggregate([
+                   { $sample: { size: 15 } },
+                   { $match: {
+                       _id: {
+                           $ne: req.session.id
+                       }
+                   }},
+                ]);
+
+                // Doesn't work.
+                console.log(JSON.parse(JSON.stringify(a)));
+
+                return a;
+            }
         }
     }
 });

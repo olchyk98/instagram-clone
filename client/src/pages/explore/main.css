@@ -8,27 +8,6 @@
     flex-shrink:0;
 }
 
-.rn-explore-search {
-    --padding:10px;
-
-    height:37.5px;
-    padding-left:var(--padding);
-    padding-right:var(--padding);
-    border-radius:2.5px;
-    width:calc(245px - var(--padding) * 2);
-    margin-top:25px;
-    margin-bottom:45px;
-    background:#F3F3F3;
-    font-size:.925rem;
-    text-align:center;
-    color:rgba(0, 0, 0, .5);
-}
-
-.rn-explore-search:focus {
-    text-align:left;
-    color:rgba(0, 0, 0, .85);
-}
-
 .rn-explore-search-grid {
     width:1100px;
     max-width:calc(100vw - 20px);

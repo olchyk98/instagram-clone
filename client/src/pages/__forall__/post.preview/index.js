@@ -94,7 +94,7 @@ PostPreview.propTypes = {
         id: PropTypes.string,
         type: PropTypes.string,
         url: PropTypes.string
-    })
+    }).isRequired
 }
 
 const mapStateToProps = () => ({});
