@@ -55,13 +55,13 @@ class Conversations extends Component {
                 <div className="rn-direct-conversations-mat">
                     {
                         (!this.props.isLoading) ? (
-                            this.props.conversations.map(({ id, content, image, name }) => (
+                            this.props.conversations.map(({ id, content, conv }) => (
                                 <ConversationsItem
                                     key={ id }
                                     id={ id }
                                     content={ content }
-                                    image={ image }
-                                    name={ name }
+                                    image={ conv.avatar }
+                                    name={ conv.getName }
                                     isActive={ this.props.activeID === id }
                                     _onClick={ () => this.props.onSelect(id) }
                                 />
@@ -123,7 +123,7 @@ class ChatDisplayMessage extends PureComponent {
             <div className={ `rn-direct-chat-display-message_container${ (!this.props.byClient) ? "" : " client" }` }>
                 <article className="rn-direct-chat-display-message">
                     <div className="rn-direct-chat-display-message-avatar">
-                        <img src={ api.storage + avatar } alt="user" />
+                        <img src={ (avatar !== null) ? api.storage + avatar : placeholderINST } alt="user" />
                     </div>
                     <div className="rn-direct-chat-display-message-content">
                         <div className="rn-direct-chat-display-message-content-blank">
@@ -145,27 +145,40 @@ ChatDisplayMessage.propTypes = {
     byClient: PropTypes.bool.isRequired,
     content: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
+    image: PropTypes.string,
     time: PropTypes.string.isRequired
 }
 
-class ChatDisplay extends Component {
+class ChatDisplay extends PureComponent {
     constructor(props) {
         super(props);
 
         this.clientID = cookieControl.get("userid");
+        this.matRef = React.createRef();
+    }
+
+    componentDidMount() {
+        this.scrollDisplay();
+    }
+
+    componentDidUpdate(p_props) {
+        if(p_props.messages.length !== this.props.messages.length) this.scrollDisplay();
+    }
+
+    scrollDisplay = () => {
+        this.matRef.scrollTop = this.matRef.scrollHeight;
     }
 
     render() {
         return(
-            <div className="rn-direct-chat-display">
+            <div className="rn-direct-chat-display" ref={ ref => this.matRef = ref }>
                 {
                     this.props.messages.map(({ id, creator, content, type, time }) => (
                         <ChatDisplayMessage
                             key={ id }
                             content={ content }
                             type={ type }
-                            image={ api.storage + creator.avatar }
+                            image={ creator.avatar }
                             time={ time }
                             byClient={ this.clientID === creator.id }
                         />
@@ -183,7 +196,7 @@ class ChatInputBtn extends PureComponent {
 
     render() {
         return(
-            <button type={ this.props.type } className="rn-direct-chat-input-mat-media definp">
+            <button type={ this.props.type } className="rn-direct-chat-input-mat-media-btn definp">
                 <FontAwesomeIcon icon={ this.props.icon } />
             </button>
         );
@@ -196,6 +209,20 @@ ChatInputBtn.propTypes = {
 }
 
 class ChatInput extends Component {
+    constructor(props) {
+        super(props);
+
+        this.matRef = React.createRef();
+    }
+
+    sendMessage = (type, content, clearField = false) => {
+        if(!content.replace(/\s|\n/g, "").length) return;
+
+        this.props._onSubmit({ type, content });
+
+        if(clearField) this.matRef.value = "";
+    }
+
     render() {
         return(
             <div className="rn-direct-chat-input">
@@ -204,17 +231,32 @@ class ChatInput extends Component {
                         type="text"
                         placeholder="Type a message..."
                         className="rn-direct-chat-input-mat-field definp"
+                        ref={ ref => this.matRef = ref }
+                        onKeyDown={ ({ keyCode, target }) => (keyCode !== 13) ? null : this.sendMessage("DEFAULT", target.value, true) }
                     />
                     <div className="rn-direct-chat-input-mat-media">
-                        <ChatInputBtn
-                            icon={ faImage }
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={ ({ target: { files: [file] } }) => (file) ? this.sendMessage(file, "IMAGE") : null }
+                            id="rn-direct-chat-input-mat-media-imgfile"
                         />
+                        <label htmlFor="rn-direct-chat-input-mat-media-imgfile" type={ this.props.type } className="rn-direct-chat-input-mat-media-btn definp">
+                            <FontAwesomeIcon icon={ faImage } />
+                        </label>
                         <ChatInputBtn
                             icon={ faHeart }
+                            _onClick={() => {
+                                this.props.sendMessage("LIKE", "");
+                            }}
                         />
                         <ChatInputBtn
                             icon={ faPaperPlane }
                             type="submit"
+                            _onClick={() => {
+                                this.props.sendMessage("DEFAULT", this.matRef.value, true);
+                            }}
                         />
                     </div>
                 </form>
@@ -232,14 +274,16 @@ class Chat extends Component {
                         (this.props.dialog !== null) ? (
                             <>
                                 <ChatHeader
-                                    name={ this.props.dialog.name }
-                                    image={ api.storage + this.props.dialog.image }
+                                    name={ this.props.dialog.conv.getName }
+                                    image={ api.storage + this.props.dialog.conv.avatar }
                                     messages={ this.props.dialog.messagesInt }
                                 />
                                 <ChatDisplay
                                     messages={ this.props.dialog.messages }
                                 />
-                                <ChatInput />
+                                <ChatInput
+                                    _onSubmit={ this.props.onSendMessage }
+                                />
                             </>
                         ) : null
                     ) : (
@@ -261,6 +305,9 @@ class Hero extends Component {
             isLoadingChat: false,
             isLoadingConversations: true
         }
+
+        this.sendedMessages = 0; // I'm using this value as id for the submited messages.
+        this.clientID = cookieControl.get("userid");
     }
 
     componentDidMount() {
@@ -275,9 +322,12 @@ class Hero extends Component {
                         id,
                         conversations {
                             id,
-                            image,
                             content,
-                            name
+                            conv {
+                                id,
+                                avatar,
+                                getName
+                            }
                         }
                     }
                 }
@@ -304,9 +354,12 @@ class Hero extends Component {
                 query($targetID: ID!) {
                     conversation(targetID: $targetID) {
                         id,
-                        name,
-                        image,
                         messagesInt,
+                        conv {
+                            id,
+                            avatar,
+                            getName
+                        },
                         messages {
                             id,
                             type,
@@ -336,6 +389,65 @@ class Hero extends Component {
         })
     }
 
+    sendMessage = ({ type, content }) => {
+        if(!this.state.chat) return;
+
+        const mockID = ++this.sendedMessages;
+
+        this.setState(({ chat, chat: { messages } }) => ({
+            chat: {
+                ...chat,
+                messages: [
+                    ...messages,
+                    {
+                        id: mockID,
+                        type,
+                        time: (+new Date()).toString(),
+                        content,
+                        creator: {
+                            id: this.clientID,
+                            avatar: null
+                        }
+                    }
+                ]
+            }
+        }));
+
+        client.mutate({
+            mutation: gql`
+                mutation($conversationID: ID!, $type: String!, $content: Upload!) {
+                    sendMessage(conversationID: $conversationID, type: $type, content: $content) {
+                        id,
+                        type,
+                        time,
+                        content,
+                        creator {
+                            id,
+                            avatar
+                        }
+                    }
+                }
+            `,
+            variables: {
+                type,
+                content,
+                conversationID: this.state.chat.id
+            }
+        }).then(({ data: { sendMessage } }) => {
+            if(!sendMessage) return this.props.castError("We coudln't send your message. Please, try again.");
+
+            const a = Array.from(this.state.chat.messages);
+            a[a.findIndex(io => io.id === mockID)] = sendMessage;
+
+            this.setState(({ chat }) => ({
+                chat: {
+                    ...chat,
+                    messages: a
+                }
+            }));
+        }).catch(console.error);
+    }
+
     render() {
         return(
             <div className="rn rn-direct">
@@ -348,6 +460,7 @@ class Hero extends Component {
                 <Chat
                     isLoading={ this.state.isLoadingChat }
                     dialog={ this.state.chat }
+                    onSendMessage={ this.sendMessage }
                 />
             </div>
         );

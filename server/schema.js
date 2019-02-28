@@ -349,21 +349,9 @@ const ConversationType = new GraphQLObjectType({
                 }
             })
         },
-        image: {
-            type: GraphQLString,
-            async resolve({ conversors }, _, { req }) {
-                const { avatar } = await User.findById(conversors.find(io => io !== req.session.id)).select("avatar");
-
-                return avatar;
-            }
-        },
-        name: {
-            type: GraphQLString,
-            async resolve({ conversors }, _, { req }) {
-                const { login, name } = await User.findById(conversors.find(io => io !== req.session.id)).select("login name");
-
-                return name || login;
-            }
+        conv: {
+            type: UserType,
+            resolve: ({ conversors }, _, { req }) => User.findById(conversors.find(io => io !== req.session.id))
         },
         content: {
             type: GraphQLString,
@@ -389,7 +377,7 @@ const ConversationType = new GraphQLObjectType({
             type: new GraphQLList(MessageType),
             resolve: ({ id }) => Message.find({
                 conversationID: id
-            }).sort({ time: -1 })
+            }).sort({ time: 1 })
         }
     })
 });
@@ -1117,7 +1105,7 @@ const RootMutation = new GraphQLObjectType({
             type: MessageType,
             args: {
                 conversationID: { type: new GraphQLNonNull(GraphQLID) },
-                content: { type: new GraphQLNonNull(GraphQLString) },
+                content: { type: new GraphQLNonNull(GraphQLUpload) },
                 type: { type: new GraphQLNonNull(GraphQLString) }
             },
             async resolve(_, { conversationID, content, type }, { req }) {

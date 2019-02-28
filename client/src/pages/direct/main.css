@@ -306,19 +306,19 @@
     align-items:center;
 }
 
-.rn-direct-chat-input-mat-media {
-    font-size:1.5rem;
-    margin-left:15px;
+.rn-direct-chat-input-mat-media-btn {
+    font-size:1.35rem;
+    margin-left:10px;
     cursor:pointer;
     color:rgba(0, 0, 0, .45);
     transition:.25s;
 }
 
-.rn-direct-chat-input-mat-media:hover {
+.rn-direct-chat-input-mat-media-btn:hover {
     color:rgba(0, 0, 0, .85);
 }
 
-.rn-direct-chat-input-mat-media:active {
+.rn-direct-chat-input-mat-media-btn:active {
     transition:none;
     color:rgba(0, 0, 0, .35);
 }
