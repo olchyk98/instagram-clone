@@ -25,7 +25,7 @@ const links = {
         absolute: '/e'
     },
     "MESSENGER_PAGE": {
-        route: '/d',
+        route: '/d/:id?',
         absolute: '/d'
     },
     "TAG_PAGE": {

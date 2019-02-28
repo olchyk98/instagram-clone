@@ -255,12 +255,33 @@
     text-align:right;
 }
 
+.rn-direct-chat-display-message-content-sticker {
+    width:140px;
+}
+
+.rn-direct-chat-display-message-content-image {
+    width:210px;
+    height:130px;
+    border-radius:15px;
+    overflow:hidden;
+    position:relative;
+    border:1px solid rgba(0, 0, 0, .05);
+}
+
+.rn-direct-chat-display-message-content-image > img {
+    height:100%;
+    width:100%;
+    object-fit:cover;
+    object-position:center;
+}
+
 .rn-direct-chat-display-message-content-details {
     font-family:"Quicksand";
     font-weight:400;
     font-size:.85rem;
     width:100%;
     display:flex;
+    margin-top:2.5px;
     align-items:center;
     justify-content:flex-start;
     color:rgba(0, 0, 0, .35);

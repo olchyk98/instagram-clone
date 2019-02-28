@@ -353,14 +353,12 @@ const ConversationType = new GraphQLObjectType({
             type: UserType,
             resolve: ({ conversors }, _, { req }) => User.findById(conversors.find(io => io !== req.session.id))
         },
-        content: {
-            type: GraphQLString,
-            async resolve({ id }) {
-                const a = await Message.findOne({
+        lastMessage: {
+            type: MessageType,
+            resolve({ id }) {
+                return Message.findOne({
                     conversationID: str(id)
-                }).sort({ time: -1 }).select("content");
-
-                return ((a) ? a.content : "");
+                }).sort({ time: -1 });
             }
         },
         messagesInt: {
@@ -1106,9 +1104,10 @@ const RootMutation = new GraphQLObjectType({
             args: {
                 conversationID: { type: new GraphQLNonNull(GraphQLID) },
                 content: { type: new GraphQLNonNull(GraphQLUpload) },
-                type: { type: new GraphQLNonNull(GraphQLString) }
+                type: { type: new GraphQLNonNull(GraphQLString) },
+                isFile: { type: GraphQLBoolean }
             },
-            async resolve(_, { conversationID, content, type }, { req }) {
+            async resolve(_, { conversationID, content, type, isFile }, { req }) {
                 if(!req.session.id || !req.session.authToken)
                     throw new AuthenticationError("No current session.");
 
@@ -1121,9 +1120,17 @@ const RootMutation = new GraphQLObjectType({
 
                 if(!a) return null;
 
+                if(isFile) { // receive file
+                    const { filename, createReadStream } = await content;
+                    const stream = createReadStream();
+
+                    var contentURL = `/files/messages_image/${ conversationID }_${ generateNoise(90) }.${ getExtension(filename) }`;
+                    stream.pipe(fs.createWriteStream('.' + contentURL));
+                }
+
                 const b = await (
                     new Message({
-                        content,
+                        content: (!isFile) ? content : contentURL,
                         type,
                         creatorID: req.session.id,
                         conversationID,
