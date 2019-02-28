@@ -45,6 +45,19 @@
     position:relative;
 }
 
+.gl-nav-routes-btn.alertion:before {
+    --size:5px;
+
+    content:'';
+    position:absolute;
+    top:-5px;
+    right:-7.5px;
+    height:var(--size);
+    width:var(--size);
+    border-radius:50%;
+    background:red;
+}
+
 .gl-nav-routes-btn,
 .gl-nav-routes-btn * {
     outline:0;
@@ -179,7 +192,7 @@
 }
 
 .gl-nav-routes-btn-window-list-item-info-mat-content > * {
-    --margin:1px;
+    --margin:-.5px;
 
     margin-top:var(--margin);
     margin-bottom:var(--margin);
@@ -207,6 +220,9 @@
 
 .gl-nav-routes-btn-window-list-item-route {
     margin:0;
+    text-decoration:none;
+    line-height:30px; /* XXX */
+    position:relative;
 }
 
 .gl-nav-search-results,

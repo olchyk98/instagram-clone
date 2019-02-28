@@ -1,5 +1,5 @@
 // import Standard from './standard';
-import Beauty from './beauty';
+import Beautiful from './beautiful';
 
 // export default Standard;
-export default Beauty;
+export default Beautiful;

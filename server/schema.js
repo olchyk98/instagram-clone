@@ -24,7 +24,8 @@ const {
     Media,
     Hashtag,
     Conversation,
-    Message
+    Message,
+    Notification
 } = require('./models');
 
 // 
@@ -400,6 +401,31 @@ const MessageType = new GraphQLObjectType({
     })
 });
 
+const NotificationType = new GraphQLObjectType({
+    name: "Notification",
+    fields: {
+        id: { type: GraphQLID },
+        action: { type: GraphQLString },
+        initID: { type: GraphQLID },
+        init: {
+            type: UserType,
+            resolve: ({ initID }) => User.findById(initID)
+        },
+        time: { type: GraphQLString },
+        influencedID: { type: new GraphQLList(GraphQLID) },
+        influenced: {
+            type: new GraphQLList(UserType),
+            resolve: ({ influenced }) => User.find({
+                _id: {
+                    $in: influenced
+                }
+            })
+        },
+        subContent: { type: GraphQLString },
+        composeID: { type: GraphQLID } // POST/USER
+    }
+});
+
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
@@ -559,6 +585,40 @@ const RootQuery = new GraphQLObjectType({
                         $in: [req.session.id]
                     }
                 });
+            }
+        },
+        myNotifications: {
+            type: new GraphQLList(NotificationType),
+            args: {
+                deleteOnFetch: { type: GraphQLBoolean }
+            },
+            async resolve(_, { deleteOnFetch }, { req }) {
+                 if(!req.session.id || !req.session.authToken)
+                    throw new AuthenticationError("No current session.");
+
+                const a = await Notification.find({
+                    influencedID: {
+                        $in: [req.session.id]
+                    }
+                });
+
+                if(deleteOnFetch) { // XXX: Let's search the same documents twice! That's so interesting! PS. People who.. you know what to do.
+                    await Notification.update({
+                        influencedID: {
+                            $in: [req.session.id]
+                        }
+                    }, {
+                        $pull: {
+                            influencedID: req.session.id
+                        }
+                    });
+
+                    await Notification.deleteMany({
+                        influencedID: []
+                    });
+                }
+
+                return a;
             }
         }
     }
@@ -810,6 +870,19 @@ const RootMutation = new GraphQLObjectType({
                     });
 
                     a.likes.push(str(req.session.id));
+
+                    if(req.session.id !== a.creatorID) {
+                        await (
+                            new Notification({
+                                action: "LIKE_POST",
+                                initID: req.session.id,
+                                time: new Date,
+                                influencedID: [a.creatorID],
+                                subContent: a.text.slice(0, 50),
+                                composeID: postID
+                            })
+                        ).save();
+                    }
                 } else {
                     await a.updateOne({
                         $pull: {
@@ -819,29 +892,6 @@ const RootMutation = new GraphQLObjectType({
 
                     a.likes.splice(a.likes.findIndex(io => io === req.session.id), 1);
                 }
-
-                return a;
-            }
-        },
-        commentPost: {
-            type: CommentType,
-            args: {
-                postID: { type: new GraphQLNonNull(GraphQLID) },
-                content: { type: new GraphQLNonNull(GraphQLString) }
-            },
-            async resolve(_, { postID, content }, { req }) {
-                if(!req.session.id || !req.session.authToken)
-                    throw new AuthenticationError("No current session.");
-
-                const a = await (
-                    new Comment({
-                        postID,
-                        creatorID: req.session.id,
-                        content,
-                        likes: [],
-                        time: str(+new Date)
-                    })
-                ).save();
 
                 return a;
             }
@@ -894,6 +944,19 @@ const RootMutation = new GraphQLObjectType({
                         }
                     });
 
+                    if(req.session.id !== a.creatorID) {
+                        await (
+                            new Notification({
+                                action: "LIKE_COMMENT",
+                                initID: req.session.id,
+                                time: new Date,
+                                influencedID: [a.creatorID],
+                                subContent: a.text.slice(0, 50),
+                                composeID: str(a._id)
+                            })
+                        ).save();
+                    }
+
                     return true;
                 } else {
                     await a.updateOne({
@@ -916,6 +979,9 @@ const RootMutation = new GraphQLObjectType({
                 if(!req.session.id || !req.session.authToken)
                     throw new AuthenticationError("No current session.");
 
+                const _post = await Post.findById(postID).select("creatorID");
+                if(!_post) return null;
+
                 const a = await (
                     new Comment({
                         postID,
@@ -925,6 +991,19 @@ const RootMutation = new GraphQLObjectType({
                         time: str(+new Date)
                     })
                 ).save();
+
+                if(req.session.id !== _post.creatorID) {
+                    await (
+                        new Notification({
+                            action: "COMMENT_POST",
+                            initID: req.session.id,
+                            time: new Date,
+                            influencedID: [_post.creatorID],
+                            subContent: content.slice(0, 50),
+                            composeID: postID
+                        })
+                    ).save();
+                }
 
                 return a;
             }
@@ -948,6 +1027,17 @@ const RootMutation = new GraphQLObjectType({
                             subscribedTo: targetID
                         }
                     });
+
+                    await (
+                        new Notification({
+                            action: "SUBSCRIBE_USER",
+                            initID: req.session.id,
+                            time: new Date,
+                            influencedID: [targetID],
+                            subContent: "",
+                            composeID: targetID
+                        })
+                    ).save();
                 } else {
                     await a.updateOne({
                         $pull: {

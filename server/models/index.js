@@ -5,6 +5,7 @@ const Media = require('./Media');
 const Hashtag = require('./Hashtag');
 const Conversation = require('./Conversation');
 const Message = require('./Message');
+const Notification = require('./Notification');
 
 module.exports = {
     User,
@@ -13,5 +14,6 @@ module.exports = {
     Media,
     Hashtag,
     Conversation,
-    Message
+    Message,
+    Notification
 }
