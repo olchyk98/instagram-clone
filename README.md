@@ -64,6 +64,7 @@ Tasks / Features:
   - [x] Classify function
   - [ ] ~~Photo description autofill~~
 - [ ] Fully responsive design
+- [ ] Dynamic document title
 - [ ] Guest account
 - [ ] Import external fonts (_Quicksand, Lato, Gothic A1_)
 - [ ] Deploy app using GitHub pages and Heroku (https://www.apollographql.com/docs/apollo-server/deployment/heroku.html)
