@@ -45,7 +45,7 @@ Tasks / Features:
   - [x] Template
   - [x] Fetching
 - [x] Search system
-- [ ] Create the explore page based on 'following' state and tag subscriptions
+- [x] Create the explore page based on 'following' state and tag subscriptions
 - [ ] Subscriptions
    - [ ] Feed
    - [ ] Notifications
