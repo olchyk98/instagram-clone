@@ -65,7 +65,7 @@ Tasks / Features:
   - [ ] ~~Photo description autofill~~
 - [ ] Fully responsive design
 - [ ] Guest account
-- [ ] Do not forget to load external fonts (_Quicksand, Lato, Gothic A1_)
+- [ ] Import external fonts (_Quicksand, Lato, Gothic A1_)
 - [ ] Deploy app using GitHub pages and Heroku (https://www.apollographql.com/docs/apollo-server/deployment/heroku.html)
 
 Refused ideas:
