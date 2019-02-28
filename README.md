@@ -57,7 +57,7 @@ Tasks / Features:
    - [ ] Feed
    - [ ] Account (3 sections)
    - [ ] Explore
-- [ ] Direct Chat
+- [x] Direct Chat
 - [ ] Advanced website routing
 - [ ] Dark Mode
 - [ ] ~~Machine Learning Classifier~~
