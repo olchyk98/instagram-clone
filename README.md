@@ -47,7 +47,7 @@ Tasks / Features:
 - [x] Search system
 - [x] Create the explore page based on 'following' state and tag subscriptions
 - [ ] Subscriptions
-   - [ ] Feed
+   - [x] Feed
    - [ ] Notifications
    - [ ] Chat
 - [x] Notifications
