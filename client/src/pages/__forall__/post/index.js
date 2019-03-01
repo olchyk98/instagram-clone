@@ -435,12 +435,6 @@ class Post extends Component {
                         type: "OPTIONS",
                         buttons: [
                             {
-                                isRed: true,
-                                action: () => null,
-                                text: "Unfollow author",
-                                close: true
-                            },
-                            {
                                 isRed: false,
                                 action: () => this.props.history.push(`${ links["POST_PAGE"].absolute }/${ this.props.id }`),
                                 text: "Go to post",

@@ -21,6 +21,7 @@ import placeholderGIF from '../__forall__/placeholderFB.gif';
 import placeholderGIF_I from '../__forall__/placeholderINST.gif';
 import loadingSpinner from '../__forall__/loadingico.gif';
 
+const postsLimit = 7;
 
 class Account extends Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class Account extends Component {
 
         this.state = {
             isLoading: true,
+            isLoadingMore: false,
             user: null,
             currentBlock: "MAIN_BLOCK",
             blockLoading: false,
@@ -35,6 +37,7 @@ class Account extends Component {
         }
 
         this.clientID = null;
+        this.canFetchMorePosts = true;
     }
 
     componentDidMount() {
@@ -43,11 +46,11 @@ class Account extends Component {
 
         client.query({
             query: gql`
-                query($url: String) {
+                query($url: String, $limit: Int) {
                     user(url: $url) {
                         id,
                         login,
-                        posts {
+                        posts(limit: $limit) {
                             id,
                             isMultimedia,
                             likesInt,
@@ -71,7 +74,8 @@ class Account extends Component {
                 }
             `,
             variables: {
-                url: this.props.match.params.url
+                url: this.props.match.params.url,
+                limit: postsLimit
             }
         }).then(({ data: { user } }) => {
             if(!user) return this.props.history.push(links["FEED_PAGE"].absolute);
@@ -83,27 +87,42 @@ class Account extends Component {
         }).catch(console.error);
     }
 
-    chooseBlock = block => {
-        if(block === this.state.currentBlock || !this.state.user) return;
+    loadBlock = (block, loadingMore = false) => {
+        if(
+            (block === this.state.currentBlock && !loadingMore) || !this.state.user || (
+                loadingMore && (
+                    !this.canFetchMorePosts ||
+                    this.state.isLoadingMore
+                )
+            )
+        ) return;
 
         const rBlock = {
+            "MAIN_BLOCK": "posts",
             "SAVED_BLOCK": "savedPosts",
             "TAGGED_BLOCK": "taggedPosts"
         }[block];
 
-        this.setState(() => ({
-            currentBlock: block,
-            blockLoading: rBlock && !this.state.user[rBlock]
-        }));
+        if(this.state.currentBlock !== block) {
+            this.canFetchMorePosts = true;
+            this.setState(() => ({
+                currentBlock: block,
+                blockLoading: rBlock && !this.state.user[rBlock]
+            }));
+        } else if(loadingMore) {
+            this.setState(() => ({
+                isLoadingMore: true
+            }));
+        }
 
         if(!rBlock) return;
 
         client.query({
             query: gql`
-                query($targetID: ID) {
+                query($targetID: ID, $limitPosts: Int, $cursorID: ID) {
                     user(targetID: $targetID) {
                         id,
-                        ${ rBlock } {
+                        ${ rBlock }(limit: $limitPosts, cursorID: $cursorID) {
                             id,
                             isMultimedia,
                             likesInt,
@@ -118,11 +137,14 @@ class Account extends Component {
                 }
             `,
             variables: {
-                targetID: this.state.user.id
+                targetID: this.state.user.id,
+                limit: postsLimit,
+                cursorID: (!loadingMore || !this.state.user[rBlock]) ? null : this.state.user[rBlock].slice(-1)[0].id
             }
         }).then(({ data: { user: _user } }) => {
             this.setState(() => ({
-                blockLoading: false
+                blockLoading: false,
+                isLoadingMore: false
             }));
 
             if(!_user) return this.props.castError("Whooops.. SOmething went wrong..");
@@ -142,9 +164,16 @@ class Account extends Component {
             this.setState(({ user }) => ({
                 user: {
                     ...user,
-                    ..._user
+                    ...((!user[rBlock] || !loadingMore) ? _user : {
+                        [rBlock]: [
+                            ...user[rBlock],
+                            ..._user.posts
+                        ]
+                    })
                 }
             }));
+
+            this.canFetchMorePosts = _user.length >= postsLimit;
         }).catch(console.error);
     }
 
@@ -186,7 +215,11 @@ class Account extends Component {
 
     render() {
         return(
-            <div className="rn rn-account">
+            <div className="rn rn-account" onScroll={({ target }) => {
+                if(target.scrollTop + target.offsetHeight > target.scrollHeight - 15) {
+                    this.loadBlock(this.state.currentBlock, true);
+                }    
+            }}>
                 <header className="rn-account-info  rn-account-section">
                     <section className="rn-account-info-avatar">
                         {
@@ -359,7 +392,7 @@ class Account extends Component {
                                 key={ index }
                                 title={ `See ${ text }` }
                                 className={ `rn-account-postsmenu-btn definp${ (block !== this.state.currentBlock) ? "" : " active" }` }
-                                onClick={ () => this.chooseBlock(block) }>
+                                onClick={ () => this.loadBlock(block) }>
                                 <FontAwesomeIcon icon={ icon } />
                                 <span>{ text }</span>
                             </button>
@@ -389,6 +422,15 @@ class Account extends Component {
                         </section>
                     ) : (
                         <img className="glei-lspinner" alt="loading spinner" src={ loadingSpinner } />
+                    )
+                }
+                {
+                    (!this.state.isLoadingMore) ? null : (
+                        <img
+                            className="glei-lspinner"
+                            alt="loading spinner"
+                            src={ loadingSpinner }
+                        />
                     )
                 }
             </div>

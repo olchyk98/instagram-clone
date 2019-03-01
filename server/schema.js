@@ -88,19 +88,47 @@ const UserType = new GraphQLObjectType({
         registeredByExternal: { type: GraphQLBoolean },
         savedPosts: {
             type: new GraphQLList(PostType),
-            resolve: ({ savedPosts }) => Post.find({
-                _id: {
-                    $in: savedPosts
+            args: {
+                limit: { type: GraphQLInt },
+                cursorID: { type: GraphQLID }
+            },
+            resolve({ savedPosts }, { limit, cursorID }) {
+                const query = {
+                    _id: {
+                        $in: savedPosts
+                    }
                 }
-            })
+
+                if(cursorID) {
+                    query._id = {
+                        $gt: cursorID
+                    }
+                }
+
+                return Post.find(query).limit(limit || 0);
+            }
         },
         taggedPosts: {
             type: new GraphQLList(PostType),
-            resolve: ({ id }) => Post.find({
-                people: {
-                    $in: [str(id)]
+            args: {
+                limit: { type: GraphQLInt },
+                cursorID: { type: GraphQLID }
+            },
+            resolve({ id }, { limit, cursorID }) {
+                const query = {
+                    people: {
+                        $in: [str(id)]
+                    }
                 }
-            })
+
+                if(cursorID) {
+                    query._id = {
+                        $gt: cursorID
+                    }
+                }
+
+                return Post.find(query).limit(limit || 0);
+            }
         },
         avatar: { type: GraphQLString },
         authTokens: { type: new GraphQLList(GraphQLString) },
@@ -173,9 +201,23 @@ const UserType = new GraphQLObjectType({
         },
         posts: {
             type: new GraphQLList(PostType),
-            resolve: ({ id }) => Post.find({
-                creatorID: str(id)
-            }).sort({ time: -1 })
+            args: {
+                limit: { type: GraphQLInt },
+                cursorID: { type: GraphQLID }
+            },
+            resolve({ id }, { limit, cursorID }) {
+                const query = {
+                    creatorID: str(id)
+                }
+
+                if(cursorID) {
+                    query._id = {
+                        $gt: cursorID
+                    }
+                }
+
+                return Post.find(query).limit(limit || 0);
+            }
         },
         postsInt: {
             type: GraphQLInt,
