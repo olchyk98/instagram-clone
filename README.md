@@ -49,7 +49,7 @@ Tasks / Features:
 - [ ] Subscriptions
    - [x] Feed
    - [ ] Notifications
-   - [ ] Chat
+   - [x] Direct (Messenger)
 - [x] Notifications
 - [ ] Infinite Scroll
    - [ ] Tag
