@@ -52,7 +52,7 @@ Tasks / Features:
    - [x] Direct (Messenger)
 - [x] Notifications
 - [ ] Infinite Scroll
-   - [ ] Tag
+   - [x] Tag
    - [ ] Chat
    - [x] Feed
    - [ ] Account blocks
