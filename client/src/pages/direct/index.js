@@ -35,8 +35,8 @@ class ConversationsItem extends PureComponent {
                                 {
                                     {
                                         "DEFAULT": this.props.content,
-                                        "LIKE": "*Liked you*",
-                                        "IMAGE": "*Sent an image*"
+                                        "LIKE": "*LIKE*",
+                                        "IMAGE": "*IMAGE*"
                                     }[this.props.contentType]
                                 }
                             </span>
@@ -116,7 +116,7 @@ class ChatHeader extends PureComponent {
                             { this.props.name }
                         </span>
                         <span className="rn-direct-chat-header-info-mat-messages">
-                            { this.props.messages } message{ (this.props.messaegs !== 1) ? "s" : "" }
+                            { this.props.messages } message{ (this.props.messages !== 1) ? "s" : "" }
                         </span>
                     </div>
                 </section>
@@ -336,6 +336,7 @@ class Messenger extends Component {
 
         this.sendedMessages = 0; // I'm using this value as id for the submited messages.
         this.clientID = cookieControl.get("userid");
+        this.conversationsSubscription = this.dialogSubscription = null;
     }
 
     componentDidMount() {
@@ -347,6 +348,11 @@ class Messenger extends Component {
         }
 
         this.loadConversations();
+    }
+
+    componentWillUnmount() {
+        if(this.conversationsSubscription) this.conversationsSubscription.unsubscribe();
+        if(this.dialogSubscription) this.dialogSubscription.unsubscribe();
     }
 
     loadConversations = () => {
@@ -376,8 +382,49 @@ class Messenger extends Component {
             this.setState(() => ({
                 conversations: user.conversations,
                 isLoadingConversations: false
-            }));
+            }), this.subscribeToConversations);
         })
+    }
+
+    subscribeToConversations = () => {
+        if(this.conversationsSubscription) this.conversationsSubscription.unsubscribe();
+
+        client.subscribe({
+            query: gql`
+                subscription {
+                    listenConversations {
+                        id,
+                        lastMessage {
+                            content,
+                            type
+                        },
+                        conv {
+                            id,
+                            avatar,
+                            getName
+                        }
+                    }
+                }
+            `
+        }).subscribe({
+            next: ({ data: { listenConversations: a } }) => {
+                if(!a) return;
+
+                const b = Array.from(this.state.conversations),
+                      c = b.findIndex(io => io.id === a.id);
+
+                if(c !== -1) { // already loaded, have to push the new data.
+                    b[c] = a;
+                } else { // push as a new conversation
+                    b.unshift(a);
+                }
+
+                this.setState(() => ({
+                    conversations: b
+                }));
+            },
+            error: console.error
+        });
     }
 
     loadDialog = id => {
@@ -425,8 +472,55 @@ class Messenger extends Component {
             this.setState(() => ({
                 chat: conversation
             }), () => {
+                this.subscribeToDialog();
                 window.history.pushState(null, null, `${ links["MESSENGER_PAGE"].absolute }/${ conversation.id }`)
             });
+        })
+    }
+
+    subscribeToDialog = () => {
+        if(this.dialogSubscription) this.dialogSubscription.unsubscribe();
+        if(!this.state.chat) return;
+
+        client.subscribe({
+            query: gql`
+                subscription($dialogID: ID!) {
+                    listenDialogMessages(dialogID: $dialogID) {
+                        id,
+                        type,
+                        time,
+                        conversationID,
+                        content,
+                        creator {
+                            id,
+                            avatar
+                        }
+                    }
+                }
+            `,
+            variables: {
+                dialogID: this.state.chat.id
+            }
+        }).subscribe({
+            next: ({ data: { listenDialogMessages: a } }) => {
+                if(!a || !this.state.chat.id || a.conversationID !== this.state.chat.id) return;
+
+                const b = Array.from(this.state.chat.messages),
+                      c = b.findIndex(io => io.id === a.id);
+
+                if(c !== -1) return; // already exists
+
+                b.push(a);
+                this.setState(({ chat, chat: { messagesInt } }) => ({
+                    chat: {
+                        ...chat,
+                        messages: b,
+                        messagesInt: messagesInt + 1
+                    }
+                }));
+
+            },
+            error: console.error
         })
     }
 
@@ -435,7 +529,14 @@ class Messenger extends Component {
 
         const mockID = ++this.sendedMessages;
 
-        this.setState(({ chat, chat: { messages } }) => ({
+        const conversations = Array.from(this.state.conversations);
+        conversations.find(io => io.id === this.state.chat.id).lastMessage = {
+            content: (type === "DEFAULT") ? content : "",
+            type
+        }
+
+        this.setState(({ chat, chat: { messages, messagesInt } }) => ({
+            conversations,
             chat: {
                 ...chat,
                 messages: [
@@ -450,7 +551,8 @@ class Messenger extends Component {
                             avatar: null
                         }
                     }
-                ]
+                ],
+                messagesInt: messagesInt + 1
             }
         }));
 
@@ -478,8 +580,14 @@ class Messenger extends Component {
         }).then(({ data: { sendMessage } }) => {
             if(!sendMessage) return this.props.castError("We coudln't send your message. Please, try again.");
 
-            const a = Array.from(this.state.chat.messages);
-            a[a.findIndex(io => io.id === mockID)] = sendMessage;
+            const a = Array.from(this.state.chat.messages),
+                  b = a.findIndex(io => io.id === mockID);
+
+            if(a.findIndex(io => io.id === sendMessage.id) === -1) {
+                a[a.findIndex(io => io.id === mockID)] = sendMessage;
+            } else { // Client got message over subscriptions fork
+                a.splice(b, 1);
+            }
 
             this.setState(({ chat }) => ({
                 chat: {

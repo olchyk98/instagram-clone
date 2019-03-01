@@ -1253,6 +1253,13 @@ const RootMutation = new GraphQLObjectType({
                     })
                 ).save();
 
+                // Subscriptions fork
+                pubsub.publish("MESSENGER_MESSAGE_SENT", {
+                    message: b,
+                    conversation: a
+                });
+
+                // Return
                 return b;
             }
         }
@@ -1264,25 +1271,23 @@ const RootSubscription = new GraphQLObjectType({
     fields: {
         listenForFeed: {
             type: PostType,
-            args: {
-                id: { type: new GraphQLNonNull(GraphQLID) }
-            },
             subscribe: withFilter(
                 () => pubsub.asyncIterator('NEW_POST_SUBMIT'),
-                async ({ post }, { id }, { req }) => {
+                async ({ post }, _, { req }) => {
+                    if(!req.session.id || !req.session.authToken) return false;
                     if(post.creatorID === id) return true;
 
                     // Tags: Name
                     let subscribedTags = await Hashtag.find({
                         subscribers: {
-                            $in: [str(id)]
+                            $in: [str(req.session.id)]
                         }
                     }).select("name");
 
                     subscribedTags = subscribedTags.map(io => io.name);
 
                     // People: ID
-                    let subscribedPeople = await User.findById(id).select("subscribedTo");
+                    let subscribedPeople = await User.findById(req.session.id).select("subscribedTo");
                     if(!subscribedPeople) return;
 
                     subscribedPeople = subscribedPeople.subscribedTo;
@@ -1304,6 +1309,34 @@ const RootSubscription = new GraphQLObjectType({
                 }
             ),
             resolve: ({ post }) => post
+        },
+        listenConversations: {
+            type: ConversationType,
+            subscribe: withFilter(
+                () => pubsub.asyncIterator("MESSENGER_MESSAGE_SENT"),
+                ({ message, conversation }, _, { req }) => (
+                    req.session.id && req.session.authToken &&
+                    // message.creatorID !== req.session.id && // FIX: few devices uses one account
+                    conversation.conversors.includes(req.session.id)
+                )
+            ),
+            resolve: ({ conversation }) => conversation
+        },
+        listenDialogMessages: {
+            type: MessageType,
+            args: {
+                dialogID: { type: new GraphQLNonNull(GraphQLID) }
+            },
+            subscribe: withFilter(
+                () => pubsub.asyncIterator("MESSENGER_MESSAGE_SENT"),
+                ({ message, conversation }, { dialogID }, { req }) => (
+                    req.session.id && req.session.authToken &&
+                    // message.creatorID !== req.session.id && // FIX: few devices uses one account
+                    dialogID === message.conversationID &&
+                    conversation.conversors.includes(req.session.id)
+                )
+            ),
+            resolve: ({ message }) => message
         }
     }
 })

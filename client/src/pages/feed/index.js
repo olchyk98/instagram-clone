@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 
 import api from '../../api';
 import client from '../../apollo';
-import { cookieControl } from '../../utils';
 
 import Post from '../__forall__/post';
 
@@ -173,8 +172,8 @@ class Hero extends Component {
     subscribeToFeed() {
         this.feedSubscription = client.subscribe({
             query: gql`
-                subscription($id: ID!, $commentsLimit: Int) {
-                    listenForFeed(id: $id) {
+                subscription($commentsLimit: Int) {
+                    listenForFeed {
                         id,
                         likesInt,
                         isLiked,
@@ -208,14 +207,11 @@ class Hero extends Component {
                 }
             `,
             variables: {
-                commentsLimit: postCommentsLimit,
-                id: cookieControl.get("userid")
+                commentsLimit: postCommentsLimit
             }
         }).subscribe({
             next: (({ data: { listenForFeed: a } }) => {
                 if(!a) return;
-
-                console.log(a);
 
                 this.setState(({ posts }) => ({
                     posts: [
