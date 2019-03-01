@@ -55,8 +55,8 @@ Tasks / Features:
    - [ ] Tag
    - [ ] Chat
    - [ ] Feed
-   - [ ] Account (3 sections)
-   - [ ] Explore
+   - [ ] Account blocks
+   - [ ] Post comments
 - [x] Direct Chat
 - [ ] Advanced website routing
 - [ ] Dark Mode
