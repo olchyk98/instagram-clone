@@ -53,7 +53,7 @@ Tasks / Features:
 - [x] Notifications
 - [ ] Infinite Scroll
    - [x] Tag
-   - [ ] Chat
+   - [x] Chat
    - [x] Feed
    - [x] Account blocks
    - [ ] Post comments
