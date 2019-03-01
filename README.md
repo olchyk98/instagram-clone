@@ -55,7 +55,7 @@ Tasks / Features:
    - [x] Tag
    - [ ] Chat
    - [x] Feed
-   - [ ] Account blocks
+   - [x] Account blocks
    - [ ] Post comments
 - [x] Direct Chat
 - [ ] Advanced website routing
