@@ -159,9 +159,11 @@ class PostCarousel extends Component {
                 <div className="gle-post-carousel-path">
                     <div className="gle-post-carousel-path-mat">
                         {
-                            Array(this.props.media.length).fill(null).map((_, index) => (
-                                <button key={ index } className={ `gle-post-carousel-path-btn definp${ (this.state.position !== index) ? "" : " active" }` } />
-                            ))
+                            (this.props.media.length > 1) ? (
+                                Array(this.props.media.length).fill(null).map((_, index) => (
+                                    <button key={ index } className={ `gle-post-carousel-path-btn definp${ (this.state.position !== index) ? "" : " active" }` } />
+                                ))
+                            ) : null
                         }
                     </div>
                     <div className="gle-port-carousel-feedback">

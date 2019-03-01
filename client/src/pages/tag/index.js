@@ -11,15 +11,20 @@ import Post from '../__forall__/post.preview';
 import placeholderINST from '../__forall__/placeholderINST.gif';
 import loadingSpinner from '../__forall__/loadingico.gif';
 
+const postsLimit = 15;
+
 class Tag extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             isLoading: true,
+            isLoadingMore: false,
             tagData: null,
             tagName: null
         }
+
+        this.morePosts = true;
     }
 
     componentDidMount() {
@@ -28,15 +33,37 @@ class Tag extends Component {
         }), this.loadPosts);
     }
 
-    loadPosts = () => {
+    loadPosts = (loadingMore = false) => {
+        if(
+            this.state.isLoadingMore ||
+            (
+                loadingMore && (
+                    this.state.isLoading ||
+                    !this.morePosts    
+                )
+            )
+        ) return;
+
+        if(loadingMore) {
+            this.setState(() => ({
+                isLoadingMore: true
+            }));
+        }
+
         client.query({
             query: gql`
-                query($name: String!) {
+                query($name: String!, $limit: Int, $cursorID: ID) {
                     getHashtag(name: $name) {
                         id,
-                        postsInt,
-                        isFollowing,
-                        posts {
+                        ${
+                            (!loadingMore) ? (
+                                `
+                                    postsInt,
+                                    isFollowing,
+                                `
+                            ) : ``
+                        }
+                        posts(limit: $limit, cursorID: $cursorID) {
                             id,
                             isMultimedia,
                             likesInt,
@@ -51,15 +78,26 @@ class Tag extends Component {
                 }
             `,
             variables: {
-                name: this.state.tagName
+                name: this.state.tagName,
+                cursorID: (!this.state.tagData) ? null : this.state.tagData.posts.slice(-1)[0].id,
+                limit: postsLimit
             }
         }).then(({ data: { getHashtag } }) => {
             if(!getHashtag) return this.props.history.push(links["FEED_PAGE"].absolute);
 
-            this.setState(() => ({
+            this.setState(({ tagData }) => ({
                 isLoading: false,
-                tagData: getHashtag
+                isLoadingMore: false,
+                tagData: (!tagData) ? getHashtag : {
+                    ...tagData,
+                    posts: [
+                        ...tagData.posts,
+                        ...getHashtag.posts
+                    ]
+                }
             }));
+
+            this.morePosts = getHashtag.posts.length >= postsLimit;
         }).catch(console.error);
     }
 
@@ -98,7 +136,11 @@ class Tag extends Component {
 
     render() {
         return(
-            <div className="rn rn-tag">
+            <div className="rn rn-tag" onScroll={({ target }) => {
+                if(target.scrollTop + target.offsetHeight > target.scrollHeight - 15) {
+                    this.loadPosts(true);
+                }    
+            }}>
                 <div className="rn-tag-content">
                     <header className="rn-tag-header">
                         <section className="rn-tag-header-hashtag">
@@ -169,6 +211,15 @@ class Tag extends Component {
                                     alt="posts loading spinner"
                                     className="glei-lspinner"
                                 />
+                            )
+                        }
+                        {
+                            (!this.state.isLoadingMore) ? null : (
+                                <img
+                                    src={ loadingSpinner }
+                                    alt="more posts loading spinner"
+                                    className="glei-lspinner margintb"
+                                />    
                             )
                         }
                     </section>

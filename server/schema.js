@@ -339,11 +339,25 @@ const HashtagType = new GraphQLObjectType({
         },
         posts: {
             type: new GraphQLList(PostType),
-            resolve: async ({ name }) => Post.find({
-                hashtags: {
-                    $in: [name]
+            args: {
+                cursorID: { type: GraphQLID },
+                limit: { type: GraphQLInt }
+            },
+            resolve({ name }, { cursorID, limit }) {
+                const query = {
+                    hashtags: {
+                        $in: [name]
+                    }
                 }
-            }).sort({ time: -1 })
+
+                if(cursorID) {
+                    query._id = {
+                        $lt: cursorID
+                    }
+                }
+
+                return Post.find(query).sort({ time: -1 }).limit(limit || 0);
+            }
         }
     })
 });
@@ -529,7 +543,7 @@ const RootQuery = new GraphQLObjectType({
         getHashtag: {
             type: HashtagType,
             args: {
-                name: { type: GraphQLString }
+                name: { type: new GraphQLNonNull(GraphQLString) }
             },
             resolve: (_, { name }) => Hashtag.findOne({ name })
         },
@@ -1285,7 +1299,7 @@ const RootSubscription = new GraphQLObjectType({
                 () => pubsub.asyncIterator('NEW_POST_SUBMIT'),
                 async ({ post }, _, { req }) => {
                     if(!req.session.id || !req.session.authToken) return false;
-                    if(post.creatorID === id) return true;
+                    if(post.creatorID === req.session.id) return true;
 
                     // Tags: Name
                     let subscribedTags = await Hashtag.find({
