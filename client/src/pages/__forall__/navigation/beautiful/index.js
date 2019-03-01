@@ -417,13 +417,13 @@ class SearchNav extends Component {
                     _title="Direct Messenger"
                     icon={ faPaperPlaneRegular }
                     link={ links["MESSENGER_PAGE"].absolute }
-                    withAlertions={ true }
+                    withAlertions={ false }
                 />
                 <RLinksButton
                     _title="Explore"
                     icon={ faCompassRegular }
                     link={ links["EXPLORE_PAGE"].absolute }
-                    withAlertions={ true }
+                    withAlertions={ false }
                 />
                 <div className="gl-nav-searchnav-search">
                     <input
@@ -450,13 +450,13 @@ class SearchNav extends Component {
                     icon={ faHeartRegular }
                     onPage="NOTIFICATIONS"
                     castError={ this.props.castError }
-                    withAlertions={ true }
+                    withAlertions={ false }
                 />
                 <RLinksButton
                     _title="Account"
                     icon={ faUserRegular }
                     link={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.clientURL }` }
-                    withAlertions={ true }
+                    withAlertions={ false }
                 />
             </section>
         );

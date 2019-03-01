@@ -467,8 +467,8 @@ class Hero extends Component {
                             <section className="gle-imagemodal-mat-info" ref={(ref) => {
                                 if(this.state.isLoading || !ref || !this.viewRef) return;
 
-                                const a = this.viewRef.getBoundingClientRect().height;
-                                if(a && +a !== +ref.getBoundingClientRect().height) {
+                                const a = this.viewRef.offsetHeight;
+                                if(a && +a !== +ref.offsetHeight) {
                                     ref.style.height = a + "px";
                                     this.forceUpdate();
                                 }

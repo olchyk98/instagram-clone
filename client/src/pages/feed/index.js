@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './main.css';
 
 import { gql } from 'apollo-boost';
@@ -10,8 +11,10 @@ import client from '../../apollo';
 import Post from '../__forall__/post';
 
 import placeholderINST from '../__forall__/placeholderINST.gif';
+import loadingSpinner from '../__forall__/loadingico.gif'
 
 const postCommentsLimit = 15;
+const postsLimit = 5;
 
 class Feed extends Component {
     render() {
@@ -19,7 +22,7 @@ class Feed extends Component {
             <section className="rn-feed-block rn-feed-mat">
                 {
                     (this.props.feed) ? (
-                        this.props.feed.map(({ id, likesInt, creator, comments, media, isLiked, text, inBookmarks, people, places }, index) => (
+                        this.props.feed.map(({ id, likesInt, creator, comments, media, isLiked, text, inBookmarks, people, places, time }, index) => (
                             <Post
                                 key={ id }
                                 id={ id }
@@ -28,6 +31,7 @@ class Feed extends Component {
                                 aid={ creator.id }
                                 aname={ creator.getName }
                                 aavatar={ creator.avatar }
+                                time={ time }
                                 comments={ comments }
                                 media={ media }
                                 isLiked={ isLiked }
@@ -44,9 +48,22 @@ class Feed extends Component {
                         </div>
                     )
                 }
+                {
+                    (!this.props.isLoadingMore) ? null : (
+                        <img
+                            src={ loadingSpinner }
+                            alt="more posts loading spinner"
+                            className="glei-lspinner margintb"
+                        />
+                    )
+                }
             </section>
         );
     }
+}
+
+Feed.propTypes = {
+    isLoadingMore: PropTypes.bool
 }
 
 class More extends Component {
@@ -83,16 +100,18 @@ class More extends Component {
     }
 }
 
-class Hero extends Component {
+class FeedPage extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             client: null,
-            posts: null
+            posts: null,
+            loadingMorePosts: false
         }
 
         this.feedSubscription = null;
+        this.canFetchMore = true;
     }
 
     componentDidMount() {
@@ -106,7 +125,7 @@ class Hero extends Component {
     fetchMain = () => {
         client.query({
             query: gql`
-                query($commentsLimit: Int) {
+                query($commentsLimit: Int, $limitPosts: Int) {
                     user {
                         id,
                         name,
@@ -114,11 +133,12 @@ class Hero extends Component {
                         email,
                         avatar,
                         registeredByExternal,
-                        feed {
+                        feed(limit: $limitPosts) {
                             id,
                             likesInt,
                             isLiked,
                             inBookmarks,
+                            time,
                             text,
                             people {
                                 id,
@@ -149,7 +169,8 @@ class Hero extends Component {
                 }
             `,
             variables: {
-                commentsLimit: postCommentsLimit
+                commentsLimit: postCommentsLimit,
+                limitPosts: postsLimit
             },
             fetchPolicy: 'no-cache'
         }).then(({ data: { user } }) => {
@@ -177,6 +198,7 @@ class Hero extends Component {
                         id,
                         likesInt,
                         isLiked,
+                        time,
                         inBookmarks,
                         text,
                         people {
@@ -224,11 +246,87 @@ class Hero extends Component {
         })
     }
 
+    loadMorePosts = () => {
+        if(!this.canFetchMore || this.state.loadingMorePosts || !this.state.posts) return;
+
+        this.setState(() => ({
+            loadingMorePosts: true
+        }));
+
+        client.query({
+            query: gql`
+                query($commentsLimit: Int, $limitPosts: Int, $postsCursor: ID) {
+                    user {
+                        id,
+                        feed(limit: $limitPosts, cursorID: $postsCursor) {
+                            id,
+                            likesInt,
+                            isLiked,
+                            inBookmarks,
+                            text,
+                            time,
+                            people {
+                                id,
+                                getName
+                            },
+                            places,
+                            media {
+                                id,
+                                url,
+                                type
+                            },
+                            creator {
+                                id,
+                                getName,
+                                avatar
+                            },
+                            comments(limit: $commentsLimit) {
+                                id,
+                                creator {
+                                    id,
+                                    getName
+                                },
+                                isLiked,
+                                content
+                            }
+                        }
+                    }
+                }
+            `,
+            variables: {
+                commentsLimit: postCommentsLimit,
+                limitPosts: postsLimit,
+                postsCursor: this.state.posts.slice(-1)[0].id
+            },
+            fetchPolicy: 'no-cache'
+        }).then(({ data: { user: a } }) => {
+            this.setState(() => ({
+                loadingMorePosts: false
+            }));
+
+            if(!a) return this.props.castError("Something went wrong. Please, try again.");
+
+            this.canFetchMore = a.feed.length >= postsLimit;
+
+            this.setState(({ posts }) => ({
+                posts: [
+                    ...posts,
+                    ...a.feed
+                ]
+            }), this.subscribeToFeed);
+        }).catch(console.error);
+    }
+
     render() {
         return(
-            <div className="rn rn-feed">
+            <div className="rn rn-feed" onScroll={({ target }) => {
+                if(target.scrollTop + target.offsetHeight > target.scrollHeight - 15) 
+                    this.loadMorePosts();
+            }}>
                 <Feed
                     feed={ this.state.posts }
+                    onRequestPosts={ this.loadMorePosts }
+                    isLoadingMore={ this.state.loadingMorePosts }
                 />
                 <More
                     client={ this.state.client }
@@ -247,4 +345,4 @@ const mapActionsToProps = {
 export default connect(
     mapStateToProps,
     mapActionsToProps
-)(Hero);
+)(FeedPage);

@@ -129,7 +129,11 @@ const UserType = new GraphQLObjectType({
         },
         feed: {
             type: new GraphQLList(PostType),
-            async resolve({ id, subscribedTo }) {
+            args: {
+                limit: { type: GraphQLInt },
+                cursorID: { type: GraphQLID }
+            },
+            async resolve({ id, subscribedTo }, { limit, cursorID }) {
                 // DONE: Include followed tags
                 // Get followed tags
                 let tags = await Hashtag.find({
@@ -142,7 +146,7 @@ const UserType = new GraphQLObjectType({
                 tags = tags.map(io => io.name);
 
                 // Search for the posts
-                return Post.find({
+                const query = {
                     $or: [
                         {
                             creatorID: {
@@ -158,7 +162,13 @@ const UserType = new GraphQLObjectType({
                             }
                         }
                     ]
-                }).sort({ time: -1 });
+                }
+
+                if(cursorID) query._id = {
+                    $lt: cursorID
+                }
+
+                return Post.find(query).sort({ time: -1 }).limit(limit || 0);
             }
         },
         posts: {
@@ -1316,7 +1326,7 @@ const RootSubscription = new GraphQLObjectType({
                 () => pubsub.asyncIterator("MESSENGER_MESSAGE_SENT"),
                 ({ message, conversation }, _, { req }) => (
                     req.session.id && req.session.authToken &&
-                    // message.creatorID !== req.session.id && // FIX: few devices use one account
+                    // message.creatorID !== req.session.id && // FIX: few devices use same account
                     conversation.conversors.includes(req.session.id)
                 )
             ),
@@ -1331,7 +1341,7 @@ const RootSubscription = new GraphQLObjectType({
                 () => pubsub.asyncIterator("MESSENGER_MESSAGE_SENT"),
                 ({ message, conversation }, { dialogID }, { req }) => (
                     req.session.id && req.session.authToken &&
-                    // message.creatorID !== req.session.id && // FIX: few devices use one account
+                    // message.creatorID !== req.session.id && // FIX: few devices use same account
                     dialogID === message.conversationID &&
                     conversation.conversors.includes(req.session.id)
                 )

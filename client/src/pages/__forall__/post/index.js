@@ -9,6 +9,7 @@ import { withRouter } from 'react-router-dom';
 import api from '../../../api';
 import client from '../../../apollo';
 import links from '../../../links';
+import { convertTime } from '../../../utils';
 
 import PostCommentItem from '../post.comment';
 import CommentInput from '../post.commentinput';
@@ -420,11 +421,11 @@ class Post extends Component {
                         />
                     ) : null
                 }
-
                 <PostComments
                     postID={ this.props.id }
                     comments={ this.state.comments || this.props.comments }
                 />
+                <span className="gle-post-time">{ convertTime(this.props.time, "ago") }</span>
                 <CommentInput
                     onRef={ ref => this.commentInputRef = ref }
                     onSubmit={ this.postComment }
@@ -475,7 +476,8 @@ Post.propTypes = {
     isLiked: PropTypes.bool.isRequired,
     text: PropTypes.string.isRequired,
     places: PropTypes.array,
-    people: PropTypes.array
+    people: PropTypes.array,
+    time: PropTypes.string.isRequired
 }
 
 const mapStateToProps = () => ({});
