@@ -18,6 +18,8 @@ import loadingSpinner from '../__forall__/loadingico.gif';
 
 import sticker_heart from './stickers/heart.svg';
 
+const messagesLimit = 15;
+
 class ConversationsItem extends PureComponent {
     render() {
         return(
@@ -196,7 +198,20 @@ class ChatDisplay extends PureComponent {
 
     render() {
         return(
-            <div className="rn-direct-chat-display" ref={ ref => this.matRef = ref }>
+            <div className="rn-direct-chat-display" ref={ ref => this.matRef = ref } onScroll={({ target }) => {
+                if(target.scrollTop <= 10) {
+                    this.props.onRequestMore(target);
+                }
+            }}>
+                {
+                    (!this.props.loadingMore) ? null : (
+                        <img
+                            src={ loadingSpinner }
+                            alt="loading spinner"
+                            className="glei-lspinner"
+                        />    
+                    )
+                }
                 {
                     this.props.messages.map(({ id, creator, content, type, time }) => (
                         <ChatDisplayMessage
@@ -308,6 +323,8 @@ class Chat extends Component {
                                 />
                                 <ChatDisplay
                                     messages={ this.props.dialog.messages }
+                                    onRequestMore={ this.props.onRequestMore }
+                                    loadingMore={ this.props.loadingMoreMessages }
                                 />
                                 <ChatInput
                                     _onSubmit={ this.props.onSendMessage }
@@ -331,12 +348,14 @@ class Messenger extends Component {
             chat: null,
             conversations: null,
             isLoadingChat: false,
-            isLoadingConversations: true
+            isLoadingConversations: true,
+            loadingMoreMessages: false
         }
 
         this.sendedMessages = 0; // I'm using this value as id for the submited messages.
         this.clientID = cookieControl.get("userid");
         this.conversationsSubscription = this.dialogSubscription = null;
+        this.canFetchMessages = true;
     }
 
     componentDidMount() {
@@ -434,9 +453,11 @@ class Messenger extends Component {
             isLoadingChat: true
         }));
 
+        this.canFetchMessages = true;
+
         client.query({
             query: gql`
-                query($seeMessages: Boolean, $targetID: ID!) {
+                query($seeMessages: Boolean, $targetID: ID!, $limitMessages: Int) {
                     conversation(targetID: $targetID, seeMessages: $seeMessages) {
                         id,
                         messagesInt,
@@ -445,7 +466,7 @@ class Messenger extends Component {
                             avatar,
                             getName
                         },
-                        messages {
+                        messages(limit: $limitMessages) {
                             id,
                             type,
                             time,
@@ -460,7 +481,8 @@ class Messenger extends Component {
             `,
             variables: {
                 targetID: id,
-                seeMessages: true
+                seeMessages: true,
+                limitMessages: messagesLimit
             }
         }).then(({ data: { conversation } }) => {
             this.setState(() => ({
@@ -469,13 +491,72 @@ class Messenger extends Component {
 
             if(!conversation) return this.props.castError("Something went wrong");
 
+            const u_conversation = {...conversation}
+            u_conversation.messages.reverse();
+
             this.setState(() => ({
-                chat: conversation
+                chat: u_conversation
             }), () => {
                 this.subscribeToDialog();
                 window.history.pushState(null, null, `${ links["MESSENGER_PAGE"].absolute }/${ conversation.id }`)
             });
+
+            this.canFetchMessages = u_conversation.messages.length >= messagesLimit;
         })
+    }
+
+    loadMoreMessages = view => {
+        if(!this.canFetchMessages || !this.state.chat || this.state.loadingMoreMessages) return;
+
+        this.setState(() => ({
+            loadingMoreMessages: true
+        }));
+
+        client.query({
+            query: gql`
+                query($targetID: ID!, $limitMessages: Int, $cursorID: ID) {
+                    conversation(targetID: $targetID) {
+                        id,
+                        messages(limit: $limitMessages, cursorID: $cursorID) {
+                            id,
+                            type,
+                            time,
+                            content,
+                            creator {
+                                id,
+                                avatar
+                            }
+                        }
+                    }
+                }
+            `,
+            variables: {
+                targetID: this.state.chat.id,
+                limitMessages: messagesLimit,
+                cursorID: this.state.chat.messages[0].id
+            }
+        }).then(({ data: { conversation: a } }) => {
+            this.setState(() => ({
+                loadingMoreMessages: false
+            }));
+            if(!a) return this.props.castError("Something went wrong.");
+
+            const viewST = view.scrollHeight - view.scrollTop;
+
+            this.setState(({ chat, chat: { messages } }) => ({
+                chat: {
+                    ...chat,
+                    messages: [
+                        ...a.messages.reverse(),
+                        ...messages
+                    ]
+                }
+            }), () => {
+                view.scrollTop = view.scrollHeight - viewST;
+            });
+
+            this.canFetchMessages = a.messages.length >= messagesLimit;
+        }).catch(console.error);
     }
 
     subscribeToDialog = () => {
@@ -611,6 +692,8 @@ class Messenger extends Component {
                     isLoading={ this.state.isLoadingChat }
                     dialog={ this.state.chat }
                     onSendMessage={ this.sendMessage }
+                    onRequestMore={ this.loadMoreMessages }
+                    loadingMoreMessages={ this.state.loadingMoreMessages }
                 />
             </div>
         );

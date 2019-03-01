@@ -444,9 +444,23 @@ const ConversationType = new GraphQLObjectType({
         },
         messages: {
             type: new GraphQLList(MessageType),
-            resolve: ({ id }) => Message.find({
-                conversationID: id
-            }).sort({ time: 1 })
+            args: {
+                cursorID: { type: GraphQLID },
+                limit: { type: GraphQLInt }
+            },
+            resolve({ id }, { cursorID, limit }) {
+                const query = {
+                    conversationID: id
+                }
+
+                if(cursorID) {
+                    query._id = {
+                        $lt: cursorID
+                    }
+                }
+
+                return Message.find(query).limit(limit || 0).sort({ time: -1 });
+            }
         }
     })
 });
