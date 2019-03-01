@@ -67,6 +67,7 @@ Tasks / Features:
 - [ ] Dynamic document title
 - [ ] Guest account
 - [ ] Import external fonts (_Quicksand, Lato, Gothic A1_)
+- [ ] Service Worker -> cache
 - [ ] Deploy app using GitHub pages and Heroku (https://www.apollographql.com/docs/apollo-server/deployment/heroku.html)
 
 Refused ideas:
