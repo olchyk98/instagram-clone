@@ -1316,7 +1316,7 @@ const RootSubscription = new GraphQLObjectType({
                 () => pubsub.asyncIterator("MESSENGER_MESSAGE_SENT"),
                 ({ message, conversation }, _, { req }) => (
                     req.session.id && req.session.authToken &&
-                    // message.creatorID !== req.session.id && // FIX: few devices uses one account
+                    // message.creatorID !== req.session.id && // FIX: few devices use one account
                     conversation.conversors.includes(req.session.id)
                 )
             ),
@@ -1331,7 +1331,7 @@ const RootSubscription = new GraphQLObjectType({
                 () => pubsub.asyncIterator("MESSENGER_MESSAGE_SENT"),
                 ({ message, conversation }, { dialogID }, { req }) => (
                     req.session.id && req.session.authToken &&
-                    // message.creatorID !== req.session.id && // FIX: few devices uses one account
+                    // message.creatorID !== req.session.id && // FIX: few devices use one account
                     dialogID === message.conversationID &&
                     conversation.conversors.includes(req.session.id)
                 )
