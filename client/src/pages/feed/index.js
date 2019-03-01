@@ -3,13 +3,14 @@ import './main.css';
 
 import { gql } from 'apollo-boost';
 import { connect } from 'react-redux';
-import api from '../../api';
 
+import api from '../../api';
 import client from '../../apollo';
+import { cookieControl } from '../../utils';
 
 import Post from '../__forall__/post';
 
-import placeholderIMG from '../__forall__/placeholderINST.gif';
+import placeholderINST from '../__forall__/placeholderINST.gif';
 
 const postCommentsLimit = 15;
 
@@ -26,7 +27,7 @@ class Feed extends Component {
                                 likesInt={ likesInt }
                                 text={ text }
                                 aid={ creator.id }
-                                aname={ creator.name }
+                                aname={ creator.getName }
                                 aavatar={ creator.avatar }
                                 comments={ comments }
                                 media={ media }
@@ -38,9 +39,9 @@ class Feed extends Component {
                         ))
                     ) : (
                         <div className="rn-feed-mat-placeholder">
-                            <img src={ placeholderIMG } alt="placeholder" className="glei-placeholder text margin l" />
-                            <img src={ placeholderIMG } alt="placeholder" className="glei-placeholder text one3 margin l" />
-                            <img src={ placeholderIMG } alt="placeholder" className="glei-placeholder big margin prevent ts" />
+                            <img src={ placeholderINST } alt="placeholder" className="glei-placeholder text margin l" />
+                            <img src={ placeholderINST } alt="placeholder" className="glei-placeholder text one3 margin l" />
+                            <img src={ placeholderINST } alt="placeholder" className="glei-placeholder big margin prevent ts" />
                         </div>
                     )
                 }
@@ -55,7 +56,7 @@ class More extends Component {
             <section className="rn-feed-block rn-feed-more">
                 <div className="rn-feed-more-account">
                     <div className="rn-feed-more-account-avatar">
-                        <img src={ this.props.client && api.storage + this.props.client.avatar } alt="user" />
+                        <img src={ (this.props.client && api.storage + this.props.client.avatar) || placeholderINST } alt="user" />
                     </div>
                     <div className="rn-feed-more-account-name">
                         {
@@ -66,8 +67,8 @@ class More extends Component {
                                 </>
                             ) : (
                                 <>
-                                    <img src={ placeholderIMG } alt="placeholder" className="glei-placeholder text one3" />
-                                    <img src={ placeholderIMG } alt="placeholder" className="glei-placeholder text one3" />
+                                    <img src={ placeholderINST } alt="placeholder" className="glei-placeholder text one3" />
+                                    <img src={ placeholderINST } alt="placeholder" className="glei-placeholder text one3" />
                                 </>
                             )
                         }
@@ -91,10 +92,16 @@ class Hero extends Component {
             client: null,
             posts: null
         }
+
+        this.feedSubscription = null;
     }
 
     componentDidMount() {
         this.fetchMain();
+    }
+
+    componentWillUnmount() {
+        if(this.feedSubscription) this.feedSubscription.unsubscribe();
     }
 
     fetchMain = () => {
@@ -126,7 +133,7 @@ class Hero extends Component {
                             },
                             creator {
                                 id,
-                                name,
+                                getName,
                                 avatar
                             },
                             comments(limit: $commentsLimit) {
@@ -145,7 +152,7 @@ class Hero extends Component {
             variables: {
                 commentsLimit: postCommentsLimit
             },
-            fetchPolicity: 'no-cache'
+            fetchPolicy: 'no-cache'
         }).then(({ data: { user } }) => {
             if(!user) return this.props.castError("Something went wrong");
 
@@ -159,8 +166,66 @@ class Hero extends Component {
                     email: user.email
                 },
                 posts: user.feed
-            }))
+            }), this.subscribeToFeed);
         }).catch(console.error);
+    }
+
+    subscribeToFeed() {
+        this.feedSubscription = client.subscribe({
+            query: gql`
+                subscription($id: ID!, $commentsLimit: Int) {
+                    listenForFeed(id: $id) {
+                        id,
+                        likesInt,
+                        isLiked,
+                        inBookmarks,
+                        text,
+                        people {
+                            id,
+                            getName
+                        },
+                        places,
+                        media {
+                            id,
+                            url,
+                            type
+                        },
+                        creator {
+                            id,
+                            getName,
+                            avatar
+                        },
+                        comments(limit: $commentsLimit) {
+                            id,
+                            creator {
+                                id,
+                                getName
+                            },
+                            isLiked,
+                            content
+                        }
+                    }
+                }
+            `,
+            variables: {
+                commentsLimit: postCommentsLimit,
+                id: cookieControl.get("userid")
+            }
+        }).subscribe({
+            next: (({ data: { listenForFeed: a } }) => {
+                if(!a) return;
+
+                console.log(a);
+
+                this.setState(({ posts }) => ({
+                    posts: [
+                        a,
+                        ...posts
+                    ]
+                }))
+            }),
+            error: console.error
+        })
     }
 
     render() {

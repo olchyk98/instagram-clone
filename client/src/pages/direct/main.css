@@ -266,6 +266,7 @@
     overflow:hidden;
     position:relative;
     border:1px solid rgba(0, 0, 0, .05);
+    background:white;
 }
 
 .rn-direct-chat-display-message-content-image > img {

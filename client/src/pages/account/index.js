@@ -53,6 +53,7 @@ class Account extends Component {
                             likesInt,
                             commentsInt,
                             preview {
+                                id,
                                 url,
                                 type
                             }
@@ -108,6 +109,7 @@ class Account extends Component {
                             likesInt,
                             commentsInt,
                             preview {
+                                id,
                                 url,
                                 type
                             }

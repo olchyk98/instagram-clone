@@ -192,15 +192,13 @@ PostCarousel.propTypes = {
 
 class PostComments extends Component {
     render() {
+        if(!this.props.comments.length) return null;
+
         return(
             <div className="gle-post-comments">
-                {
-                    (this.props.comments.length) ? (
-                        <button className="gle-post-comments-lmore definp">
-                            Load more comments
-                        </button>
-                    ) : null
-                }
+                <button className="gle-post-comments-lmore definp">
+                    Load more comments
+                </button>
                 {
                     this.props.comments.map(({ id, creator, content, isLiked }) => (
                         <PostCommentItem
@@ -412,12 +410,17 @@ class Post extends Component {
                     focusCommentInput={ () => this.commentInputRef.focus() }
                 />
                 <span className="gle-post-stricts">{ (this.state.likesInt === null) ? this.props.likesInt : this.state.likesInt } likes</span>
-                <PostCommentItem
-                    content={ this.props.text }
-                    checkTags={ true }
-                    name={ this.props.aname }
-                    canLike={ false }
-                />
+                {
+                    (this.props.text) ? (
+                        <PostCommentItem
+                            content={ this.props.text }
+                            checkTags={ true }
+                            name={ this.props.aname }
+                            canLike={ false }
+                        />
+                    ) : null
+                }
+
                 <PostComments
                     postID={ this.props.id }
                     comments={ this.state.comments || this.props.comments }

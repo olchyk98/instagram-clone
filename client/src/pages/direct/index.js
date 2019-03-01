@@ -18,8 +18,6 @@ import loadingSpinner from '../__forall__/loadingico.gif';
 
 import sticker_heart from './stickers/heart.svg';
 
-const avatar = "https://i.ytimg.com/vi/SfLV8hD7zX4/maxresdefault.jpg";
-
 class ConversationsItem extends PureComponent {
     render() {
         return(
@@ -133,7 +131,7 @@ class ChatDisplayMessage extends PureComponent {
             <div className={ `rn-direct-chat-display-message_container${ (!this.props.byClient) ? "" : " client" }` }>
                 <article className="rn-direct-chat-display-message">
                     <div className="rn-direct-chat-display-message-avatar">
-                        <img src={ (avatar !== null) ? api.storage + avatar : placeholderINST } alt="user" />
+                        <img src={ (this.props.image !== null) ? api.storage + this.props.image : placeholderINST } alt="user" />
                     </div>
                     <div className="rn-direct-chat-display-message-content">
                         {
@@ -391,8 +389,8 @@ class Messenger extends Component {
 
         client.query({
             query: gql`
-                query($targetID: ID!) {
-                    conversation(targetID: $targetID) {
+                query($seeMessages: Boolean, $targetID: ID!) {
+                    conversation(targetID: $targetID, seeMessages: $seeMessages) {
                         id,
                         messagesInt,
                         conv {
@@ -414,7 +412,8 @@ class Messenger extends Component {
                 }
             `,
             variables: {
-                targetID: id
+                targetID: id,
+                seeMessages: true
             }
         }).then(({ data: { conversation } }) => {
             this.setState(() => ({

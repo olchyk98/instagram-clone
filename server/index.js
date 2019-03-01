@@ -16,7 +16,8 @@ mongoose.connection.once('open', () => console.timeEnd(mongodbtimetit));
 const app = express();
 
 app.use('/files', express.static('./files'));
-app.use(new cookieSession({
+
+const parseSession = new cookieSession({
     age: 24 * 60 * 60 * 1000,
     name: 'session',
     keys: [
@@ -27,15 +28,38 @@ app.use(new cookieSession({
         'aBt5bPyJ4ES0UogGp65w',
         'FjaeIh63pXG0997BFjsA'
     ]
-}));
+});
+app.use(parseSession);
 
 const server = new ApolloServer({
     schema,
     engine: false,
-    context: ({ req }) => ({ req }),
+    context: ({ req, connection }) => {
+        if(connection) {
+            return {
+                req: {
+                    ...req,
+                    session: connection.context.session
+                }
+            }
+        }
+
+        return ({ req });
+    },
     playground: {
         settings: {
             'editor.theme': 'light'
+        }
+    },
+    subscriptions: {
+        onConnect: async (_, webSocket, context) => {
+            const session = await new Promise((resolve) => {
+                parseSession(webSocket.upgradeReq, {}, () => {
+                    resolve(webSocket.upgradeReq.session);
+                })
+            });
+
+            return { session }
         }
     }
 });
@@ -43,7 +67,11 @@ server.applyMiddleware({
     app,
     path: '/graphql',
     cors: {
-        origin: ['http://localhost:3000'],
+        origin: [
+            'http://localhost:3000',
+            'http://localhost:5000',
+            'http://192.168.10.170:3000'
+        ],
         credentials: true
     }
 });

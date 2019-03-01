@@ -14,8 +14,12 @@ const {
 
 const {
     AuthenticationError,
-    GraphQLUpload
+    GraphQLUpload,
+    PubSub,
+    withFilter
 } = require('apollo-server');
+
+const pubsub = new PubSub();
 
 const {
     User,
@@ -397,7 +401,8 @@ const MessageType = new GraphQLObjectType({
             type: ConversationType,
             resolve: ({ conversationID }) => Conversation.findById(conversationID)
         },
-        time: { type: GraphQLString }
+        time: { type: GraphQLString },
+        seen: { type: GraphQLBoolean }
     })
 });
 
@@ -573,18 +578,34 @@ const RootQuery = new GraphQLObjectType({
         conversation: {
             type: ConversationType,
             args: {
-                targetID: { type: new GraphQLNonNull(GraphQLID) }
+                targetID: { type: new GraphQLNonNull(GraphQLID) },
+                seeMessages: { type: GraphQLBoolean }
             },
-            async resolve(_, { targetID }, { req }) {
+            async resolve(_, { targetID, seeMessages }, { req }) {
                 if(!req.session.id || !req.session.authToken)
                     throw new AuthenticationError("No current session.");
 
-                return Conversation.findOne({
+                const a = await Conversation.findOne({
                     _id: targetID,
                     conversors: {
                         $in: [req.session.id]
                     }
                 });
+
+                if(!a) return null;
+
+                if(seeMessages) {
+                    await Message.update({
+                        conversationID: str(a._id),
+                        creatorID: {
+                            $ne: req.session.id
+                        }
+                    }, {
+                        seen: true
+                    });
+                }
+
+                return a;
             }
         },
         myNotifications: {
@@ -602,12 +623,8 @@ const RootQuery = new GraphQLObjectType({
                     }
                 });
 
-                if(deleteOnFetch) { // XXX: Let's search the same documents twice! That's so interesting! PS. People who.. you know what to do.
-                    await Notification.update({
-                        influencedID: {
-                            $in: [req.session.id]
-                        }
-                    }, {
+                if(deleteOnFetch) {
+                    await Notification.updateMany({
                         $pull: {
                             influencedID: req.session.id
                         }
@@ -847,6 +864,13 @@ const RootMutation = new GraphQLObjectType({
                     ).save();
                 }
 
+
+                // Subscriptions fork
+                pubsub.publish('NEW_POST_SUBMIT', {
+                    post: a
+                });
+
+                // Return
                 return a;
             }
         },
@@ -951,7 +975,7 @@ const RootMutation = new GraphQLObjectType({
                                 initID: req.session.id,
                                 time: new Date,
                                 influencedID: [a.creatorID],
-                                subContent: a.text.slice(0, 50),
+                                subContent: a.content.slice(0, 50),
                                 composeID: str(a._id)
                             })
                         ).save();
@@ -1224,7 +1248,8 @@ const RootMutation = new GraphQLObjectType({
                         type,
                         creatorID: req.session.id,
                         conversationID,
-                        time: new Date
+                        time: new Date,
+                        seen: false
                     })
                 ).save();
 
@@ -1234,7 +1259,57 @@ const RootMutation = new GraphQLObjectType({
     }
 });
 
+const RootSubscription = new GraphQLObjectType({
+    name: "RootSubscription",
+    fields: {
+        listenForFeed: {
+            type: PostType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLID) }
+            },
+            subscribe: withFilter(
+                () => pubsub.asyncIterator('NEW_POST_SUBMIT'),
+                async ({ post }, { id }, { req }) => {
+                    if(post.creatorID === id) return true;
+
+                    // Tags: Name
+                    let subscribedTags = await Hashtag.find({
+                        subscribers: {
+                            $in: [str(id)]
+                        }
+                    }).select("name");
+
+                    subscribedTags = subscribedTags.map(io => io.name);
+
+                    // People: ID
+                    let subscribedPeople = await User.findById(id).select("subscribedTo");
+                    if(!subscribedPeople) return;
+
+                    subscribedPeople = subscribedPeople.subscribedTo;
+
+                    // Validate
+                    // Tags
+                    let valid = false;
+
+                    for(io of post.hashtags) {
+                        if(subscribedTags.includes(io)) {
+                            valid = true;
+                            break;
+                        }
+                    }
+                    if(valid) return true;
+
+                    // People
+                    return subscribedPeople.includes(post.creatorID);
+                }
+            ),
+            resolve: ({ post }) => post
+        }
+    }
+})
+
 module.exports = new GraphQLSchema({
     query: RootQuery,
-    mutation: RootMutation
+    mutation: RootMutation,
+    subscription: RootSubscription
 });

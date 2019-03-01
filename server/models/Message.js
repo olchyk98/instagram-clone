@@ -6,7 +6,8 @@ const MessageSchema = new Schema({
     type: String,
     creatorID: String,
     conversationID: String,
-    time: Date
+    time: Date,
+    seen: Boolean
 });
 
 module.exports = mongoose.model("Message", MessageSchema);

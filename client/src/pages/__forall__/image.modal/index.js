@@ -63,7 +63,7 @@ class Media extends Component {
                                 onClick={ () => this.setState(({ isPlaying: a }) => ({ isPlaying: !a })) }>
                                 <FontAwesomeIcon icon={ (this.state.isPlaying) ? faPlaySolid : faPauseSolid } />
                             </button>
-                            <video muted loop ref={ ref => this.videoRef = ref }>
+                            <video onLoadedData={ this.props.onVideoLoaded } muted loop ref={ ref => this.videoRef = ref }>
                                 <source src={ this.props.url } type="video/mp4" />
                                 Please, update your browser.
                             </video>
@@ -107,7 +107,7 @@ class Hero extends Component {
         this.forceUpdate();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if(
             (!prevProps && this.props) ||
             (prevProps && prevProps.activeData !== this.props.activeData) ||
@@ -428,6 +428,7 @@ class Hero extends Component {
                                             type={ type }
                                             url={ api.storage + url }
                                             status={ (this.state.carouselIndex > index) ? "old" : (this.state.carouselIndex < index) ? "new" : "current" }
+                                            onVideoLoaded={ () => this.forceUpdate() }
                                         />
                                     ))
                                 }
@@ -465,11 +466,12 @@ class Hero extends Component {
                             </section>
                             <section className="gle-imagemodal-mat-info" ref={(ref) => {
                                 if(this.state.isLoading || !ref || !this.viewRef) return;
-                                // info block h 100% works perfect when it doesn't fit itself.
-                                // but in other situations (when post has many comments or something like that)
-                                // info block changes the modal block height to 100
+
                                 const a = this.viewRef.getBoundingClientRect().height;
-                                if(a) ref.style.height = a + "px";
+                                if(a && +a !== +ref.getBoundingClientRect().height) {
+                                    ref.style.height = a + "px";
+                                    this.forceUpdate();
+                                }
                             }}>
                                 <div className="gle-imagemodal-mat-info-auth">
                                     <div className="gle-imagemodal-mat-info-auth-avatar">
