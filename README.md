@@ -54,7 +54,7 @@ Tasks / Features:
 - [ ] Infinite Scroll
    - [ ] Tag
    - [ ] Chat
-   - [ ] Feed
+   - [x] Feed
    - [ ] Account blocks
    - [ ] Post comments
 - [x] Direct Chat
