@@ -46,9 +46,9 @@ Tasks / Features:
   - [x] Fetching
 - [x] Search system
 - [x] Create the explore page based on 'following' state and tag subscriptions
-- [ ] Subscriptions
+- [x] Subscriptions
    - [x] Feed
-   - [ ] Notifications
+   - [x] Notifications
    - [x] Direct (Messenger)
 - [x] Notifications
 - [ ] Infinite Scroll
