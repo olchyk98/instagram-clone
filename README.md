@@ -60,7 +60,7 @@ Tasks / Features:
      - [x] Item
      - [x] Float
 - [x] Direct Chat
-- [x] Advanced website routing
+- [ ] Advanced website routing
 - [ ] Dark Mode
 - [ ] Machine Learning Classifier
   - [x] Classify function
@@ -76,7 +76,7 @@ Tasks / Features:
 - [ ] Dynamic document title
 - [ ] Guest account
 - [ ] Bug Fix
-  - [ ] Account (Spread error, infinite scroll)
+  - [x] Account (Spread error, infinite scroll)
   - [ ] Notifications
 - [x] Import external fonts (_Quicksand, Lato, Gothic A1_)
 - [ ] Service Worker -> cache
