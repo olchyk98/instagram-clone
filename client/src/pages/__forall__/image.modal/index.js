@@ -525,7 +525,7 @@ class Hero extends Component {
                                 </div>
                             </section>
                             <section className="gle-imagemodal-mat-info" ref={(ref) => {
-                                if(this.state.isLoading || !ref || !this.viewRef) return;
+                                if(this.state.isLoading || !ref || !this.viewRef || window.innerWidth <= 850) return;
 
                                 const a = this.viewRef.offsetHeight;
                                 if(a && +a !== +ref.offsetHeight) {

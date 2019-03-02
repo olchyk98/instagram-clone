@@ -8,15 +8,6 @@
     opacity:0;
     visibility:hidden;
     transition:all var(--trans), visibility var(--trans);
-}
-
-.gle-imagemodal.active {
-    transition:all var(--trans), visibility 0s;
-    opacity:1;
-    visibility:visible;
-}
-
-.gle-imagemodal {
     position:fixed;
     display:flex;
     flex-direction:column;
@@ -26,6 +17,14 @@
     height:100vh;
     width:100vw;
     z-index:401;
+    top:0;
+    left:0;
+}
+
+.gle-imagemodal.active {
+    transition:all var(--trans), visibility 0s;
+    opacity:1;
+    visibility:visible;
 }
 
 .gle-imagemodal-bg {
