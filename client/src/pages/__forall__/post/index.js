@@ -29,6 +29,8 @@ import {
     faBookmark as faBookmarkRegular
 } from '@fortawesome/free-regular-svg-icons';
 
+import loadingSpinner from '../loadingico.gif';
+
 const commentsLimit = 7;
 
 class PostCarouselVideo extends Component {
@@ -209,6 +211,15 @@ class PostComments extends Component {
                     ) : null
                 }
                 {
+                    (!this.props.loadingMore) ? null : (
+                        <img
+                            alt="loading more comments spinner"
+                            className="glei-lspinner margintb"
+                            src={ loadingSpinner }
+                        />    
+                    )
+                }
+                {
                     this.props.comments.map(({ id, creator, content, isLiked }) => (
                         <PostCommentItem
                             key={ id }
@@ -223,6 +234,12 @@ class PostComments extends Component {
             </div>
         );
     }
+}
+
+PostComments.propTypes = {
+    comments: PropTypes.array.isRequired,
+    canLoadComments: PropTypes.bool,
+    loadingMore: PropTypes.bool
 }
 
 class Post extends Component {
@@ -485,6 +502,7 @@ class Post extends Component {
                     comments={ this.state.comments || this.props.comments }
                     onMore={ this.loadMoreComments }
                     canLoadComments={ this.state.canLoadComments }
+                    loadingMore={ this.state.loadingComments }
                 />
                 <span className="gle-post-time">{ convertTime(this.props.time, "ago") }</span>
                 <CommentInput

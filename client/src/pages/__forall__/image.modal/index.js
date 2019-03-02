@@ -33,15 +33,19 @@ import {
 import placeholderINST from '../placeholderINST.gif';
 import loadingSpinner from '../loadingico.gif';
 
+const commentsLimit = 15;
+
 class Media extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            isPlaying: true
-        }
+        if(this.props.type !== "image") {
+            this.state = {
+                isPlaying: true
+            }
 
-        this.videoRef = React.createRef();
+            this.videoRef = React.createRef();
+        }
     }
 
     componentDidUpdate() {
@@ -55,7 +59,7 @@ class Media extends Component {
             <section className={ `gle-imagemodal-mat-image-item ${ (this.props.status) }` }>
                 {
                     (this.props.type === "image") ? (
-                        <img src={ this.props.url } alt="target" />
+                        <img onLoad={ this.props.onMediaLoaded } src={ this.props.url } alt="target" />
                     ) : ( // video
                         <>
                             <button
@@ -63,7 +67,7 @@ class Media extends Component {
                                 onClick={ () => this.setState(({ isPlaying: a }) => ({ isPlaying: !a })) }>
                                 <FontAwesomeIcon icon={ (this.state.isPlaying) ? faPlaySolid : faPauseSolid } />
                             </button>
-                            <video onLoadedData={ this.props.onVideoLoaded } muted loop ref={ ref => this.videoRef = ref }>
+                            <video onLoadedData={ this.props.onMediaLoaded } muted loop ref={ ref => this.videoRef = ref }>
                                 <source src={ this.props.url } type="video/mp4" />
                                 Please, update your browser.
                             </video>
@@ -78,7 +82,8 @@ class Media extends Component {
 Media.propTypes = {
     type: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
+    status: PropTypes.string.isRequired,
+    onMediaLoaded: PropTypes.func
 }
 
 class Hero extends Component {
@@ -91,7 +96,9 @@ class Hero extends Component {
             isLoading: true,
             submittingComment: false,
             followingCreator: false,
-            carouselIndex: 0
+            carouselIndex: 0,
+            canLoadComments: true,
+            loadingMoreComments: false
         }
 
         this.viewRef = React.createRef();
@@ -138,7 +145,7 @@ class Hero extends Component {
     fetchPhoto = targetID => {
         client.query({
             query: gql`
-                query($targetID: ID!) {
+                query($targetID: ID!, $limitComments: Int) {
                     post(targetID: $targetID) {
                         id,
                         text,
@@ -160,7 +167,7 @@ class Hero extends Component {
                             isVerified,
                             isFollowing
                         },
-                        comments {
+                        comments(limit: $limitComments) {
                             id,
                             content,
                             isLiked,
@@ -177,13 +184,15 @@ class Hero extends Component {
                 }
             `,
             variables: {
-                targetID
+                targetID,
+                limitComments: commentsLimit
             }
         }).then(({ data: { post } }) => {
             if(!post) return this.props.castError("We couldn't load this post. Please, try later.");
 
             this.setState(() => ({
                 photo: post,
+                canLoadComments: true,
                 carouselIndex: 0,
                 isLoading: false,
                 directURL: links["POST_PAGE"].absolute + "/" + post.id
@@ -407,6 +416,52 @@ class Hero extends Component {
         }).catch(console.error);
     }
 
+    loadMoreComments = () => {
+        if(this.state.loadingMoreComments || !this.state.canLoadComments || !this.state.photo) return;
+
+        this.setState(() => ({
+            loadingMoreComments: true
+        }));
+
+        client.query({
+            query: gql`
+                query($targetID: ID!, $limit: Int, $cursorID: ID) {
+                    post(targetID: $targetID) {
+                        id,
+                        comments(limit: $limit, cursorID: $cursorID) {
+                            id,
+                            content,
+                            isLiked,
+                            creator {
+                                id,
+                                getName
+                            }
+                        }
+                    }
+                }
+            `,
+            variables: {
+                targetID: this.state.photo.id,
+                limit: commentsLimit,
+                cursorID: this.state.photo.comments[0].id
+            }
+        }).then(({ data: { post: a } }) => {
+            if(!a) return this.props.castError("Oops.. we couldn't load more comments. Please, try later.")
+
+            this.setState(({ photo, photo: { comments } }) => ({
+                photo: {
+                    ...photo,
+                    comments: [
+                        ...a.comments,
+                        ...comments
+                    ]
+                },
+                canLoadComments: a.comments.length >= commentsLimit,
+                loadingMoreComments: false
+            }));
+        }).catch(console.error);
+    }
+
     render() {
         return(
             <div className={ `gle-imagemodal${ (!this.state.active) ? "" : " active" }` }>
@@ -428,7 +483,7 @@ class Hero extends Component {
                                             type={ type }
                                             url={ api.storage + url }
                                             status={ (this.state.carouselIndex > index) ? "old" : (this.state.carouselIndex < index) ? "new" : "current" }
-                                            onVideoLoaded={ () => this.forceUpdate() }
+                                            onMediaLoaded={ () => this.forceUpdate() }
                                         />
                                     ))
                                 }
@@ -518,11 +573,20 @@ class Hero extends Component {
                                         ) : null
                                     }
                                     {
-                                        (this.state.photo.comments.length) ? (
-                                            <button className="gle-imagemodal-mat-info-lcomments definp">
+                                        (this.state.photo.comments.length && this.state.canLoadComments) ? (
+                                            <button className="gle-imagemodal-mat-info-lcomments definp" onClick={ this.loadMoreComments }>
                                                 Load more comments
                                             </button>
                                         ) : null
+                                    }
+                                    {
+                                        (!this.state.loadingMoreComments) ? null : (
+                                            <img
+                                                src={ loadingSpinner }
+                                                alt="more comments loading spinner"
+                                                className="glei-lspinner margintb"
+                                            />
+                                        )
                                     }
                                     {
                                         this.state.photo.comments.map(({ id, content, isLiked, creator }) => (
