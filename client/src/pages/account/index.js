@@ -161,13 +161,16 @@ class Account extends Component {
 //                 default:break;
 //             }
 
+            let _a = this.state.user[rBlock];
+            if(_a) _a = _a.map(io => io.id);
+
             this.setState(({ user }) => ({
                 user: {
                     ...user,
                     ...((!user[rBlock] || !loadingMore) ? _user : {
                         [rBlock]: [
                             ...user[rBlock],
-                            ..._user.posts
+                            ..._user.posts.filter(({ id }) => !_a.includes(id))
                         ]
                     })
                 }
