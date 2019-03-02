@@ -424,6 +424,7 @@
 .gle-newpost-controls {
     display:flex;
     align-items:center;
+    max-width:100%;
 }
 
 .gle-newpost-controls-btn {

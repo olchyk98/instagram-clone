@@ -238,9 +238,34 @@ menu {
     }
 
     .gl-nav-logo-bw {
-        position:relative;
-        bottom:-2px;
-        opacity:.65;
+        position:relative!important;
+        bottom:-2px!important;
+        opacity:.65!important;
+    }
+
+    .gle-newpost {
+        overflow:scroll!important;
+        height:auto!important;
+        max-width:calc(100vw - var(--parpadding) * 2 - 15px)!important;
+    }
+
+    .gle-newpost-target-preview {
+        --size:200px!important;
+
+        margin-bottom:10px;
+    }
+
+    .gle-newpost > * {
+        flex-shrink:0!important;
+    }
+
+    .gle-newpost-target {
+        flex-direction:column!important;
+        align-items:center!important;
+    }
+
+    .gle-newpost-target-data {
+        margin:0!important;
     }
 }
 
