@@ -60,15 +60,15 @@ Tasks / Features:
      - [x] Item
      - [x] Float
 - [x] Direct Chat
-- [ ] Advanced website routing
+- [x] Advanced website routing
 - [ ] Dark Mode
-- [ ] ~~Machine Learning Classifier~~
+- [ ] Machine Learning Classifier
   - [x] Classify function
-  - [ ] ~~Photo description autofill~~
+  - [ ] Photo description autofill
 - [ ] Fully responsive design
 - [ ] Dynamic document title
 - [ ] Guest account
-- [ ] Import external fonts (_Quicksand, Lato, Gothic A1_)
+- [x] Import external fonts (_Quicksand, Lato, Gothic A1_)
 - [ ] Service Worker -> cache
 - [ ] Deploy app using GitHub pages and Heroku (https://www.apollographql.com/docs/apollo-server/deployment/heroku.html)
 
