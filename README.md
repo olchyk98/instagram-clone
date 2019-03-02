@@ -67,7 +67,7 @@ Tasks / Features:
   - [ ] Photo description autofill
 - [ ] Fully responsive design
   - [x] Account
-  - [ ] Notifications
+  - [x] Notifications
   - [ ] Float post
   - [x] Feed
   - [x] Direct (Messenger)
