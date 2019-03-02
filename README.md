@@ -74,6 +74,6 @@ Tasks / Features:
 
 Refused ideas:
 - **Video calls** :: It needs many hours to implement live video, audio streaming. I am too lazy to do it alone.
- - P2P (https://www.youtube.com/watch?v=ieBtXwHvoNk)
+  - P2P (https://www.youtube.com/watch?v=ieBtXwHvoNk)
 
 
