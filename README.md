@@ -66,6 +66,13 @@ Tasks / Features:
   - [x] Classify function
   - [ ] Photo description autofill
 - [ ] Fully responsive design
+  - [x] Account
+  - [ ] Notifications
+  - [ ] Float post
+  - [x] Feed
+  - [ ] Direct (Messenger)
+  - [x] Search
+  - [ ] New Post modal
 - [ ] Dynamic document title
 - [ ] Guest account
 - [ ] Bug Fix
