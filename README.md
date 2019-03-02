@@ -70,7 +70,7 @@ Tasks / Features:
   - [ ] Notifications
   - [ ] Float post
   - [x] Feed
-  - [ ] Direct (Messenger)
+  - [x] Direct (Messenger)
   - [x] Search
   - [ ] New Post modal
 - [ ] Dynamic document title
