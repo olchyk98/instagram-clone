@@ -44,7 +44,7 @@ class PostPreview extends Component {
                 title="Open photo"
                 onMouseEnter={ () => this.setState({ videoRunning: true }) }
                 onMouseLeave={ () => this.setState({ videoRunning: false }) }
-                onClick={ () => this.props.openPhotoModal(this.props.id) }>
+                onClick={ () => this.props.openPhotoModal(this.props.id, window.location.pathname) }>
                 <div className="rn-account-posts-item-hover">
                     <div className="rn-account-posts-item-hover-stats">
                         <div>
@@ -100,7 +100,7 @@ PostPreview.propTypes = {
 const mapStateToProps = () => ({});
 
 const mapActionsToProps = {
-    openPhotoModal: id => ({ type: 'PREVIEW_FLOAT_MODAL', payload: { id } })
+    openPhotoModal: (id, backRoute) => ({ type: 'PREVIEW_FLOAT_MODAL', payload: { id, backRoute } })
 }
 
 export default connect(

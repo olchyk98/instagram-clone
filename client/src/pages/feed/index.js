@@ -13,7 +13,7 @@ import Post from '../__forall__/post';
 import placeholderINST from '../__forall__/placeholderINST.gif';
 import loadingSpinner from '../__forall__/loadingico.gif'
 
-const postCommentsLimit = 15;
+const postCommentsLimit = 4;
 const postsLimit = 5;
 
 class Feed extends Component {

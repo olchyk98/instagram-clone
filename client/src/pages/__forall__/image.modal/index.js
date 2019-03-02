@@ -196,7 +196,9 @@ class Hero extends Component {
                 carouselIndex: 0,
                 isLoading: false,
                 directURL: links["POST_PAGE"].absolute + "/" + post.id
-            }));
+            }), () => {
+                window.history.pushState(null, null, this.state.directURL);
+            });
         }).catch(console.error);
     }
 
@@ -469,6 +471,9 @@ class Hero extends Component {
                     className="gle-imagemodal-bg"
                     onClick={() => {
                         this.props.closeSelf();
+                        if(this.props.activeData.backRoute) {
+                            window.history.pushState(null, null, this.props.activeData.backRoute);
+                        }
                         if(this.props.activeData.onClose) this.props.activeData.onClose();
                     }}
                 />
