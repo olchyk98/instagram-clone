@@ -51,7 +51,7 @@ Tasks / Features:
    - [x] Notifications
    - [x] Direct (Messenger)
 - [x] Notifications
-- [ ] Infinite Scroll
+- [x] Infinite Scroll
    - [x] Tag
    - [x] Chat
    - [x] Feed
