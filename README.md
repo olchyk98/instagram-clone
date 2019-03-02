@@ -56,9 +56,9 @@ Tasks / Features:
    - [x] Chat
    - [x] Feed
    - [x] Account blocks
-   - [ ] Post comments
+   - [x] Post comments
      - [x] Item
-     - [ ] Float
+     - [x] Float
 - [x] Direct Chat
 - [ ] Advanced website routing
 - [ ] Dark Mode
