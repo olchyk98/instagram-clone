@@ -60,7 +60,7 @@ Tasks / Features:
      - [x] Item
      - [x] Float
 - [x] Direct Chat
-- [x] Advanced website routing
+- [ ] Advanced website routing
 - [ ] Dark Mode
 - [ ] Machine Learning Classifier
   - [x] Classify function
