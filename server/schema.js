@@ -657,7 +657,7 @@ const RootQuery = new GraphQLObjectType({
                             $ne: req.session.id
                         }
                     }},
-                ]).sample(15).exec();
+                ]).sample(14).exec();
 
                 return new Promise((resolve, reject) => {
                     const b = [];
@@ -717,32 +717,15 @@ const RootQuery = new GraphQLObjectType({
                 });
 
                 if(deleteOnFetch) {
-                    await Notification.bulkWrite([
-                        {
-                            updateMany: {
-                                $pull: {
-                                    influencedID: req.session.id
-                                }
-                            }  
-                        },
-                        {
-                            deleteMany: {
-                                influencedID: []
-                            }
+                    await Notification.updateMany({
+                        $pull: {
+                            influencedID: req.session.id
                         }
-                    ], {
-                        ordered: true
                     });
 
-//                     await Notification.updateMany({
-//                         $pull: {
-//                             influencedID: req.session.id
-//                         }
-//                     });
-// 
-//                     await Notification.deleteMany({
-//                         influencedID: []
-//                     });
+                    await Notification.deleteMany({
+                        influencedID: []
+                    });
                 }
 
                 return a;

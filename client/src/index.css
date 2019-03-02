@@ -317,6 +317,25 @@ menu {
         overflow:scroll!important;
     }
 
+    .gl-nav-routes-btn-window.notifications {
+        position:fixed!important;
+        top:-15px!important;
+        bottom:inherit!important;
+        transform:translateY(-100%)!important;
+        left:0!important;
+        height:auto!important;
+        height:10000px!important;
+        z-index:20;
+        max-height:calc(100vh - var(--navheight) - var(--expnavheight))!important;
+        padding:0;
+        overflow:scroll;
+        width:calc(100vw - 2px)!important;
+    }
+
+    .gl-nav-routes-btn-window.notifications:before {
+        display:none!important;
+    }
+
     .gl-nav-search-results:before {
         display:none!important;
     }

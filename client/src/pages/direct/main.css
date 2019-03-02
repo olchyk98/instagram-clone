@@ -243,6 +243,10 @@
     margin-left:7.5px;
 }
 
+.rn-direct-chat-display-message_container.client .rn-direct-chat-display-message-content {
+    align-items:flex-end;
+}
+
 .rn-direct-chat-display-message-content-blank {
     padding:10px;
     text-align:left;

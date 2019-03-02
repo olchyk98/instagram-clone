@@ -128,7 +128,7 @@ class RLinksButton extends Component {
                             }));
                         }, 100);
                     }}>
-                    <button className="gl-nav-routes-btn-mat definp" onClick={() => {
+                    <button className="gl-nav-routes-btn-mat definp" onClick={({ target }) => {
                         this.setState(({ itemsData }) => ({
                             isOpened: true,
                             isLoading: !itemsData
