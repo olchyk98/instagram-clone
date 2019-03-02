@@ -62,13 +62,13 @@ Tasks / Features:
 - [x] Direct Chat
 - [ ] Advanced website routing
 - [ ] Dark Mode
-- [ ] Machine Learning Classifier
+- [ ] _Machine Learning Classifier_
   - [x] Classify function
   - [ ] Photo description autofill
-- [ ] Fully responsive design
+- [x] Fully responsive design
   - [x] Account
   - [x] Notifications
-  - [ ] Float post
+  - [x] Float post
   - [x] Feed
   - [x] Direct (Messenger)
   - [x] Search
