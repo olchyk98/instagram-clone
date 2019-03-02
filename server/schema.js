@@ -335,11 +335,24 @@ const PostType = new GraphQLObjectType({
         comments: {
             type: new GraphQLList(CommentType),
             args: {
-                limit: { type: GraphQLInt }
+                limit: { type: GraphQLInt },
+                cursorID: { type: GraphQLID }
             },
-            resolve: ({ id }, { limit }) => Comment.find({
-                postID: str(id)
-            }).sort({ time: 1 }).limit(limit || 0)
+            async  resolve({ id }, { limit, cursorID }) {
+                const query = {
+                    postID: str(id)
+                }
+
+                if(cursorID) {
+                    query._id = {
+                        $lt: cursorID
+                    }
+                }
+
+                const a = await Comment.find(query).sort({ time: -1 }).limit(limit || 0);
+
+                return a.reverse();
+            }
         },
         commentsInt: {
             type: GraphQLInt,
@@ -675,7 +688,7 @@ const RootQuery = new GraphQLObjectType({
                 if(!a) return null;
 
                 if(seeMessages) {
-                    await Message.update({
+                    await Message.updateMany({
                         conversationID: str(a._id),
                         creatorID: {
                             $ne: req.session.id
@@ -704,15 +717,32 @@ const RootQuery = new GraphQLObjectType({
                 });
 
                 if(deleteOnFetch) {
-                    await Notification.updateMany({
-                        $pull: {
-                            influencedID: req.session.id
+                    await Notification.bulkWrite([
+                        {
+                            updateMany: {
+                                $pull: {
+                                    influencedID: req.session.id
+                                }
+                            }  
+                        },
+                        {
+                            deleteMany: {
+                                influencedID: []
+                            }
                         }
+                    ], {
+                        ordered: true
                     });
 
-                    await Notification.deleteMany({
-                        influencedID: []
-                    });
+//                     await Notification.updateMany({
+//                         $pull: {
+//                             influencedID: req.session.id
+//                         }
+//                     });
+// 
+//                     await Notification.deleteMany({
+//                         influencedID: []
+//                     });
                 }
 
                 return a;

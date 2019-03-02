@@ -551,9 +551,7 @@ class Messenger extends Component {
                         ...messages
                     ]
                 }
-            }), () => {
-                view.scrollTop = view.scrollHeight - viewST;
-            });
+            }), () => view.scrollTop = view.scrollHeight - viewST);
 
             this.canFetchMessages = a.messages.length >= messagesLimit;
         }).catch(console.error);

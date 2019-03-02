@@ -336,42 +336,27 @@ class SearchNav extends Component {
             searched: true
         }));
 
-        Promise.all([
-            (
-                client.query({
-                    query: gql`
-                        query($query: String!) {
-                            searchPeople(query: $query) {
-                                id,
-                                avatar,
-                                login,
-                                email,
-                                name
-                            }
-                        }
-                    `,
-                    variables: {
-                        query
+        client.query({
+            query: gql`
+                query($query: String!) {
+                    searchPeople(query: $query) {
+                        id,
+                        avatar,
+                        login,
+                        email,
+                        name
+                    },
+                    searchHashtags(query: $query) {
+                        id,
+                        name,
+                        postsInt
                     }
-                })
-            ),
-            (
-                client.query({
-                    query: gql`
-                        query($query: String!) {
-                            searchHashtags(query: $query) {
-                                id,
-                                name,
-                                postsInt
-                            }
-                        }
-                    `,
-                    variables: {
-                        query
-                    }
-                })
-            )
-        ]).then(([ { data: { searchPeople: people } }, { data: { searchHashtags: hashtags } } ]) => {
+                }
+            `,
+            variables: {
+                query
+            }
+        }).then(({ data: { searchPeople: people, searchHashtags: hashtags } }) => {
             this.setState(() => ({
                 searching: false,
                 searched: false

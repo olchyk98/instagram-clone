@@ -22,7 +22,6 @@ class CommentInput extends Component {
                 e.preventDefault();
                 this.props.onSubmit(this.state.content);
                 this.matRef.value = "";
-                this.matRef.blur();
             }}>
                 <input
                     className="gle-post-commentinput-mat definp"

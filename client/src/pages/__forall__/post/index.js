@@ -29,6 +29,8 @@ import {
     faBookmark as faBookmarkRegular
 } from '@fortawesome/free-regular-svg-icons';
 
+const commentsLimit = 7;
+
 class PostCarouselVideo extends Component {
     constructor(props) {
         super(props);
@@ -199,9 +201,13 @@ class PostComments extends Component {
 
         return(
             <div className="gle-post-comments">
-                <button className="gle-post-comments-lmore definp">
-                    Load more comments
-                </button>
+                {
+                    (this.props.canLoadComments) ? (
+                        <button className="gle-post-comments-lmore definp" onClick={ this.props.onMore }>
+                            Load more comments
+                        </button>
+                    ) : null
+                }
                 {
                     this.props.comments.map(({ id, creator, content, isLiked }) => (
                         <PostCommentItem
@@ -227,10 +233,13 @@ class Post extends Component {
             likesInt: null,
             isLiked: null,
             inBookmarks: null,
-            comments: null
+            comments: null,
+            loadingComments: false,
+            canLoadComments: true
         }
 
-        this.likeProcessing = this.pushingBookmark = false;
+        this.likeProcessing =
+        this.pushingBookmark =
         this.commentInputRef = React.createRef();
     }
 
@@ -392,6 +401,54 @@ class Post extends Component {
         );
     }
 
+    loadMoreComments = () => {
+        if(!this.state.canLoadComments || this.state.loadingComments) return;
+
+        this.setState(() => ({
+            loadingComments: true
+        }));
+
+        client.query({
+            query: gql`
+                query($targetID: ID!, $limit: Int, $cursorID: ID) {
+                    post(targetID: $targetID) {
+                        id,
+                        comments(limit: $limit, cursorID: $cursorID) {
+                            id,
+                            creator {
+                                id,
+                                getName
+                            },
+                            isLiked,
+                            content
+                        }
+                    }
+                }
+            `,
+            variables: {
+                targetID: this.props.id,
+                limit: commentsLimit,
+                cursorID: (this.state.comments && this.state.comments[0].id) || this.props.comments[0].id
+            }
+        }).then(({ data: { post: a } }) => {
+            if(!a) return this.props.castError("Something went wrong");
+
+            const comments = Array.from(a.comments);
+
+            this.setState(({ comments: b }, { comments: c }) => ({
+                comments: (b === null) ? [
+                    ...comments,
+                    ...c
+                ] : [
+                    ...comments,
+                    ...b
+                ],
+                canLoadComments: a.comments.length >= commentsLimit,
+                loadingComments: false
+            }));
+        }).catch(console.error);
+    }
+
     render() {
         return(
             <article className="gle-post">
@@ -426,6 +483,8 @@ class Post extends Component {
                 <PostComments
                     postID={ this.props.id }
                     comments={ this.state.comments || this.props.comments }
+                    onMore={ this.loadMoreComments }
+                    canLoadComments={ this.state.canLoadComments }
                 />
                 <span className="gle-post-time">{ convertTime(this.props.time, "ago") }</span>
                 <CommentInput
@@ -464,9 +523,9 @@ class Post extends Component {
 Post.propTypes = {
     id: PropTypes.string.isRequired,
     likesInt: PropTypes.number.isRequired,
-    aid: PropTypes.string.isRequired,
-    aname: PropTypes.string.isRequired,
-    aavatar: PropTypes.string.isRequired,
+    aid: PropTypes.string.isRequired, // author id
+    aname: PropTypes.string.isRequired, // author name
+    aavatar: PropTypes.string.isRequired, // author avatar
     comments: PropTypes.array.isRequired,
     media: PropTypes.array.isRequired,
     isLiked: PropTypes.bool.isRequired,

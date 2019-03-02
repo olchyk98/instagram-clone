@@ -105,7 +105,10 @@ Comment.propTypes = {
     content: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     canLike: PropTypes.bool,
-    id: PropTypes.string,
+    id: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number // client applies INDEX_NUMBER id a new comment when the original item fetches.
+    ]),
     isLiked: PropTypes.bool,
     checkTags: PropTypes.bool
 }
