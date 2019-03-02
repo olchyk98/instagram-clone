@@ -23,6 +23,7 @@
     overflow:hidden;
     padding-top:15px;
     width:650px;
+    max-width:calc(100vw - 15px);
     border:1px solid rgba(0, 0, 0, .05);
     border-radius:2.5px;
     background:white;
@@ -60,6 +61,7 @@
     position:relative;
     overflow:hidden;
     border:1px solid var(--defaultborder);
+    background:white;
     margin-right:10px;
 }
 

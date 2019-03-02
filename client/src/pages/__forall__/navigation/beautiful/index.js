@@ -31,7 +31,7 @@ class Logo extends Component {
     render() {
         return(
             <Link className="gl-nav-logo" to="/">
-                <img className="gl-nav-logo-bw" src={ instagram_black_white_logo } alt="black white instagram logo" />
+                <img className="gl-nav-logo-bw gl-nav-tillexp" src={ instagram_black_white_logo } alt="black white instagram logo" />
                 <img className="gl-nav-logo-text" src={ instagram_text_logo } alt="text instagram logo" />
             </Link>
         );
@@ -100,20 +100,20 @@ class RLinksButton extends Component {
     render() {
         if(this.props.onPage === false) {
             return(
-                <Link className={ `gl-nav-routes-btn definp${ (!this.props.withAlertions) ? "" : " alertion" }` } title={ this.props._title } to={ this.props.link }>
+                <Link className={ `gl-nav-routes-btn definp${ (!this.props._className) ? "" : " " + this.props._className }${ (!this.props.withAlertions) ? "" : " alertion" }` } title={ this.props._title } to={ this.props.link }>
                     <FontAwesomeIcon icon={ this.props.icon } />
                 </Link>
             );
         } else if(this.props.onPage === null) {
             return(
-                <button className={ `gl-nav-routes-btn definp${ (!this.props.withAlertions) ? "" : " alertion" }` } title={ this.props._title } onClick={ this.props._onClick }>
+                <button className={ `gl-nav-routes-btn definp${ (!this.props._className) ? "" : " " + this.props._className }${ (!this.props.withAlertions) ? "" : " alertion" }` } title={ this.props._title } onClick={ this.props._onClick }>
                     <FontAwesomeIcon icon={ this.props.icon } />
                 </button>
             );
         } else if(this.props.onPage === "NOTIFICATIONS") {
             return(
                 <div
-                    className={ `gl-nav-routes-btn local${ (!this.props.withAlertions) ? "" : " alertion" }` }
+                    className={ `gl-nav-routes-btn local${ (!this.props._className) ? "" : " " + this.props._className }${ (!this.props.withAlertions) ? "" : " alertion" }` }
                     title={ this.props._title }
                     tabIndex="-1"
                     onFocus={() => {
@@ -233,7 +233,8 @@ RLinksButton.propTypes = {
         PropTypes.string
     ]),
     _onClick: PropTypes.func,
-    link: PropTypes.string
+    link: PropTypes.string,
+    _className: PropTypes.string
 }
 
 class SearchResultItem extends PureComponent {
@@ -455,6 +456,7 @@ class MoreNav extends Component {
                 <RLinksButton
                     _title="Add new post"
                     icon={ faPlusSolid }
+                    _className="gl-nav-tillexp"
                     onPage={ null }
                     _onClick={ this.props.createPost }
                 />

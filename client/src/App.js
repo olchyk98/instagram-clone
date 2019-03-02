@@ -14,6 +14,7 @@ import Tag from './pages/tag';
 // Stuff
 import links from './links';
 import Navigation from './pages/__forall__/navigation';
+import ExpNavigation from './pages/__forall__/exp_navigation';
 import MultiwindowMenu from './pages/__forall__/multiwindow.menu';
 import PhotoModal from './pages/__forall__/image.modal';
 import PhotoAppender from './pages/__forall__/postcreator';
@@ -117,6 +118,11 @@ class App extends Component {
                             />
                             <Route component={ P404 } />
                         </Switch>
+                        {
+                            (this.clientID) ? (
+                                <ExpNavigation /> // SHOULD BE HERE
+                            ) : null
+                        }
                     </>
                 </BrowserRouter>
             </Provider>

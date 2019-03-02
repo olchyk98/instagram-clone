@@ -1,7 +1,8 @@
-@import url('https://fonts.googleapis.com/css?family=Exo|Gothic+A1|Lato|Quicksand');
+@import url('https://fonts.googleapis.com/css?family=Exo|Gothic+A1|Lato|Quicksand' );
 
 :root {
     --navheight:75px;
+    --expnavheight:45px;
     --defaultborder:rgba(0, 0, 0, .15);
     --glbgcol:#FAFAFA;
 }
@@ -20,6 +21,11 @@ body {
 menu {
     margin:0;
     padding:0;
+}
+
+#root {
+    display:flex;
+    flex-direction:column;
 }
 
 .definp {
@@ -191,7 +197,53 @@ menu {
     margin:auto;
 }
 
-/* Queries */
+/* Media Queries */
+@media only screen and (max-width:1020px) {
+    .rn-direct-chat:not(.indialog) {
+        display:none!important;
+    }
+
+    .rn-direct-conversations {
+        width:calc(100vw - var(--convpadding) * 2 - 1px)!important;
+    }
+
+    .rn-direct-conversations.indialog {
+        display:none!important;
+    }
+}
+
+@media only screen and (max-width:850px) { /* WARNING: max stretch; */
+    .rn-feed-more {
+        display:none!important;
+    }
+
+    .rn-feed-mat {
+        min-width:inherit!important;
+    }
+
+    .gle-post {
+        max-width:calc(100vw - calc(var(--postpadding) * 2) - 15px)!important;
+    }
+
+    .gle-post-carousel-target {
+        height:270px!important;
+    }
+
+    .gle-post-auth-desc {
+        flex-wrap:wrap!important;
+    }
+
+    .gl-nav-logo-text {
+        display:none!important;
+    }
+
+    .gl-nav-logo-bw {
+        position:relative;
+        bottom:-2px;
+        opacity:.65;
+    }
+}
+
 @media only screen and (max-height:655px) {
     .gle-imagemodal {
         justify-content:flex-start!important;
@@ -199,5 +251,138 @@ menu {
 
     .gle-imagemodal-mat {
         margin-top:25px!important;
+    }
+
+    .rn-direct-chat-header {
+        height:60px!important;
+    }
+
+    .rn-direct-chat-header-info-avatar {
+        --size:42.5px!important;
+    }
+}
+
+
+@media only screen and (max-width:655px) {
+    #root {
+        flex-direction:column-reverse!important;
+    }
+
+    .rn-feed-block {
+        margin-top:15px!important;
+    }
+
+    :root {
+        --navheight:60px!important;
+    }
+
+    .gl-nav {
+        --paddinglr:10px;
+
+        background:white!important;
+        box-shadow:0px -1px 5px -1.5px rgba(0, 0, 0, .25)!important;
+        padding:0!important;
+        width:calc(100vw - var(--paddinglr) * 2)!important;
+        padding-left:var(--paddinglr)!important;
+        padding-right:var(--paddinglr)!important;
+    }
+
+    .gl-nav-searchnav-search {
+        width:225px!important;
+    }
+
+    .gle-explosure_nav {
+        display:flex!important;
+    }
+
+    .rn:not(.rn_nonav) {
+        height:calc(100vh - var(--navheight) - var(--expnavheight))!important;
+    }
+
+    .gl-nav-tillexp {
+        display:none!important;
+    }
+
+    .gl-nav-search-results {
+        --dgap:15px;
+
+        top:calc(var(--dgap) * -1)!important;
+        bottom:inherit!important;
+        transform:translateY(-100%)!important;
+        width:100%!important;
+        max-height:calc(100vh - var(--navheight) - var(--expnavheight) - var(--dgap))!important;
+        left:0!important;
+        margin-right:inherit!important;
+        background:white!important;
+        overflow:scroll!important;
+    }
+
+    .gl-nav-search-results:before {
+        display:none!important;
+    }
+
+    .rn-account-info {
+        margin-top:25px!important;
+    }
+
+    .rn-account-info {
+        flex-direction:column!important;
+        align-items:center!important;
+    }
+
+    .rn-account-info-mat {
+        justify-content:center!important;
+    }
+
+    .rn-account-info-mat-stats-item {
+        --margin:10px!important;
+
+        margin-left:var(--margin)!important;
+        margin-right:var(--margin)!important;
+    }
+
+    .rn-account-info-mat-name,
+    .rn-account-info-mat-stats,
+    .rn-account-info-description {
+        justify-content:center!important;
+    }
+
+    .rn-account-info-mat-name {
+        margin-top:15px!important;
+    }
+
+    .rn-account-info-realname,
+    .rn-account-info-description {
+        text-align:center!important;
+    }
+
+    .rn-account-info-mat-stats,
+    .rn-account-info-realname,
+    .rn-account-info-description {
+        width:100%!important;
+        padding-left:0!important;
+        padding-right:0!important;
+    }
+}
+
+@media only screen and (max-width:500px) {
+    .gl-nav-routes-btn {
+        --margin:12.5px!important;
+    }
+
+    .gl-nav-searchnav-search {
+        display:none!important;
+    }
+
+    .gl-nav-searchnav {
+        justify-content:space-around!important;
+        width:100%;
+    }
+}
+
+@media only screen and (max-width:410px) {
+    .rn-account-posts-item-hover-stats {
+        --margin:0px!important;
+        font-size:.75rem!important;
     }
 }

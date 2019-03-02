@@ -60,7 +60,7 @@ ConversationsItem.propTypes = {
 class Conversations extends Component {
     render() {
         return(
-            <section className="rn-direct-conversations">
+            <section className={ `rn-direct-conversations${ (!this.props.inDialog) ? "" : " indialog" }` }>
                 <div className="rn-direct-conversations-mat">
                     {
                         (!this.props.isLoading) ? (
@@ -311,7 +311,7 @@ class ChatInput extends Component {
 class Chat extends Component {
     render() {
         return(
-            <section className="rn-direct-chat">
+            <section className={ `rn-direct-chat${ (!this.props.dialog) ? "" : " indialog" }` }>
                 {
                     (!this.props.isLoading) ? (
                         (this.props.dialog !== null) ? (
@@ -685,6 +685,7 @@ class Messenger extends Component {
                     conversations={ this.state.conversations }
                     onSelect={ this.loadDialog }
                     activeID={ this.state.chat && this.state.chat.id }
+                    inDialog={ !!this.state.chat }
                 />
                 <Chat
                     isLoading={ this.state.isLoadingChat }
