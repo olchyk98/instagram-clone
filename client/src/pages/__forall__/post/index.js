@@ -4,7 +4,7 @@ import './main.css';
 
 import { connect } from 'react-redux';
 import { gql } from 'apollo-boost';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import api from '../../../api';
 import client from '../../../apollo';
@@ -225,6 +225,7 @@ class PostComments extends Component {
                             key={ id }
                             id={ id }
                             authID={ creator.id }
+                            login={ creator.login }
                             name={ creator.getName }
                             content={ content }
                             isLiked={ isLiked }
@@ -329,6 +330,7 @@ class Post extends Component {
                 id: a_id,
                 creator: {
                     id: 0,
+                    login: null,
                     getName: "YOU"
                 },
                 isLiked: false,
@@ -353,6 +355,7 @@ class Post extends Component {
                         id,
                         creator {
                             id,
+                            login,
                             getName
                         },
                         isLiked,
@@ -378,7 +381,7 @@ class Post extends Component {
 
     getEDescription(places, people) {
         return(
-            <p className="gle-post-auth-desc">
+            <div className="gle-post-auth-desc">
                 {
                     (places.length) ? (
                         <>
@@ -407,14 +410,14 @@ class Post extends Component {
                                     const a = !!people[index + 1];
 
                                     return(
-                                        <button className={ `definp${ (a) ? " mm" : "" }` } key={ index }>{ session.getName }{ (a) ? ", " : "" }</button>
+                                        <Link to={ `${ links["ACCOUNT_PAGE"].absolute }/${ session.login }` } className={ `definp${ (a) ? " mm" : "" }` } key={ index }>{ session.getName }{ (a) ? ", " : "" }</Link>
                                     );
                                 })
                             }
                         </>
                     ) : <></>
                 }
-            </p>
+            </div>
         );
     }
 
@@ -434,6 +437,7 @@ class Post extends Component {
                             id,
                             creator {
                                 id,
+                                login,
                                 getName
                             },
                             isLiked,
@@ -470,11 +474,13 @@ class Post extends Component {
         return(
             <article className="gle-post">
                 <section className="gle-post-auth">
-                    <div className="gle-post-auth-avatar">
+                    <Link className="gle-post-auth-avatar" to={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.alogin }` }>
                         <img src={ api.storage + this.props.aavatar } alt="post author" />
-                    </div>
+                    </Link>
                     <div className="gle-post-auth-info">
-                        <span className="gle-post-auth-name">{ this.props.aname }</span>
+                        <Link className="gle-post-auth-name" to={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.alogin }` }>
+                            { this.props.aname }
+                        </Link>
                         { this.getEDescription(this.props.places, this.props.people) }
                     </div>
                 </section>
@@ -492,6 +498,7 @@ class Post extends Component {
                         <PostCommentItem
                             content={ this.props.text }
                             checkTags={ true }
+                            login={ this.props.alogin }
                             name={ this.props.aname }
                             canLike={ false }
                         />
@@ -542,6 +549,7 @@ Post.propTypes = {
     id: PropTypes.string.isRequired,
     likesInt: PropTypes.number.isRequired,
     aid: PropTypes.string.isRequired, // author id
+    alogin: PropTypes.string.isRequired,
     aname: PropTypes.string.isRequired, // author name
     aavatar: PropTypes.string.isRequired, // author avatar
     comments: PropTypes.array.isRequired,

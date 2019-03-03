@@ -11,6 +11,7 @@ import links from '../../../links';
 
 import { connect } from 'react-redux';
 import { gql } from 'apollo-boost';
+import { Link } from 'react-router-dom';
 
 import Comment from '../post.comment';
 import CommentInput from '../post.commentinput';
@@ -152,7 +153,8 @@ class Hero extends Component {
                         places,
                         people {
                             id,
-                            getName  
+                            getName,
+                            login
                         },
                         media {
                             id,
@@ -173,7 +175,8 @@ class Hero extends Component {
                             isLiked,
                             creator {
                                 id,
-                                getName
+                                getName,
+                                login
                             }
                         },
                         likesInt,
@@ -307,6 +310,7 @@ class Hero extends Component {
                         isLiked,
                         creator {
                             id,
+                            login,
                             getName
                         }
                     }
@@ -362,7 +366,7 @@ class Hero extends Component {
                                     const a = !!people[index + 1];
 
                                     return(
-                                        <button className={ `definp${ (a) ? " mm" : "" }` } key={ index }>{ session.getName }{ (a) ? ", " : "" }</button>
+                                        <Link onClick={ this.props.closeSelf } to={ `${ links["ACCOUNT_PAGE"].absolute }/${ session.login }` } className={ `definp${ (a) ? " mm" : "" }` } key={ index }>{ session.getName }{ (a) ? ", " : "" }</Link>
                                     );
                                 })
                             }
@@ -436,6 +440,7 @@ class Hero extends Component {
                             isLiked,
                             creator {
                                 id,
+                                login,
                                 getName
                             }
                         }
@@ -534,10 +539,10 @@ class Hero extends Component {
                                 }
                             }}>
                                 <div className="gle-imagemodal-mat-info-auth">
-                                    <div className="gle-imagemodal-mat-info-auth-avatar">
+                                    <Link onClick={ this.props.closeSelf } to={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.state.photo.creator.login }` } className="gle-imagemodal-mat-info-auth-avatar">
                                         <img src={ api.storage + this.state.photo.creator.avatar } alt="user" />
-                                    </div>
-                                    <span className="gle-imagemodal-mat-info-auth-name">{ this.state.photo.creator.login }</span>
+                                    </Link>
+                                    <Link onClick={ this.props.closeSelf } to={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.state.photo.creator.login }` } className="gle-imagemodal-mat-info-auth-name">{ this.state.photo.creator.login }</Link>
                                     {
                                         (!this.state.photo.creator.isVerified) ? null : (
                                             <div className="gle-imagemodal-mat-info-auth-verified">
@@ -574,6 +579,7 @@ class Hero extends Component {
                                                 name={ this.state.photo.creator.getName }
                                                 canLike={ false }
                                                 checkTags={ true }
+                                                login={ this.state.photo.creator.login }
                                             />
                                         ) : null
                                     }
@@ -601,6 +607,7 @@ class Hero extends Component {
                                                 content={ content }
                                                 isLiked={ isLiked }
                                                 name={ creator.getName }
+                                                login={ creator.login }
                                                 creatorID={ creator.id }
                                             />
                                         ))

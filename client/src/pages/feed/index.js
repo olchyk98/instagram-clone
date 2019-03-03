@@ -4,9 +4,11 @@ import './main.css';
 
 import { gql } from 'apollo-boost';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import api from '../../api';
 import client from '../../apollo';
+import links from '../../links';
 
 import Post from '../__forall__/post';
 
@@ -29,6 +31,7 @@ class Feed extends Component {
                                 likesInt={ likesInt }
                                 text={ text }
                                 aid={ creator.id }
+                                alogin={ creator.login }
                                 aname={ creator.getName }
                                 aavatar={ creator.avatar }
                                 time={ time }
@@ -70,7 +73,7 @@ class More extends Component {
     render() {
         return(
             <section className="rn-feed-block rn-feed-more">
-                <div className="rn-feed-more-account">
+                <Link className="rn-feed-more-account" to={ (this.props.client) ? `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.client.login }` : "" }>
                     <div className="rn-feed-more-account-avatar">
                         <img src={ (this.props.client && api.storage + this.props.client.avatar) || placeholderINST } alt="user" />
                     </div>
@@ -89,7 +92,7 @@ class More extends Component {
                             )
                         }
                     </div>
-                </div>
+                </Link>
                 <span className="rn-feed-more-copyright">
                     @FINSTAGRAM, 2019. <br />
                     Instagram fake. <br />
@@ -142,7 +145,8 @@ class FeedPage extends Component {
                             text,
                             people {
                                 id,
-                                getName
+                                getName,
+                                login
                             },
                             places,
                             media {
@@ -153,13 +157,15 @@ class FeedPage extends Component {
                             creator {
                                 id,
                                 getName,
-                                avatar
+                                avatar,
+                                login
                             },
                             comments(limit: $commentsLimit) {
                                 id,
                                 creator {
                                     id,
-                                    getName
+                                    getName,
+                                    login
                                 },
                                 isLiked,
                                 content
@@ -267,6 +273,7 @@ class FeedPage extends Component {
                             time,
                             people {
                                 id,
+                                login,
                                 getName
                             },
                             places,
@@ -278,12 +285,14 @@ class FeedPage extends Component {
                             creator {
                                 id,
                                 getName,
+                                login,
                                 avatar
                             },
                             comments(limit: $commentsLimit) {
                                 id,
                                 creator {
                                     id,
+                                    login,
                                     getName
                                 },
                                 isLiked,

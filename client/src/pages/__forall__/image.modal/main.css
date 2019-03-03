@@ -248,6 +248,8 @@
     font-weight:500;
     font-family:"Arial";
     font-size:1.075rem;
+    text-decoration:none;
+    color:black;
 }
 
 .gle-imagemodal-mat-info-auth-verified {

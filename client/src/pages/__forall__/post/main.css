@@ -14,6 +14,7 @@
     border:1px solid var(--defaultborder);
     border-radius:3px;
     position:relative;
+    background:white;
 }
 
 .gle-post:first-child {
@@ -25,6 +26,7 @@
     align-items:center;
     justify-content:flex-start;
     margin-bottom:12.5px;
+    text-decoration:none;
 }
 
 .gle-post-auth-avatar {
@@ -62,6 +64,7 @@
     color:rgba(0, 0, 0, .95);
     font-weight:500;
     font-family:"Arial";
+    text-decoration:none;
 }
 
 .gle-post-auth-desc {
@@ -71,6 +74,10 @@
     font-size:.85rem;
     display:flex;
     align-items:center;
+}
+
+.gle-post-auth-desc > a {
+    text-decoration:none;
 }
 
 .gle-post-auth-desc.mb {

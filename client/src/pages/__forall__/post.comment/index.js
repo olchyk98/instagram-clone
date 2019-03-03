@@ -61,9 +61,9 @@ class Comment extends Component {
         return(
             <article className="gle-post-commentitem">
                 <div className="gle-post-commentitem-content">
-                    <span className="gle-post-commentitem-content-name">
+                    <Link className="gle-post-commentitem-content-name" onClick={ this.props.closeFloatPhoto } to={ (this.props.login) ? `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.login }` : "" }>
                         { this.props.name }
-                    </span>
+                    </Link>
                     <span className="gle-post-commentitem-content-mat">
                         {
                             (!this.props.checkTags) ? (
@@ -103,6 +103,7 @@ class Comment extends Component {
 
 Comment.propTypes = {
     content: PropTypes.string.isRequired,
+    login: PropTypes.string,
     name: PropTypes.string.isRequired,
     canLike: PropTypes.bool,
     id: PropTypes.oneOfType([

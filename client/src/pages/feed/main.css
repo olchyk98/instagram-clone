@@ -50,6 +50,8 @@
     justify-content:flex-start;
     width:100%;
     position:relative;
+    text-decoration:none;
+    color:black;
 }
 
 .rn-feed-more-account-avatar {
@@ -78,6 +80,7 @@
     flex-direction:column;
     align-items:flex-start;
     justify-content:center;
+    font-size:1.05rem;
 }
 
 .rn-feed-more-account-name > * {

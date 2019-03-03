@@ -21,7 +21,7 @@ import placeholderGIF from '../__forall__/placeholderFB.gif';
 import placeholderGIF_I from '../__forall__/placeholderINST.gif';
 import loadingSpinner from '../__forall__/loadingico.gif';
 
-const postsLimit = 7;
+const postsLimit = 9;
 
 class Account extends Component {
     constructor(props) {

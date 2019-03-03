@@ -212,11 +212,11 @@ const UserType = new GraphQLObjectType({
 
                 if(cursorID) {
                     query._id = {
-                        $gt: cursorID
+                        $lt: cursorID
                     }
                 }
 
-                return Post.find(query).limit(limit || 0);
+                return Post.find(query).limit(limit || 0).sort({ time: -1 });
             }
         },
         postsInt: {
