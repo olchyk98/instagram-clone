@@ -183,6 +183,26 @@ class Register extends Component {
         }).catch(console.error);
     }
 
+    loginGuest = () => {
+        const guest = {
+            login: "guest",
+            password: "password"
+        }
+
+        Login.login.call({ // XXX
+            state: {
+                logging: this.state.registering || this.state.registeringByFB,
+                login: guest.login,
+                password: guest.password
+            },
+            setState: (_, b) => (b) ? b() : null
+        });
+
+        this.setState(() => ({
+            registering: true
+        }))
+    }
+
     render() {
         return(
             <form className="rn-login-island rn-login-island_register" onSubmit={ e => { e.preventDefault(); this.register(false); } }>
@@ -242,6 +262,9 @@ class Register extends Component {
                         });
                     }}
                 />
+                <button type="button" className="definp rn-login-island-btn guest minimalmargin" onClick={ this.loginGuest }>
+                    Login as Guest
+                </button>
                 <div className="rn-login-island_register-regsplit">
                     <span>Or</span>
                 </div>
@@ -291,7 +314,12 @@ class Login extends Component {
         }
     }
 
-    login = () => {
+    /*
+        1. CAN'T BE AN ARROW FUNCTION, BECAUSE REGISTER COMPONENT APPLIES THIS FUNCTION AND
+        AS WE KNOW WE CANNOT PROVIDE THIS KEYWORD IN AN ARROW FUNCTION.
+        2. SHOULD BE STATIC, BECAUSE REGISTER COMPONENT USES THIS FUNCTION.
+    */
+    static login() {
         if(this.state.logging) return;
 
         this.setState(() => ({
@@ -328,7 +356,7 @@ class Login extends Component {
 
     render() {
         return(
-            <form className="rn-login-island rn-login-island_register" onSubmit={ e => { e.preventDefault(); this.login(); } }>
+            <form className="rn-login-island rn-login-island_register" onSubmit={ e => { e.preventDefault(); Login.login.bind(this)(); } }>
                 <div className="rn-login-island-logo">
                     <img src={ logo } alt="Instagram logo" />
                 </div>

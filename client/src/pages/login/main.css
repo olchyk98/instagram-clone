@@ -21,10 +21,10 @@
     margin-bottom:var(--margin);
     max-width:calc(100vw - var(--paddinglr) * 2 - 15px);
     border-radius:2.5px;
-    background:var(--__color-l);
+    background:var(--__color-fpostcol);
     width:calc(350px - var(--paddinglr) * 2);
     border:1px solid var(--__color-l-m5w);
-    box-shadow:0px 0px 7.5px -3px var(--__color-l-m25w);
+    box-shadow:0px 0px 7.5px -3px var(--__color-d-3w);
     padding:var(--paddingud) var(--paddinglr) var(--paddingud) var(--paddinglr);
     display:flex;
     flex-direction:column;
@@ -39,6 +39,10 @@
     text-align:center;
 }
 
+.rn-login-island-logo {
+    filter:invert(var(--__color_special_-invert));
+}
+
 .rn-login-island-logo > img {
     height:67.5px;
 }
@@ -51,7 +55,7 @@
     font-weight:600;
     font-family:"Arial";
     font-size:1.05rem;
-    color:var(--__color-l-5w);
+    color:var(--__color-d-5w);
     text-align:center;
 }
 
@@ -74,7 +78,7 @@
     width:100%;
     flex-shrink:1;
     display:block;
-    background:var(--__color-l-1w);
+    background:var(--__color-d-1w);
 }
 
 .rn-login-island_register-regsplit > span {
@@ -86,7 +90,7 @@
     font-weight:500;
     font-family:"Arial";
     font-size:.9rem;
-    color:var(--__color-l-5w);
+    color:var(--__color-d-5w);
     text-transform:uppercase;
 }
 
@@ -98,7 +102,7 @@
     height:32.5px;
     width:100%;
     background:#3897F0;
-    color:var(--__color-l);
+    color:white;
     font-weight:500;
     font-family:"Arial";
     font-size:.95rem;
@@ -115,6 +119,10 @@
 
 .rn-login-island-btn.google {
     background:#34A853;
+}
+
+.rn-login-island-btn.guest {
+    background:#ACA428;
 }
 
 .rn-login-island-btn.minimalmargin {
@@ -139,7 +147,7 @@
     width:calc(100% - var(--padding));
     display:flex;
     align-items:stretch;
-    border:1px solid var(--__color-l-1w);
+    border:1px solid var(--__color-d-1w);
 }
 
 .rn-login-island_register-input-mat {
@@ -182,6 +190,7 @@
     margin:10px;
     text-align:center;
     font-size:.975rem;
+    color:var(--__color-d);
 }
 
 .rn-login-island-translogin-title > * {
