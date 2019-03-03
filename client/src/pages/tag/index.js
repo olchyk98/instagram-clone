@@ -28,9 +28,13 @@ class Tag extends Component {
     }
 
     componentDidMount() {
+        const tagName = this.props.match.params.tag;
+
         this.setState(() => ({
-            tagName: this.props.match.params.tag
+            tagName
         }), this.loadPosts);
+
+        document.title = `${ tagName } | Tag`;
     }
 
     loadPosts = (loadingMore = false) => {

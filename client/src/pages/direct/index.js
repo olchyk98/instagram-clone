@@ -363,6 +363,8 @@ class Messenger extends Component {
             const a = this.props.match.params.id;
             if(a) {
                 this.loadDialog(a);
+            } else {
+                document.title = `Direct | FInstagram`;
             }
         }
 
@@ -499,6 +501,7 @@ class Messenger extends Component {
             }), () => {
                 this.subscribeToDialog();
                 window.history.pushState(null, null, `${ links["MESSENGER_PAGE"].absolute }/${ conversation.id }`)
+                document.title = `${ u_conversation.conv.getName } | Direct`;
             });
 
             this.canFetchMessages = u_conversation.messages.length >= messagesLimit;

@@ -13,6 +13,8 @@ class PostPage extends PureComponent {
             id,
             onClose: () => this.props.history.push(links["FEED_PAGE"].absolute)
         });
+
+        document.title = `Post | FInstagram`;
     }
 
     render() {

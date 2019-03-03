@@ -372,6 +372,10 @@ class Auth extends Component {
         }
     }
 
+    componentWillMount() {
+        document.title = `Log in | FInstagram`;
+    }
+
     render() {
         return(
             <div className="rn rn_nonav rn-login">

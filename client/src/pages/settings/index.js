@@ -519,6 +519,8 @@ class Settings extends Component {
                 this.loadData();
             }
         }
+
+        document.title = `Settings | FInstagram`;
     }
 
     setTab = tab => {

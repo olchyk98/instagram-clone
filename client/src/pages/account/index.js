@@ -62,6 +62,7 @@ class Account extends Component {
                             }
                         },
                         name,
+                        getName,
                         isVerified,
                         avatar,
                         postsInt,
@@ -83,7 +84,9 @@ class Account extends Component {
             this.setState(() => ({
                 user,
                 isLoading: false
-            }));
+            }), () => {
+                document.title = `${ user.getName } | FInstagram`;
+            });
         }).catch(console.error);
     }
 

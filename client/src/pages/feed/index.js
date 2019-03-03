@@ -119,6 +119,8 @@ class FeedPage extends Component {
 
     componentDidMount() {
         this.fetchMain();
+
+        document.title = `Feed | FInstagram`;
     }
 
     componentWillUnmount() {

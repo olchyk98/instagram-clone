@@ -43,6 +43,7 @@ class Explore extends Component {
 
     componentDidMount() {
         this.fetchAPI();
+        document.title = `Explore | FInstagram`;
     }
 
     fetchAPI = () => {
