@@ -69,6 +69,35 @@ const str = a => a.toString();
 
 const getExtension = a => a.match(/[^\\]*\.(\w+)$/)[1];
 
+(() => { // Create media folder
+    function handleError(err) {
+        console.log("Error while tried to create media folder.");
+        console.log("----- ERROR -----");
+        console.log(err);
+        console.log("----- ERROR -----");
+    }
+
+    // /files/avatars
+    fs.mkdir('./files/avatars', { recursive: true }, err => {
+        if(err) handleError(err);
+    });
+
+    // /files/default
+    fs.mkdir('./files/default', { recursive: true }, err => {
+        if(err) handleError(err);
+    });
+
+    // /files/media
+    fs.mkdir('./files/media', { recursive: true }, err => {
+        if(err) handleError(err);
+    });
+
+    // /files/messages_image
+    fs.mkdir('./files/messages_image', { recursive: true }, err => {
+        if(err) handleError(err);
+    });
+})();
+
 // Schema Types
 const UserType = new GraphQLObjectType({
     name: "User",
@@ -1275,7 +1304,7 @@ const RootMutation = new GraphQLObjectType({
         createConversation: {
             type: ConversationType,
             args: {
-                targetID: { type: new GraphQLNonNull(GraphQLID) }  
+                targetID: { type: new GraphQLNonNull(GraphQLID) } // person id
             },
             async resolve(_, { targetID }, { req }) {
                 if(!req.session.id || !req.session.authToken)

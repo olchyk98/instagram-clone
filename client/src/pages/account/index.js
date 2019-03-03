@@ -273,57 +273,84 @@ class Account extends Component {
                                             }
                                         </button>
                                     ) : (
-                                        <>
-                                            <Link to={ links["SETTINGS_PAGE"].absolute }>
-                                                <button className="definp rn-account-info-mat-name-action">
-                                                    Edit profile
-                                                </button>   
-                                            </Link>
-                                            <button
-                                                className="definp rn-account-info-mat-name-settings"
-                                                onClick={() => {
-                                                    this.props.callGlobalMenu({
-                                                        type: "OPTIONS",
-                                                        buttons: [
-                                                            {
-                                                                isRed: false,
-                                                                action: () => {
-                                                                    this.props.history.push(links["SETTINGS_PAGE"].absolute)
-                                                                },
-                                                                text: "Settings",
-                                                                close: true
-                                                            },
-                                                            {
-                                                                isRed: false,
-                                                                action: () => {
-                                                                    this.props.history.push(`${ links["SETTINGS_PAGE"].absolute }/cpass`);
-                                                                },
-                                                                text: "Change Password",
-                                                                close: true
-                                                            },
-                                                            {
-                                                                isRed: true,
-                                                                action: () => {
-                                                                    cookieControl.delete("userid");
-                                                                    window.location.href = "/";
-                                                                },
-                                                                text: "Log out",
-                                                                close: true
-                                                            },
-                                                            {
-                                                                isRed: false,
-                                                                action: () => this.props.callGlobalMenu(null),
-                                                                text: "Cancel"
-                                                            }
-                                                        ]
-                                                    })
-                                                }}>
-                                                <FontAwesomeIcon icon={ faCog } />
-                                            </button>
-                                        </>
+                                        <Link to={ links["SETTINGS_PAGE"].absolute }>
+                                            <button className="definp rn-account-info-mat-name-action">
+                                                Edit profile
+                                            </button>   
+                                        </Link>
                                     )
                                 ) : null
                             }
+                            <button
+                                className="definp rn-account-info-mat-name-settings"
+                                onClick={() => {
+                                    this.props.callGlobalMenu({
+                                        type: "OPTIONS",
+                                        buttons: (this.state.user.id !== this.clientID) ? [
+                                            {
+                                                isRed: false,
+                                                action: () => {
+                                                    client.mutate({
+                                                        mutation: gql`
+                                                            mutation($targetID: ID!) {
+                                                                createConversation(targetID: $targetID) {
+                                                                    id
+                                                                }
+                                                            }
+                                                        `,
+                                                        variables: {
+                                                            targetID: this.state.user.id
+                                                        }
+                                                    }).then(({ data: { createConversation: a } }) => {
+                                                        if(!a) return this.props.castError("Something went wrong while we tried to create a conversation. Please, try later.");
+
+                                                        this.props.history.push(`${ links["MESSENGER_PAGE"].absolute }/${ a.id }`);
+                                                    }).catch(console.error);
+                                                },
+                                                text: "Open conversation",
+                                                close: true
+                                            },
+                                            {
+                                                isRed: false,
+                                                action: () => this.props.callGlobalMenu(null),
+                                                text: "Cancel"
+                                            }
+                                        ] : [
+                                            {
+                                                isRed: false,
+                                                action: () => {
+                                                    this.props.history.push(links["SETTINGS_PAGE"].absolute)
+                                                },
+                                                text: "Settings",
+                                                close: true
+                                            },
+                                            {
+                                                isRed: false,
+                                                action: () => {
+                                                    this.props.history.push(`${ links["SETTINGS_PAGE"].absolute }/cpass`);
+                                                },
+                                                text: "Change Password",
+                                                close: true
+                                            },
+                                            {
+                                                isRed: true,
+                                                action: () => {
+                                                    cookieControl.delete("userid");
+                                                    window.location.href = "/";
+                                                },
+                                                text: "Log out",
+                                                close: true
+                                            },
+                                            {
+                                                isRed: false,
+                                                action: () => this.props.callGlobalMenu(null),
+                                                text: "Cancel"
+                                            }
+                                        ]
+                                    })
+                                }}>
+                                <FontAwesomeIcon icon={ faCog } />
+                            </button>
                         </div>
                         <ul className="rn-account-info-mat-stats">
                             <li className="rn-account-info-mat-stats-item">

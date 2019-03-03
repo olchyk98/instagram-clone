@@ -9,6 +9,7 @@ import links from '../../links';
 
 import { gql } from 'apollo-boost';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faHeart, faPaperPlane } from '@fortawesome/free-regular-svg-icons';
@@ -68,8 +69,8 @@ class Conversations extends Component {
                                 <ConversationsItem
                                     key={ id }
                                     id={ id }
-                                    content={ lastMessage.content }
-                                    contentType={ lastMessage.type }
+                                    content={ (lastMessage && lastMessage.content) || "" }
+                                    contentType={ (lastMessage && lastMessage.type) || "DEFAULT" }
                                     image={ conv.avatar }
                                     name={ conv.getName }
                                     isActive={ this.props.activeID === id }
@@ -113,14 +114,14 @@ class ChatHeader extends PureComponent {
                     <div className="rn-direct-chat-header-info-avatar">
                         <img src={ this.props.image } alt="user" />
                     </div>
-                    <div className="rn-direct-chat-header-info-mat">
+                    <Link className="rn-direct-chat-header-info-mat" to={ `${ links["ACCOUNT_PAGE"].absolute }/${ this.props.login }` }>
                         <span className="rn-direct-chat-header-info-mat-name">
                             { this.props.name }
                         </span>
                         <span className="rn-direct-chat-header-info-mat-messages">
                             { this.props.messages } message{ (this.props.messages !== 1) ? "s" : "" }
                         </span>
-                    </div>
+                    </Link>
                 </section>
             </header>
         );
@@ -320,6 +321,7 @@ class Chat extends Component {
                                     name={ this.props.dialog.conv.getName }
                                     image={ api.storage + this.props.dialog.conv.avatar }
                                     messages={ this.props.dialog.messagesInt }
+                                    login={ this.props.dialog.conv.login }
                                 />
                                 <ChatDisplay
                                     messages={ this.props.dialog.messages }
@@ -391,6 +393,7 @@ class Messenger extends Component {
                             conv {
                                 id,
                                 avatar,
+                                login,
                                 getName
                             }
                         }
@@ -422,6 +425,7 @@ class Messenger extends Component {
                         conv {
                             id,
                             avatar,
+                            login,
                             getName
                         }
                     }
@@ -466,6 +470,7 @@ class Messenger extends Component {
                         conv {
                             id,
                             avatar,
+                            login,
                             getName
                         },
                         messages(limit: $limitMessages) {
