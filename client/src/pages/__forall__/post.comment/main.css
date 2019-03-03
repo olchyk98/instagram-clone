@@ -24,11 +24,11 @@
     font-size:.95rem;
     white-space:nowrap;
     text-decoration:none;
-    color:black;
+    color:var(--__color-d);
 }
 
 .gle-post-commentitem-content-name:active {
-    color:rgba(0, 0, 0, .65);
+    color:var(--__color-d-7w);
 }
 
 .gle-post-commentitem-content-mat {
@@ -36,6 +36,7 @@
     font-size:.9rem;
     width:100%;
     word-break:break-word;
+    color:var(--__color-d-9w);
 }
 
 .gle-post-commentitem-content-mat > * {
@@ -56,7 +57,7 @@
 
 .gle-post-commentitem-like {
     font-size:.75rem;
-    color:rgba(0, 0, 0, .5);
+    color:var(--__color-d-5w);
     cursor:pointer;
     margin-left:20px;
     transition:.1s;

@@ -171,7 +171,7 @@ class PostCarousel extends Component {
                         }
                     </div>
                     <div className="gle-port-carousel-feedback">
-                    <div>
+                        <div>
                             <button className={ `gle-port-carousel-feedback-btn definp${ (!this.props.isLiked) ? "" : " liked" }` } onClick={ this.props.likePost }>
                                 <FontAwesomeIcon icon={ (!this.props.isLiked) ? faHeartRegular : faHeartSolid } />
                             </button>
@@ -257,7 +257,7 @@ class Post extends Component {
         }
 
         this.likeProcessing =
-        this.pushingBookmark =
+        this.pushingBookmark = false;
         this.commentInputRef = React.createRef();
     }
 

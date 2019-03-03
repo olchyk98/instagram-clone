@@ -14,7 +14,7 @@
     border:1px solid var(--defaultborder);
     border-radius:3px;
     position:relative;
-    background:white;
+    background:var(--__color-fpostcol);
 }
 
 .gle-post:first-child {
@@ -61,7 +61,7 @@
 
 .gle-post-auth-name {
     font-size:.95rem;
-    color:rgba(0, 0, 0, .95);
+    color:var(--__color-d);
     font-weight:500;
     font-family:"Arial";
     text-decoration:none;
@@ -74,10 +74,16 @@
     font-size:.85rem;
     display:flex;
     align-items:center;
+    color:var(--__color-d);
 }
 
 .gle-post-auth-desc > a {
     text-decoration:none;
+    color:var(--__color-fpostauth);
+}
+
+.gle-post-auth-desc > a:hover {
+    text-decoration:underline;
 }
 
 .gle-post-auth-desc.mb {
@@ -117,6 +123,7 @@
     height:425px;
     width:100%;
     position:relative;
+    background:white;
 }
 
 .gle-post-carousel-target-likeamico {
@@ -130,7 +137,7 @@
     font-size:5em;
     z-index:15;
     color:red;
-    filter:drop-shadow(0px 0px 2.5px rgba(0, 0, 0, .1));
+    filter:drop-shadow(0px 0px 2.5px rgba(0, 0, 0, .15));
     display:none;
     opacity:0;
 }
@@ -175,10 +182,10 @@
     height:var(--size);
     width:var(--size);
     border-radius:50%;
-    background:rgba(255, 255, 255, .9);
+    background:var(--__color-l-9w);
     border:1px solid var(--defaultborder);
-    box-shadow:0px 0px 10px -2.5px rgba(0, 0, 0, .25);
-    color:rgba(0, 0, 0, .9);
+    box-shadow:0px 0px 10px -2.5px var(--__color-d-3w);
+    color:var(--__color-d-9w);
     font-size:.75rem;
     display:flex;
     align-items:center;
@@ -207,7 +214,7 @@
 }
 
 .gle-post-carousel-image-videotogg {
-    filter:drop-shadow(0px 0px 5px rgba(0, 0, 0, .25));
+    filter:drop-shadow(0px 0px 5px var(--__color-d-3w));
     font-size:3.5rem;
     color:white;
     position:absolute;
@@ -306,7 +313,7 @@
     margin-right:var(--margin);
     font-size:1.5rem;
     cursor:pointer;
-    color:rgba(0, 0, 0, .55);
+    color:var(--__color-d-6w);
 }
 
 .gle-port-carousel-feedback-btn.liked {
@@ -327,6 +334,7 @@
     font-size:.95em;
     margin-top:5px;
     margin-bottom:7.5px;
+    color:var(--__color-d);
 }
 
 .gle-post-comments {
@@ -340,7 +348,7 @@
 }
 
 .gle-post-comments-lmore {
-    color:rgba(0, 0, 0, .45);
+    color:var(--__color-d-5w);
     font-weight:600;
     margin-top:-5px;
     font-family:"Arial";
@@ -350,13 +358,13 @@
 }
 
 .gle-post-comments-lmore:active {
-    color:rgba(0, 0, 0, .35);
+    color:var(--__color-d-4w);
 }
 
 .gle-post-time {
     font-family:"Quicksand";
     font-weight:500;
-    color:rgba(0, 0, 0, .45);
+    color:var(--__color-d-5w);
     text-transform:uppercase;
     font-size:.65rem;
     letter-spacing:-.25px;

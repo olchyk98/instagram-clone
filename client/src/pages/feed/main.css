@@ -24,9 +24,9 @@
     padding-top:15px;
     width:650px;
     max-width:calc(100vw - 15px);
-    border:1px solid rgba(0, 0, 0, .05);
+    border:1px solid var(--__color-d-m5w);
     border-radius:2.5px;
-    background:white;
+    background:var(--__color-l);
     display:flex;
     flex-direction:column;
     background-repeat:no-repeat;
@@ -51,7 +51,7 @@
     width:100%;
     position:relative;
     text-decoration:none;
-    color:black;
+    color:var(--__color-d);
 }
 
 .rn-feed-more-account-avatar {
@@ -63,7 +63,7 @@
     position:relative;
     overflow:hidden;
     border:1px solid var(--defaultborder);
-    background:white;
+    background:var(--__color-l);
     margin-right:10px;
 }
 
@@ -100,11 +100,11 @@
     font-family:"Quicksand";
     font-weight:500;
     font-size:.75rem;
-    color:rgba(0, 0, 0, .5);
+    color:var(--__color-d-5w);
 }
 
 .rn-feed-more-copyright {
-    color:rgba(0, 0, 0, .35);
+    color:var(--__color-d-4w);
     text-align:left;
     line-height:15px;
     font-size:.7rem;

@@ -21,7 +21,7 @@
 
     height:var(--size);
     width:var(--size);
-    border:5px solid rgba(0, 0, 0, .05);
+    border:5px solid var(--__color-d-m5w);
     border-radius:50%;
     position:relative;
     display:flex;
@@ -55,7 +55,7 @@
 
 .rn-tag-header-info-name {
     font-size:1.75rem;
-    color:rgba(0, 0, 0, .95);
+    color:var(--__color-d);
     font-family:"Quicksand";
     font-weight:400;
 }
@@ -91,7 +91,7 @@
     padding-right:var(--padding);
     height:var(--height);
     background:#3897F0;
-    color:white;
+    color:var(--__color-l);
     margin-top:20px;
     font-size:.85rem;
     line-height:calc(var(--height) + 1px);
@@ -115,7 +115,7 @@
     font-size:.925rem;
     font-family:"Arial";
     font-weight:600;
-    color:rgba(0, 0, 0, .45);
+    color:var(--__color-d-5w);
     margin-bottom:10px;
     display:block;
 }
