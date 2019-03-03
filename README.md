@@ -61,7 +61,7 @@ Tasks / Features:
      - [x] Float
 - [x] Direct Chat
 - [x] Advanced website routing
-- [ ] Dark Mode
+- [x] Dark Mode
 - [ ] _Machine Learning Classifier_
   - [x] Classify function
   - [ ] Photo description autofill
