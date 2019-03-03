@@ -60,7 +60,7 @@ Tasks / Features:
      - [x] Item
      - [x] Float
 - [x] Direct Chat
-- [ ] Advanced website routing
+- [x] Advanced website routing
 - [ ] Dark Mode
 - [ ] _Machine Learning Classifier_
   - [x] Classify function
@@ -73,10 +73,11 @@ Tasks / Features:
   - [x] Direct (Messenger)
   - [x] Search
   - [x] New Post modal
-- [ ] Dynamic document title
+- [x] Dynamic Document Title
 - [ ] Guest account
 - [x] Import external fonts (_Quicksand, Lato, Gothic A1_)
 - [ ] Service Worker -> cache
+- [ ] Preview placeholder data
 - [ ] Deploy app using GitHub pages and Heroku (https://www.apollographql.com/docs/apollo-server/deployment/heroku.html)
 
 Ideas:
