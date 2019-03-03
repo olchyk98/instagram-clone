@@ -70,7 +70,7 @@ server.applyMiddleware({
         origin: [
             'http://localhost:3000',
             'http://localhost:5000',
-            'http://192.168.10.170:3000'
+            'https://olchyk98.github.io'
         ],
         credentials: true
     }
@@ -79,4 +79,4 @@ server.applyMiddleware({
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-httpServer.listen(4000, () => console.log("Server is running on port 4000!"));
+httpServer.listen(process.env.PORT || 4000, () => console.log("Server is running on port 4000!"));
