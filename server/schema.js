@@ -1310,6 +1310,8 @@ const RootMutation = new GraphQLObjectType({
                 if(!req.session.id || !req.session.authToken)
                     throw new AuthenticationError("No current session.");
 
+                if(targetID === req.session.id) return null;
+
                 const conversors = [
                     targetID,
                     req.session.id

@@ -38,7 +38,7 @@ class PostCarouselVideo extends Component {
         super(props);
 
         this.state = {
-            isRunning: true
+            isRunning: !props.isFirst
         }
 
         this.matRef = React.createRef();
@@ -61,9 +61,9 @@ class PostCarouselVideo extends Component {
         return(
             <div className={ `gle-post-carousel-image video ${ this.props.status }` } onClick={ this.toggleVideo }>
                 <button className={ `gle-post-carousel-image-videotogg definp${ (!this.props.hideControls) ? "" : " hide" }` }>
-                    <FontAwesomeIcon icon={ (!this.state.isRunning) ? faPlaySolid : faPauseSolid } />
+                    <FontAwesomeIcon icon={ (this.state.isRunning) ? faPlaySolid : faPauseSolid } />
                 </button>
-                <video autoPlay muted loop ref={ ref => this.matRef = ref }>
+                <video muted loop ref={ ref => this.matRef = ref }>
                     <source src={ this.props.url } type="video/mp4" />
                     Please, update your browser.
                 </video>
@@ -74,7 +74,8 @@ class PostCarouselVideo extends Component {
 
 PostCarouselVideo.propTypes = {
     url: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
+    status: PropTypes.string.isRequired,
+    isFirst: PropTypes.bool
 }
 
 class PostCarousel extends Component {
@@ -146,6 +147,7 @@ class PostCarousel extends Component {
                                 return(
                                     <PostCarouselVideo
                                         key={ id }
+                                        isFirst={ index === 0 }
                                         url={ api.storage + url }
                                         hideControls={ this.state.likeAnimation }
                                         status={ status }

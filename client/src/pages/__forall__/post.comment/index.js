@@ -68,11 +68,11 @@ class Comment extends Component {
                         {
                             (!this.props.checkTags) ? (
                                 this.props.content
-                            ) : ( // 
+                            ) : ( //
                                 this.props.content
                                 .split(" ").map((session, index) => {
                                     if(!session.match(/#[A-z|-]+/g)) {
-                                        return session;
+                                        return <span key={ index }>{ session }</span>;
                                     } else {
                                         return(
                                             <Link

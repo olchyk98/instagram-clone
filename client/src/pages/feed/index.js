@@ -222,12 +222,14 @@ class FeedPage extends Component {
                         creator {
                             id,
                             getName,
+                            login,
                             avatar
                         },
                         comments(limit: $commentsLimit) {
                             id,
                             creator {
                                 id,
+                                login,
                                 getName
                             },
                             isLiked,
@@ -243,11 +245,13 @@ class FeedPage extends Component {
             next: (({ data: { listenForFeed: a } }) => {
                 if(!a) return;
 
+                const b = Array.from(this.state.posts);
+
+                if(b.findIndex(io => io.id === a.id) !== -1) return;
+                else b.unshift(a);
+
                 this.setState(({ posts }) => ({
-                    posts: [
-                        a,
-                        ...posts
-                    ]
+                    posts: b
                 }))
             }),
             error: console.error

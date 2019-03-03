@@ -40,7 +40,7 @@
 }
 
 .gle-post-commentitem-content-mat > * {
-    --margin:3px;
+    --margin:2px;
 
     margin-left:var(--margin);
     margin-right:var(--margin);

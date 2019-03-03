@@ -203,12 +203,12 @@
     font-weight:300;
     font-family:"Arial";
     font-size:.95rem;
-    color:var(--__color-d-9w);
+    color:rgba(0, 0, 0, .9);
 }
 
 .gl-nav-routes-btn-window-list-item-info-mat-content-time {
     font-size:.975rem;
-    color:var(--__color-d-5w);
+    color:rgba(0, 0, 0, .5);
     margin-left:5px;
 }
 
