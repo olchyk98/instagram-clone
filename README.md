@@ -74,7 +74,7 @@ Tasks / Features:
   - [x] Search
   - [x] New Post modal
 - [x] Dynamic Document Title
-- [ ] Guest account
+- [x] Guest account
 - [x] Import external fonts (_Quicksand, Lato, Gothic A1_)
 - [ ] Service Worker -> cache
 - [ ] Preview placeholder data
