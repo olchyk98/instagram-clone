@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import client from '../../apollo';
 import api from '../../api';
 import links from '../../links';
+import runTheme from '../../theme.runner';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -156,6 +157,31 @@ SubmitBtn.propTypes = {
     text: PropTypes.string.isRequired,
     isLoading: PropTypes.bool.isRequired,
     _disabled: PropTypes.bool
+}
+
+class Toggle extends PureComponent {
+    render() {
+        return(
+            <div className="rn-settings-window-options-itemrails">
+                <div className="rn-settings-window-options-stitle">
+                    <span className="rn-settings-window-options-stitle-mat">
+                        { this.props.text }
+                    </span>
+                </div>
+                <div className="rn-settings-window-options-sbody">
+                    <button className={ `rn-settings-window-options-sbody-toggle definp${ (!this.props.active) ? "" : " active" }` } onClick={ () => this.props._onChange(!this.props.active) }>
+                        <div />
+                    </button>
+                </div>
+            </div>
+        );
+    }
+}
+
+Toggle.propTypes = {
+    text: PropTypes.string.isRequired,
+    active: PropTypes.bool.isRequired,
+    _onChange: PropTypes.func.isRequired
 }
 
 class SettingsProfile extends Component {
@@ -492,6 +518,39 @@ class SettingsPassword extends Component {
     }
 }
 
+class SettingsAppearance extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            darkMode: localStorage.getItem("design_style") === "DARK"
+        }
+    }
+
+    toggleDarkMode = () => {
+        this.setState(({ darkMode: a }) => ({
+            darkMode: !a
+        }), () => {
+            const theme = (this.state.darkMode === false) ? "LIGHT" : "DARK";
+
+            localStorage.setItem("design_style", theme);
+            runTheme(theme);
+        });
+    }
+
+    render() {
+        return(
+            <div className="rn-settings-window-options">
+                <Toggle
+                    _onChange={ this.toggleDarkMode }
+                    active={ this.state.darkMode }
+                    text="Dark Mode"
+                />
+            </div>
+        );
+    }
+}
+
 class Settings extends Component {
     constructor(props) {
         super(props);
@@ -512,7 +571,8 @@ class Settings extends Component {
                 this.setState(() => ({
                     tab: {
                         'eprofile': "EDIT_PROFILE",
-                        'cpass': "CHANGE_PASSWORD"
+                        'cpass': "CHANGE_PASSWORD",
+                        'appearance': "DESIGN_STYLE"
                     }[a] || this.startTab
                 }), this.loadData); // Two times, because this function should be fired after state appling.
             } else {
@@ -527,7 +587,8 @@ class Settings extends Component {
         this.setState({ tab });
         window.history.pushState(null, null, `${ links["SETTINGS_PAGE"].absolute }/${{
             "EDIT_PROFILE": 'eprofile',
-            "CHANGE_PASSWORD": 'cpass'
+            "CHANGE_PASSWORD": 'cpass',
+            "DESIGN_STYLE": 'appearance'
         }[tab]}`);
     }
 
@@ -582,6 +643,10 @@ class Settings extends Component {
                                 {
                                     tabName: "CHANGE_PASSWORD",
                                     text: "Change password"
+                                },
+                                {
+                                    tabName: "DESIGN_STYLE",
+                                    text: "Appearance"
                                 }
                             ].map(({ text, tabName }, index) => (
                                 <button
@@ -608,6 +673,9 @@ class Settings extends Component {
                                     isLoading={ this.state.isLoading }
                                     castError={ this.props.castError }
                                 />
+                            ),
+                            "DESIGN_STYLE": (
+                                <SettingsAppearance />
                             )
                         }[this.state.tab]
                     }

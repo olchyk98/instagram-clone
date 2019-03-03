@@ -6,7 +6,7 @@
 
     /* ----------------- */
 
-    --__color-l-m25w:rgba(255, 255, 255, .025);
+  /*  --__color-l-m25w:rgba(255, 255, 255, .025);
     --__color-l-m5w:rgba(255, 255, 255, .05);
     --__color-l-1w:rgba(255, 255, 255, .1);
     --__color-l-2w:rgba(255, 255, 255, .2);
@@ -40,7 +40,7 @@
     --__color-messagecol-r:#D3F3F6;
     --glbgcol:#FAFAFA;
     --defaultborder:rgba(0, 0, 0, .15);
-    --__color_special_-invert:0%;
+    --__color_special_-invert:0%;*/
 
     /* ----------------- */
 
@@ -148,7 +148,7 @@ menu {
 
 .glei-placeholder {
     position:relative;
-    filter:invert(var(--__color_special_-invert)) brightness(calc(var(--__color_special_-invert) * 2));
+    filter:invert(var(--__color_special_-invert));
 }
 
 .glei-placeholder.margin:not(.prevent) {

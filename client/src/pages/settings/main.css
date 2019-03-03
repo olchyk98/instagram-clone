@@ -168,6 +168,45 @@
     border-color:blue;
 }
 
+.rn-settings-window-options-sbody-toggle,
+.rn-settings-window-options-sbody-toggle > div {
+    transition:.1s;
+}
+
+.rn-settings-window-options-sbody-toggle {
+    height:15px;
+    width:40px;
+    border-radius:45px;
+    cursor:pointer;
+    background:rgba(0, 0, 0, .05);
+    position:relative;
+}
+
+.rn-settings-window-options-sbody-toggle.active {
+    background:rgb(113, 201, 248);
+}
+
+.rn-settings-window-options-sbody-toggle > div {
+    --size:20px;
+
+    height:var(--size);
+    width:var(--size);
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    left:0;
+    box-shadow:-1px 1px 3px 0px rgba(0, 0, 0, .25);
+    border-radius:50%;
+    background:white;
+}
+
+.rn-settings-window-options-sbody-toggle.active > div {
+    background:rgb(29, 161, 242);
+    left:100%;
+    transform:translate(-100%, -50%);
+    box-shadow:1px 1px 3px 0px rgba(0, 0, 0, .25);
+}
+
 .rn-settings-window-options-account {
     margin-bottom:15px;
 }

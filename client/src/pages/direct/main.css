@@ -46,7 +46,7 @@
     position:absolute;
     top:0;
     left:calc(var(--convpadding) * -1);
-    background:#EAEAF3;
+    background:var(--__color-d-m25w);
     z-index:1;
     opacity:0;
 }
