@@ -1,7 +1,9 @@
 # instagram-clone
 _Stack:_ React.JS (Redux), GraphQL (Node.JS + Express)
 
-Status: in process.
+![Feed page in dark mode](http://i.piccy.info/i9/f239e872cefb5106a9045ac40265ea26/1551731810/109085/1292922/Screenshot_2019_03_03_at_21_20_28.jpg)
+
+Status: waiting.
 
 Tasks / Features:
 - [x] Templates
