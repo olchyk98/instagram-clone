@@ -82,6 +82,9 @@ Tasks / Features:
 - [x] Data
 - [ ] Deploy app using GitHub pages and Heroku (https://www.apollographql.com/docs/apollo-server/deployment/heroku.html)
 
+--
+- [ ] Use Python.Graphene instead of Node.JS
+
 Ideas:
 - **Video calls**
   - P2P (https://www.youtube.com/watch?v=ieBtXwHvoNk)
