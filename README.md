@@ -1,7 +1,11 @@
 # instagram-clone
 _Stack:_ React.JS (Redux), GraphQL (Node.JS + Express)
 
-![Feed page in dark mode](http://i.piccy.info/i9/f239e872cefb5106a9045ac40265ea26/1551731810/109085/1292922/Screenshot_2019_03_03_at_21_20_28.jpg)
+
+
+https://github.com/user-attachments/assets/4f6a0a70-3ef1-4ff7-aa02-804ced2768a9
+
+
 
 Status: done.
 
